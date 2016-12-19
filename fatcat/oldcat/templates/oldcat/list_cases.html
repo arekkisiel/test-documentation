@@ -1,50 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"
-	</head>
-	<body>
-		<div class="container">
-			<table class="table-striped">
-				<thead>
-				<tr>
-				  <th>Id</th>
-				  <th>System Requirement</th>
-				  <th>Test Unit</th>
-				  <th>Test Id</th>
-				  <th>Implemented By</th>
-				  <th>Test Situation</th>
-				  <th>Test Case</th>
-				  <th>Preconditions</th>
-				  <th>Functional Steps</th>
-				  <th>Additional Info</th>
-				  <th>Expected Results</th>
-				  <th>Filename</th>
-				</tr>
-				</thead>
-				<tbody>
-				{% for testCase in testCasesList %}
-					<tr>
-						<th>{{ testCase.id }}</th>
-						<th>{{ testCase.system_requirements }}</th>
-						<th>{{ testCase.test_unit }}</th>
-						<th>{{ testCase.test_id }}</th>
-						<th>{{ testCase.implemented }}</th>
-						<th>{{ testCase.test_situation }}</th>
-						<th>{{ testCase.test_case }}</th>
-						<th>{{ testCase.precondition }}</th>
-						<th>{{ testCase.functional_steps }}</th>
-						<th>{{ testCase.additional_info }}</th>
-						<th>{{ testCase.expected_result }}</th>
-						<th>{{ testCase.filename }}</th>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
-		</div>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+	<table class="table table-bordered">
+		<thead>
+		<tr>
+		  <th>Id</th>
+		  <th>System Requirement</th>
+		  <th>Test Unit</th>
+		  <th>Test Id</th>
+		  <th>Implemented By</th>
+		  <th>Test Situation</th>
+		  <th>Test Case</th>
+		  <th>Preconditions</th>
+		  <th>Functional Steps</th>
+		  <th>Additional Info</th>
+		  <th>Expected Results</th>
+		  <th>Filename</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for testCase in testCasesList %}
+			<tr>
+				<th>{{ testCase.id }}</th>
+				<th>{{ testCase.system_requirements }}</th>
+				<th>{{ testCase.test_unit }}</th>
+				<th>{{ testCase.test_id }}</th>
+				<th>{{ testCase.implemented }}</th>
+				<th>{{ testCase.test_situation }}</th>
+				<th>{{ testCase.test_case }}</th>
+				<th>{{ testCase.precondition }}</th>
+				<th>{{ testCase.functional_steps }}</th>
+				<th>{{ testCase.additional_info }}</th>
+				<th>{{ testCase.expected_result }}</th>
+				<th>{{ testCase.filename }}</th>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock%}
