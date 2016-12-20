@@ -60,28 +60,6 @@ td input[type="checkbox"] {
 	width: 100%;
 }
 
-button {
-	margin: 3px;
-} 
-
-.ui-dialog-titlebar-close {
-  visibility: hidden;
-}
-
-#refresh-button {
-	z-index: 999999;
-}
-
-#refresh-button:active {
-	position:relative;
-	top:1px;
-}
-#table {
-	color: green;
-	display: block;
-	width: 200px;
-	overflow: auto; <!-- Available options: visible, hidden, scroll, auto -->
-}
 
 .tableCell{
 	width: 200px;
@@ -89,6 +67,17 @@ button {
     color: black;
     float: left;
 	word-wrap: break-word;
+}
+
+.tableQuery{
+    margin: 8px;
+    width: 99%;
+}
+
+.testList{
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 50%;
 }
 
 th:focus {outline:0 !important;}
