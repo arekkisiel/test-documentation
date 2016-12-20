@@ -6,7 +6,7 @@ from .models import OldCase
 from django.shortcuts import render
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the main page.")
+    return render(request, 'oldcat/index.html')
 
 def list_groups(request):
     return HttpResponse("Hello, world. You're at the list of test groups.")

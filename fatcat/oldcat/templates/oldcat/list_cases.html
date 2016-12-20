@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-	<table class="table table-bordered">
+{% load static %}
+	<table id="baselineTable" cellspacing="0" cellpadding="0" width="50%" class="display">
 		<thead>
 		<tr>
 		  <th>Id</th>
@@ -8,30 +9,18 @@
 		  <th>Test Unit</th>
 		  <th>Test Id</th>
 		  <th>Implemented By</th>
-		  <th>Test Situation</th>
-		  <th>Test Case</th>
-		  <th>Preconditions</th>
-		  <th>Functional Steps</th>
-		  <th>Additional Info</th>
-		  <th>Expected Results</th>
 		  <th>Filename</th>
 		</tr>
 		</thead>
 		<tbody>
 		{% for testCase in testCasesList %}
 			<tr>
-				<th>{{ testCase.id }}</th>
-				<th>{{ testCase.system_requirements }}</th>
-				<th>{{ testCase.test_unit }}</th>
-				<th>{{ testCase.test_id }}</th>
-				<th>{{ testCase.implemented }}</th>
-				<th>{{ testCase.test_situation }}</th>
-				<th>{{ testCase.test_case }}</th>
-				<th>{{ testCase.precondition }}</th>
-				<th>{{ testCase.functional_steps }}</th>
-				<th>{{ testCase.additional_info }}</th>
-				<th>{{ testCase.expected_result }}</th>
-				<th>{{ testCase.filename }}</th>
+				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</td>
+				<td><div class="tableCell">{{ testCase.system_requirements }}</div></td>
+				<td><div class="tableCell">{{ testCase.test_unit }}</div></td>
+				<td><div class="tableCell">{{ testCase.test_id }}</div></td>
+				<td><div class="tableCell">{{ testCase.implemented }}</div></td>
+				<td><div class="tableCell">{{ testCase.filename }}</div></td>
 			</tr>
 		{% endfor %}
 		</tbody>
