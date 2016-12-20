@@ -23,12 +23,12 @@
 		<tbody>
 		{% for testCase in testCasesList %}
 			<tr>
-				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</td>
-				<td><div class="tableCell">{{ testCase.system_requirements }}</div></td>
+				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
+				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></div></td>
 				<td><div class="tableCell">{{ testCase.test_unit }}</div></td>
 				<td><div class="tableCell">{{ testCase.test_id }}</div></td>
 				<td><div class="tableCell">{{ testCase.implemented }}</div></td>
-				<td><div class="tableCell">{{ testCase.filename }}</div></td>
+				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></div></td>
 			</tr>
 		{% endfor %}
 		</tbody>

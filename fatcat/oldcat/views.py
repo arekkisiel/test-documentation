@@ -8,8 +8,15 @@ from django.shortcuts import render
 def index(request):
     return render(request, 'oldcat/index.html')
 
-def list_groups(request):
-    return HttpResponse("Hello, world. You're at the list of test groups.")
+def list_sysReq(request, sysReq):
+    testCasesList = OldCase.objects.filter(system_requirements = sysReq)
+    context = RequestContext(request, {'testCasesList': testCasesList})
+    return TemplateResponse(request, 'oldcat/list_cases.html', context)
+
+def list_filename(request, filename):
+    testCasesList = OldCase.objects.filter(filename = filename + '.csv')
+    context = RequestContext(request, {'testCasesList': testCasesList})
+    return TemplateResponse(request, 'oldcat/list_cases.html', context)
 
 def list_cases(request):
     testCasesList = OldCase.objects.all()
