@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %}
-	<table id="baselineTable" cellspacing="0" cellpadding="0" width="50%" class="display">
+	<table id="testCaseTable" class="testList">
 		<thead>
 		<tr>
 		  <th>Id</th>
@@ -10,6 +10,14 @@
 		  <th>Test Id</th>
 		  <th>Implemented By</th>
 		  <th>Filename</th>
+		</tr>
+		<tr>
+		  <th><input class="tableQuery" type="text" id="idInput" onkeyup="searchFunction('idInput', 0)" placeholder="Search..."></th>
+		  <th><input class="tableQuery" type="text" id="sysReqInput" onkeyup="searchFunction('sysReqInput', 1)" placeholder="Search..."></th>
+		  <th><input class="tableQuery" type="text" id="testUnitInput" onkeyup="searchFunction('testUnitInput', 2)" placeholder="Search..."></th>
+		  <th><input class="tableQuery" type="text" id="testIdInput" onkeyup="searchFunction('testIdInput', 3)" placeholder="Search..."></th>
+		  <th><input class="tableQuery" type="text" id="implByInput" onkeyup="searchFunction('implByInput', 4)" placeholder="Search..."></th>
+		  <th><input class="tableQuery" type="text" id="fileInput" onkeyup="searchFunction('fileInput', 5)" placeholder="Search..."></th>
 		</tr>
 		</thead>
 		<tbody>
