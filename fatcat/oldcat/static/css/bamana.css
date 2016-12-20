@@ -80,4 +80,10 @@ td input[type="checkbox"] {
     width: 50%;
 }
 
+.testDetailsContainer{
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 50%;
+}
+
 th:focus {outline:0 !important;}
