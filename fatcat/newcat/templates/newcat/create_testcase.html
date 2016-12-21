@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+		<div class="container">
+			<h1>Here you can create new test case</h1>
+			<form action="/newcat/create/" method="post">{% csrf_token %}
+				<div>
+					{% load widget_tweaks %}
+					<label>Test Name:</label>
+					{% render_field form.testName class+="form-control" %}
+					<label>Test Group:</label>
+					{% render_field form.testGroup class+="form-control" %}
+					<button type="button" onclick="window.open('http://localhost:8000/newcat/create/group', 'newwindow', 'width=900, height=500')">Create New</button> Refresh to see new groups
+					<label>Tested Functionality:</label>
+					{% render_field form.testedFunctionality class+="form-control" %}
+					<label>Test Engineer:</label>
+					{% render_field form.testEngineer class+="form-control" %}
+					<label>Implemented By:</label>
+					{% render_field form.implementedBy class+="form-control" %}
+					<label>Test Situation:</label>
+					{% render_field form.testSituation class+="form-control" %}
+					<label>Expected Results:</label>
+					{% render_field form.expectedResults class+="form-control" %}
+					<label>Status:</label>
+					{% render_field form.status class+="form-control" %}
+					<button type="submit" class="btn btn-info">Submit</button>
+				</div>
+			</form>
+		</div>
+{% endblock %}

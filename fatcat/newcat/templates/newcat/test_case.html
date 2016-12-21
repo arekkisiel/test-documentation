@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+	<table id="testCase" class="testList">
+		<thead>
+			<tr>
+			  	<th>Id</th>
+			  	<th>Test Name</th>
+			  	<th>Test Group</th>
+			  	<th>Tested Functionality</th>
+			  	<th>Test Engineer</th>
+			    <th>Implemented By</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			<td><div class="tableCell">{{ testCase.id }}</div></td>
+			<td><div class="tableCell">{{ testCase.testName }}</div></td>
+			<td><div class="tableCell">{{ testCase.testGroup }}</div></td>
+			<td><div class="tableCell">{{ testCase.testedFunctionality }}</div></td>
+			<td><div class="tableCell">{{ testCase.testEngineer }}</div></td>
+			<td><div class="tableCell">{{ testCase.implementedBy }}</div></td>
+			<td><div class="tableCell">{{ testCase.status }}</div></td>
+		</tbody>
+	</table>
+	<div class="testDetailsContainer">
+		<div><p><b>Test Situation:</b></br>{{ testCase.testSituation }}</p></div>
+		<div><p><b>Test Case:</b></br>{{ testCase.expectedResults }}</p></div>
+		<div><p><b>Preconditions:</b></br>{{ testCase.precondition }}</p></div>
+		<div><p><b>Functional Steps:</b></br>{{ testCase.functional_steps }}</p></div>
+		<div><p><b>Additional Info:</b></br>{{ testCase.additional_info }}</p></div>
+		<div><p><b>Expected Result:</b></br>{{ testCase.expected_result }}</p></div>
+	</div>
+{% endblock %}
+

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+	<table id="testCaseTable" class="testList">
+		<thead>
+		<tr>
+		  <th>Id</th>
+		  <th>System Requirement</th>
+		  <th>Test Unit</th>
+		  <th>Test Id</th>
+		  <th>Implemented By</th>
+		</tr>
+		<tr>
+		  <th><input class="tableQuery" type="text" id="idInput" onkeyup="searchFunction('idInput', 0)" placeholder="Search..."></th>
+		  <th><input class="tableQuery" type="text" id="testNameInput" onkeyup="searchFunction('testNameInput', 1)" placeholder="Search..."></th>
+		  <th><input class="tableQuery" type="text" id="testEngineerInput" onkeyup="searchFunction('testEngineerInput', 2)" placeholder="Search..."></th>
+		  <th><input class="tableQuery" type="text" id="implementedByInput" onkeyup="searchFunction('implementedByInput', 3)" placeholder="Search..."></th>
+		  <th><input class="tableQuery" type="text" id="statusInput" onkeyup="searchFunction('statusInput', 5)" placeholder="Search..."></th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for testCase in testCasesList %}
+			<tr>
+				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
+				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/requirement/{{ testCase.testName }}">{{ testCase.testName }}</a></div></td>
+				<td><div class="tableCell">{{ testCase.testEngineer }}</div></td>
+				<td><div class="tableCell">{{ testCase.implementedBy }}</div></td>
+				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/filename/{{ testCase.status }}">{{ testCase.status }}</a></div></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+{% endblock%}

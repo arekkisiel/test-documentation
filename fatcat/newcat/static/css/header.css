@@ -1,0 +1,167 @@
+#header {
+	/*position:absolute;*/
+	height:96px;
+    width: 100%;
+    text-align:left;
+}
+
+#header a,#header a:hover,#header a:visited {
+	text-decoration:underline;
+	color:#737373;
+}
+
+#header #logo {
+	display:block;
+	float:left;
+	height:54px;
+	background-image:none;
+	text-indent:0;
+	width:auto;
+	margin-left:13px;
+}
+
+#header #logo img {
+	border-width:0;
+	margin-top:13px;
+}
+
+#header .header-menu {
+	position:relative;
+	clear:both;
+	list-style-type:none;
+	height:35px;
+	margin:0;
+	padding:0;
+	background-image:url("../img/menubar-bg.gif");
+	font-size:11.2px;
+}
+
+#header .header-menu a,#header .header-menu a:hover,#header .header-menu a:visited {
+	color:#fff;
+	text-decoration:none;
+}
+
+#header .header-menu li {
+	float:left;
+	background:url("../img/menubar-sep.gif") top right no-repeat;
+	width:auto!important;
+	width:1px;
+	white-space:nowrap;
+}
+
+#header .header-menu li a {
+	display:block;
+	background-image:url("../img/menubar-item.gif");
+}
+
+#header .header-menu li.home a {
+	background:url("../img/menubar-item-home.gif");
+}
+
+#header .header-menu li.home a span {
+	padding:0;
+	text-indent:-999em;
+}
+
+#header .header-menu li.home span {
+	width:20px;
+	margin-left:18px;
+}
+
+#header .header-menu li.down a {
+	background-position:0 -70px;
+}
+
+#header .header-menu li a span{
+	display:block;
+	height:35px;
+	line-height:35px;
+	padding:0 1.165em 0 0;
+	margin-left:1.165em;
+	cursor:pointer;
+}
+
+#header .header-menu li.last a {
+	background-position:0 0!important;
+}
+
+#header .header-menu li.last a span {
+	cursor:default;
+}
+
+#header .header-menu li.login {
+	position:relative;
+	float:right;
+}
+
+#header .header-menu li.login a {
+	background:url("../img/menubar-login.gif") left top no-repeat;
+}
+
+#header .header-menu li.login a span {
+	background:url("../img/menubar-login.gif") right top no-repeat;
+}
+
+#header .header-menu li.down a {
+	background-position:0 -70px;
+}
+
+#header .header-menu li.down a span {
+	background-position:right -70px;
+}
+
+#header .header-menu li.active a {
+	background-position:0 -70px;
+}
+
+#header .header-menu li.active a span {
+	background-position:right -70px;
+}
+
+#header .header-menu li:hover a {
+	background-position:0 -35px;
+}
+
+#header .header-menu li:hover a span {
+	background-position:right -35px;
+}
+
+#header .shadow {
+	display:block;
+	position:relative;
+	top:-4px;
+	left:0;
+	height:4px;
+	margin-left: 7px;
+	margin-right: 7px;
+	background:url("../img/menubar-shadow.gif") top left repeat-x;
+}
+
+#header-details {
+	position: relative;
+}
+
+#welcomeText {
+	position: absolute;
+	top: 42px;
+	right: 25px;
+	font-size: .75em;
+	color: #aaa;
+}
+
+#helpLinkSpan {
+	position: absolute;
+	top: 15px;
+	right: 25px;
+	font-size: .75em;
+}
+
+a#helpLink {
+	color: #aaa;
+	text-decoration: none;
+}
+
+a#helpLink hover {
+	color: #0f0;
+	text-decoration: underline;
+}
