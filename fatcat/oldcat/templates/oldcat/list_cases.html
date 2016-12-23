@@ -4,12 +4,12 @@
 	<table id="testCaseTable" class="testList">
 		<thead>
 		<tr>
-			<th><div class="tableCell">Id</div></th>
-		  <th><div class="tableCell">System Requirement</div></th>
-		  <th><div class="tableCell">Test Unit</div></th>
-		  <th><div class="tableCell">Test Id</div></th>
-		  <th><div class="tableCell">Implemented By</div></th>
-		  <th><div class="tableCell">Filename</div></th>
+			<th><div class="tableCellFromList">Id</div></th>
+			<th><div class="tableCellFromList">System Requirement</div></th>
+			<th><div class="tableCellFromList">Test Unit</div></th>
+			<th><div class="tableCellFromList">Test Id</div></th>
+			<th><div class="tableCellFromList">Implemented By</div></th>
+			<th><div class="tableCellFromList">Filename</div></th>
 		</tr>
 		<tr>
 		  <th><input class="tableQuery" type="text" id="idInput" onkeyup="searchFunction('idInput', 0)" placeholder="Search..."></th>
@@ -23,12 +23,12 @@
 		<tbody>
 		{% for testCase in testCasesList %}
 			<tr>
-				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
-				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></div></td>
-				<td><div class="tableCell">{{ testCase.test_unit }}</div></td>
-				<td><div class="tableCell">{{ testCase.test_id }}</div></td>
-				<td><div class="tableCell">{{ testCase.implemented }}</div></td>
-				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></div></td>
+				<td><div class="tableCellFromList"><a href="http://localhost:8000/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
+				<td><div class="tableCellFromList"><a href="http://localhost:8000/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></div></td>
+				<td><div class="tableCellFromList">{{ testCase.test_unit }}</div></td>
+				<td><div class="tableCellFromList">{{ testCase.test_id }}</div></td>
+				<td><div class="tableCellFromList">{{ testCase.implemented }}</div></td>
+				<td><div class="tableCellFromList"><a href="http://localhost:8000/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></div></td>
 			</tr>
 		{% endfor %}
 		</tbody>

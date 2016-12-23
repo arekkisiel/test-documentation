@@ -1,31 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-	<table id="testCase" class="testList">
-		<thead>
-			<tr>
-			  <th>Id</th>
-			  <th>System Requirement</th>
-			  <th>Test Unit</th>
-			  <th>Test Id</th>
-			  <th>Implemented By</th>
-			  <th>Filename</th>
-			</tr>
-		</thead>
-		<tbody>
-			<td><div class="tableCell">{{ testCase.id }}</div></td>
-			<td><div class="tableCell">{{ testCase.system_requirements }}</div></td>
-			<td><div class="tableCell">{{ testCase.test_unit }}</div></td>
-			<td><div class="tableCell">{{ testCase.test_id }}</div></td>
-			<td><div class="tableCell">{{ testCase.implemented }}</div></td>
-			<td><div class="tableCell">{{ testCase.filename }}</div></td>
-		</tbody>
-	</table>
 	<div class="testDetailsContainer">
-		<div><p><b>Test Situation:</b></br>{{ testCase.test_situation }}</p></div>
-		<div><p><b>Test Case:</b></br>{{ testCase.test_case }}</p></div>
-		<div><p><b>Preconditions:</b></br>{{ testCase.precondition }}</p></div>
-		<div><p><b>Functional Steps:</b></br>{{ testCase.functional_steps }}</p></div>
-		<div><p><b>Additional Info:</b></br>{{ testCase.additional_info }}</p></div>
-		<div><p><b>Expected Result:</b></br>{{ testCase.expected_result }}</p></div>
+		<table>
+				<tr>
+					<td><div class="tableCellFromCase"><b>Id</b></br>{{ testCase.id }}</div></td>
+					<td><div class="tableCellFromCase"><b>System Requirement</b></br><a href="http://localhost:8000/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></div></td>
+					<td><div class="tableCellFromCase"><b>Test Unit</b></br>{{ testCase.test_unit }}</div></td>
+					<td><div class="tableCellFromCase"><b>Test Id</b></br>{{ testCase.test_id }}</div></td>
+					<td><div class="tableCellFromCase"><b>Implemented By</b></br>{{ testCase.implemented }}</div></td>
+					<td><div class="tableCellFromCase"><b>Filename</b></br><a href="http://localhost:8000/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></div></td>
+				</tr>
+		</table>
+		<table>
+			<tr>
+				<td><div class="testBasic"><b>Test Situation:</b></br>{{ testCase.test_situation }}</div></td>
+				<td><div class="testBasic"><b>Additional Info:</b></br>{{ testCase.additional_info }}</div></td>
+				<td><div class="testBasic"><b>Preconditions:</b></br>{{ testCase.precondition }}</div></td>
+			</tr>
+			<tr>
+				<td><div class="testDetail"><b>Test Case:</b><p class="alignLeft">{{ testCase.test_case }}</p></div></td>
+				<td><div class="testDetail"><b>Functional Steps:</b><p class="alignLeft">{{ testCase.functional_steps|linenumbers|linebreaksbr }}</p></div></td>
+				<td><div class="testDetail"><b>Expected Result:</b><p class="alignLeft"{{ testCase.expected_result|linebreaksbr }}</p></div></td>
+			</tr>
+		</table>
 	</div>
 {% endblock %}
