@@ -4,32 +4,23 @@ from django.db import models
 
 # Create your models here.
 from django import forms
-from django.forms import widgets
+from django.forms import BaseInlineFormSet
 
 
 class TestGroup(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     testGroupName = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.testGroupName
 
-class ExpectedResult(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
-    expectedResult = models.CharField(max_length=1000)
-
-    def __str__(self):
-        return self
 
 class TestCase(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     testName = models.CharField(max_length=200)
     testedFunctionality = models.CharField(max_length=200)
     testEngineer = models.CharField(max_length=200)
     implementedBy = models.CharField(max_length=200)
     testSituation = models.CharField(max_length=1000)
-    expectedResults = ExpectedResult
-    testGroup = models.ForeignKey(TestGroup, to_field='testGroupName',)
+    testGroup = models.ForeignKey(TestGroup, to_field='testGroupName')
     DEFINED = 'Defined'
     IMPLEMENTED = 'Implemented'
     OPERATIONAL = 'Operational'
@@ -48,8 +39,35 @@ class TestCase(models.Model):
         return self
 
 class TestStep(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
-    #testCase = models.ManyToOneRel(TestCase, on_delete=models.CASCADE)
+    testCaseId = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
+    testStep = models.CharField(max_length=1000)
+    def __str__(self):
+        return self
+
+class ExpectedResult(models.Model):
+    testCaseId = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
+    expectedResult = models.CharField(max_length=1000)
+    TRUE = 'TRUE'
+    FALSE = 'FALSE'
+    FAIL = 'FAIL'
+    EQUALS = 'EQUALS'
+    NOTEQUALS = 'NOT EQUALS'
+    CONTAINS = 'CONTAINS'
+    NOTNULL = 'NOT NULL'
+    THAT = 'THAT'
+    CUSTOM = 'CUSTOM'
+    ASSERT_TYPE = (
+        (TRUE, 'TRUE'),
+        (FALSE, 'FALSE'),
+        (FAIL, 'FAIL'),
+        (EQUALS, 'EQUALS'),
+        (NOTEQUALS, 'NOT EQUALS'),
+        (CONTAINS, 'CONTAINS'),
+        (NOTNULL, 'NOT NULL'),
+        (THAT, 'THAT'),
+        (CUSTOM, 'CUSTOM')
+    )
+    assertType = models.CharField(max_length=11, choices=ASSERT_TYPE)
 
     def __str__(self):
         return self
@@ -57,9 +75,19 @@ class TestStep(models.Model):
 class AddTestCase(forms.ModelForm):
     class Meta:
         model = TestCase
-        exclude = ('id',)
+        exclude = ()
 
 class AddTestGroup(forms.ModelForm):
     class Meta:
         model = TestGroup
-        exclude = ('id',)
+        exclude = ()
+
+class AddExpectedResult(forms.ModelForm):
+    class Meta:
+        model = ExpectedResult
+        exclude = ('testCaseId',)
+
+class AddTestSteps(forms.ModelForm):
+    class Meta:
+        model = TestStep
+        exclude = ('testCaseId',)
