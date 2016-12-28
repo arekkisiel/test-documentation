@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% load static %}
 	<table id="testCase" class="testList">
 		<thead>
 			<tr>
@@ -22,13 +23,36 @@
 			<td><div class="tableCell">{{ testCase.status }}</div></td>
 		</tbody>
 	</table>
-	<div class="testDetailsContainer">
-		<div><p><b>Test Situation:</b></br>{{ testCase.testSituation }}</p></div>
-		<div><p><b>Test Case:</b></br>{{ testCase.expectedResults }}</p></div>
-		<div><p><b>Preconditions:</b></br>{{ testCase.precondition }}</p></div>
-		<div><p><b>Functional Steps:</b></br>{{ testCase.functional_steps }}</p></div>
-		<div><p><b>Additional Info:</b></br>{{ testCase.additional_info }}</p></div>
-		<div><p><b>Expected Result:</b></br>{{ testCase.expected_result }}</p></div>
-	</div>
+	<table id="testSteps" class="testList">
+		<thead>
+				<tr>
+					<th>Test Steps:</th>
+				</tr>
+		</thead>
+		<tbody>
+			{% for testStep in testStepsList %}
+			<tr>
+				<td><div class="tableCell">{{ testStep.testStep }}</div></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<table id="expectedResults">
+		<thead>
+				<tr>
+					<th>Assert Type:</th>
+					<th>Expected Result:</th>
+				</tr>
+		</thead>
+		<tbody>
+			{% for expectedResult in expectedResultsList %}
+			<tr>
+				<td><div class="tableCell">{{ expectedResult.assertType }}</div></td>
+				<td><div class="tableCell">{{ expectedResult.expectedResult }}</div></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<button><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit">Edit</a> </button>
 {% endblock %}
 

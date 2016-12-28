@@ -4,11 +4,11 @@
 	<table id="testCaseTable" class="testList">
 		<thead>
 		<tr>
-			<th><div class="tableCellFromList">Id</div></th>
-			<th><div class="tableCellFromList">System Requirement</div></th>
-			<th><div class="tableCellFromList">Test Unit</div></th>
 			<th><div class="tableCellFromList">Test Id</div></th>
+			<th><div class="tableCellFromList">Test Name</div></th>
+			<th><div class="tableCellFromList">Test Engineer</div></th>
 			<th><div class="tableCellFromList">Implemented By</div></th>
+			<th><div class="tableCellFromList">Status</div></th>
 		</tr>
 		<tr>
 		  <th><input class="tableQuery" type="text" id="idInput" onkeyup="searchFunction('idInput', 0)" placeholder="Search..."></th>
@@ -21,11 +21,11 @@
 		<tbody>
 		{% for testCase in testCasesList %}
 			<tr>
-				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
-				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/requirement/{{ testCase.testName }}">{{ testCase.testName }}</a></div></td>
+				<td><div class="tableCell"><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
+				<td><div class="tableCell"><a href="http://localhost:8000/newcat/requirement/{{ testCase.testName }}">{{ testCase.testName }}</a></div></td>
 				<td><div class="tableCell">{{ testCase.testEngineer }}</div></td>
 				<td><div class="tableCell">{{ testCase.implementedBy }}</div></td>
-				<td><div class="tableCell"><a href="http://localhost:8000/oldcat/filename/{{ testCase.status }}">{{ testCase.status }}</a></div></td>
+				<td><div class="tableCell"><a href="http://localhost:8000/newcat/filename/{{ testCase.status }}">{{ testCase.status }}</a></div></td>
 			</tr>
 		{% endfor %}
 		</tbody>
