@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<div class="container">
+	<h1>Here you can create new test case</h1>
+	<form action="/newcat/testcase/{{ testCaseInstance.id }}/edit/" method="post">{% csrf_token %}
+		<table class="testList">
+			<tr>
+				<td><div class="tableCell">
+					{% load widget_tweaks %}
+					<label>Test Name:</label>
+					{% render_field testCaseForm.testName class+="form-control" %}</div></td>
+				<td><div class="tableCell">
+					<label>Test Group:</label>
+					{% render_field testCaseForm.testGroup class+="form-control" %}
+					<button type="button" onclick="window.open('http://localhost:8000/newcat/create/group', 'newwindow', 'width=900, height=500')">Create New</button>
+					Refresh to see new groups</div></td>
+				<td><div class="tableCell">
+					<label>Tested Functionality:</label>
+					{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
+			</tr>
+			<tr>
+				<td><div class="tableCell">
+					<label>Test Engineer:</label>
+					{% render_field testCaseForm.testEngineer class+="form-control" %}</div></td>
+				<td><div class="tableCell">
+					<label>Implemented By:</label>
+					{% render_field testCaseForm.implementedBy class+="form-control" %}</div></td>
+				<td><div class="tableCell">
+					<label>Test Situation:</label>
+					{% render_field testCaseForm.testSituation class+="form-control" %}</div></td>
+				<td><div class="tableCell">
+					<label>Status:</label>
+					{% render_field testCaseForm.status class+="form-control" %}</div></td></tr>
+		</table>
+		<button type="submit" class="btn btn-info">Submit</button>
+	</form>
+</div>
+{% endblock %}
+

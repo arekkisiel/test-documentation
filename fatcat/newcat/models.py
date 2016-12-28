@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 
 # Create your models here.
@@ -72,22 +70,23 @@ class ExpectedResult(models.Model):
     def __str__(self):
         return self
 
-class AddTestCase(forms.ModelForm):
+class TestCaseForm(forms.ModelForm):
     class Meta:
         model = TestCase
         exclude = ()
 
-class AddTestGroup(forms.ModelForm):
+class TestGroupForm(forms.ModelForm):
     class Meta:
         model = TestGroup
         exclude = ()
 
-class AddExpectedResult(forms.ModelForm):
+class ExpectedResultForm(forms.ModelForm):
     class Meta:
         model = ExpectedResult
         exclude = ('testCaseId',)
 
-class AddTestSteps(forms.ModelForm):
+class TestStepsForm(forms.ModelForm):
     class Meta:
         model = TestStep
         exclude = ('testCaseId',)
+
