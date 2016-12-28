@@ -85,5 +85,10 @@ td input[type="checkbox"] {
     margin-right: 10%;
     width: 50%;
 }
-
+.tableCellFromCase{
+    height: 100px;
+    margin-left: 5%;
+    margin-right: 5%;
+	word-wrap: break-word;
+}
 th:focus {outline:0 !important;}
