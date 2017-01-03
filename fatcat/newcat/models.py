@@ -37,13 +37,13 @@ class TestCase(models.Model):
         return self
 
 class TestStep(models.Model):
-    testCaseId = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
-    testStep = models.CharField(max_length=1000)
+    testCase = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
+    instruction = models.CharField(max_length=1000)
     def __str__(self):
         return self
 
 class ExpectedResult(models.Model):
-    testCaseId = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
+    testCase = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
     expectedResult = models.CharField(max_length=1000)
     TRUE = 'TRUE'
     FALSE = 'FALSE'
@@ -83,10 +83,10 @@ class TestGroupForm(forms.ModelForm):
 class ExpectedResultForm(forms.ModelForm):
     class Meta:
         model = ExpectedResult
-        exclude = ('testCaseId',)
+        exclude = ('testCase',)
 
 class TestStepsForm(forms.ModelForm):
     class Meta:
         model = TestStep
-        exclude = ('testCaseId',)
+        exclude = ('testCase',)
 

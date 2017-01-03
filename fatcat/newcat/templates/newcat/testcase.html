@@ -32,7 +32,7 @@
 		<tbody>
 			{% for testStep in testStepsList %}
 			<tr>
-				<td><div class="tableCell">{{ testStep.testStep }}</div></td>
+				<td><div class="tableCell">{{ testStep.instruction }}</div></td>
 			</tr>
 			{% endfor %}
 		</tbody>
@@ -53,6 +53,8 @@
 			{% endfor %}
 		</tbody>
 	</table>
-	<button><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit">Edit</a> </button>
+	<button><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit">Edit Case</a> </button>
+	<button><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit/steps">Edit Steps</a> </button>
+	<button><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit/assertions">Edit Assertions</a> </button>
 {% endblock %}
 

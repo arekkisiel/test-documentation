@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<div class="container">
+	<h1>Here you can create new test case</h1>
+	<form action="/newcat/testcase/{{ testCaseId }}/edit/assertions/" method="post">{% csrf_token %}
+		<table class="testList">
+            {% load widget_tweaks %}
+            {{ formset.management_form }}
+            {% for form in formset %}
+                <tr>
+                    <td><div class="tableCell">
+                        <label>Expected Results:</label>
+                        {{ form }}
+                        </div></td>
+                </tr>
+            {% endfor %}
+		</table>
+		<button type="submit" class="btn btn-info">Submit</button>
+	</form>
+</div>
+{% endblock %}
+

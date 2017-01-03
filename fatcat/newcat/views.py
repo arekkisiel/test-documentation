@@ -1,19 +1,15 @@
 from django.forms import formset_factory, inlineformset_factory
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, get_list_or_404
+from django.shortcuts import render
 from django.template import RequestContext
 from django.template import loader
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
-from django.views.generic.edit import UpdateView
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestCaseForm, TestStepsForm, ExpectedResultForm, \
     TestGroupForm
 
-
-# Create your views here.
-def index(request):
-    return render(request, 'newcat/index.html')
+#### List Views
 
 def list_sysReq(request, sysReq):
     testCasesList = TestCase.objects.filter(system_requirements = sysReq)
@@ -32,12 +28,14 @@ def list_cases(request):
 
 def test_case(request, testCaseId):
     testCase = TestCase.objects.get(id=testCaseId)
-    testStepsList = TestStep.objects.filter(testCaseId = testCase.id)
-    expectedResultsList = ExpectedResult.objects.filter(testCaseId=testCase)
+    testStepsList = TestStep.objects.filter(testCase = testCase.id)
+    expectedResultsList = ExpectedResult.objects.filter(testCase=testCase)
     context = {'testCase': testCase,
                'testStepsList': testStepsList,
                'expectedResultsList': expectedResultsList}
     return render(request, 'newcat/testcase.html', context)
+
+#### Create Views
 
 def create_testcase(request):
     testCaseForm = TestCaseForm()
@@ -62,8 +60,8 @@ def create_testcase(request):
         testStepData = testStepsFormset.cleaned_data
         for testStep in testStepData:
             new_teststep = TestStep(
-                testCaseId = new_testcase,
-                testStep = testStep['testStep']
+                testCase = new_testcase,
+                instruction = testStep['instruction']
             )
             new_teststep.save()
 
@@ -72,7 +70,7 @@ def create_testcase(request):
             new_expectedResult = ExpectedResult(
                 assertType = expectedResult['assertType'],
                 expectedResult = expectedResult['expectedResult'],
-                testCaseId = new_testcase
+                testCase = new_testcase
             )
             new_expectedResult.save()
         return HttpResponseRedirect("/newcat/testcase/")
@@ -84,38 +82,7 @@ def create_testcase(request):
             'testStepsFormset': testStepsFormset,
             'expectedResultFormset': expectedResultFormset,
     })
-    return render(request, 'newcat/create_testcase.html', context)
-
-def edit_testcase(request, testCaseId):
-    testCaseInstance = get_object_or_404(TestCase, id=testCaseId)
-    testStepInstances = get_list_or_404(TestStep, testCaseId=testCaseId)
-    expectedResultInstances = get_list_or_404(ExpectedResult, testCaseId=testCaseId)
-    testCaseForm = TestCaseForm(request.POST or None, instance=testCaseInstance)
-
-    if request.method == 'POST':
-        testCaseForm.save()
-        return HttpResponseRedirect("/newcat/testcase/")
-    else:
-        context = RequestContext(request, {
-            'testCaseInstance': testCaseInstance,
-            'testCaseForm': testCaseForm,
-    })
-    return render(request, 'newcat/testcase_update.html', context)
-
-def create_expected_result(request, testCaseId):
-    testCase = TestCase.objects.get(testCaseId = testCaseId)
-    expectedResultForm = ExpectedResultForm(request.POST)
-    if request.method == 'POST':
-        new_expectedResult = ExpectedResult(
-            assertType = expectedResultForm.data['assertType'],
-            expectedResult = expectedResultForm.data['expectedResult'],
-            testCaseId = testCaseId
-        )
-        new_expectedResult.save()
-        return HttpResponseRedirect("/newcat/create/")
-    else:
-        formset = expectedResultForm(instance=testCase)
-        return render(request, 'newcat/create_testcase.html', {'formset': formset})
+    return render(request, 'newcat/testcase_create.html', context)
 
 def create_testgroup(request):
     form = TestGroupForm(request.POST or None)
@@ -124,11 +91,61 @@ def create_testgroup(request):
             new_testgroup = TestGroup(testGroupName = form.data['testGroupName'])
             new_testgroup.save()
             return HttpResponseRedirect("/newcat/close/")
-    template = loader.get_template('newcat/create_testgroup.html')
+    template = loader.get_template('newcat/testgroup_create.html')
     context = RequestContext(request, {
         'form': form,
     })
     return HttpResponse(template.render(context))
+
+#### Edit and Delete Views
+
+def edit_testcase(request, testCaseId):
+    testCaseInstance = get_object_or_404(TestCase, id=testCaseId)
+    testCaseForm = TestCaseForm(request.POST or None, instance=testCaseInstance)
+    if request.method == 'POST':
+        testCaseForm.save()
+        return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+    else:
+        context = RequestContext(request, {
+            'testCaseInstance': testCaseInstance,
+            'testCaseForm': testCaseForm
+    })
+    return render(request, 'newcat/testcase_update.html', context)
+
+def edit_teststeps(request, testCaseId):
+    testStepsFormset = inlineformset_factory(TestCase, TestStep, form=TestStepsForm, extra=3)
+    if request.method == 'POST':
+        formset = testStepsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
+        if formset.is_valid():
+            formset.save()
+        return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+    else:
+        formset = testStepsFormset(instance=TestCase.objects.get(id=testCaseId))
+        context = RequestContext(request, {
+            'testCaseId': testCaseId,
+            'formset': formset
+    })
+    return render(request, 'newcat/teststeps_update.html', context)
+
+def edit_expected_results(request, testCaseId):
+    expectedResultsFormset = inlineformset_factory(TestCase, ExpectedResult, form=ExpectedResultForm, extra=3)
+    if request.method == 'POST':
+        formset = expectedResultsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
+        if formset.is_valid():
+            formset.save()
+        return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+    else:
+        formset = expectedResultsFormset(instance=TestCase.objects.get(id=testCaseId))
+        context = RequestContext(request, {
+            'testCaseId': testCaseId,
+            'formset': formset
+    })
+    return render(request, 'newcat/expectedresults_update.html', context)
+
+#### Universal Views
+
+def index(request):
+    return render(request, 'newcat/index.html')
 
 def close_window(request):
     return render(request, 'newcat/close.html')
