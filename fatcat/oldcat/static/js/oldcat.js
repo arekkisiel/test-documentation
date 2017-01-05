@@ -1,21 +1,34 @@
-function searchFunction(queryInput, queryField) {
-  var input, filter, table, tr, td, i;
-  input = document.getElementById(queryInput);
-  filter = input.value.toUpperCase();
-  table = document.getElementById("testCaseTable");
-  tr = table.getElementsByTagName("tr");
+function searchFunction() {
+    var idInput, sysReqInput, testUnitInput, testIdInput, implByInput, fileInput, filter, table, field, tr, i, k, filtered;
+    idInput = document.getElementById("idInput").value.toUpperCase();
+    sysReqInput = document.getElementById("sysReqInput").value.toUpperCase();
+    testUnitInput = document.getElementById("testUnitInput").value.toUpperCase();
+    testIdInput = document.getElementById("testIdInput").value.toUpperCase();
+    implByInput = document.getElementById("implByInput").value.toUpperCase();
+    fileInput = document.getElementById("fileInput").value.toUpperCase();
 
-  for (i = 0; i < tr.length; i++) {
-    query_field = tr[i].getElementsByTagName("td")[queryField];
-    if (query_field) {
-      if (query_field.innerHTML.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
+    filter = [idInput, sysReqInput, testUnitInput, testIdInput, implByInput, fileInput];
+    table = document.getElementById("testCaseTable");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        filtered = false;
+        for (k = 0; k < 6; k++){
+            if(!filtered){
+                field = tr[i].getElementsByTagName("td")[k];
+                if (field) {
+                    if (field.innerHTML.toUpperCase().indexOf(filter[k]) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                        filtered = true;
+                    }
+                }
+            }
+        }
     }
-  }
 }
+
 
 function pageTable(tableName){
     $(tableName).tablesorterPager({container: $("#pager")});
