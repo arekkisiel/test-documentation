@@ -38,7 +38,7 @@
 			<tr>
 				<td rowspan="{{ testStepsList|length }}"><div class="tableCell">{{ testCase.testSituation }}</div></td>
 				{% for testStep in testStepsList %}
-				<td><div class="tableCell">{{ testStep.instruction }}</div></td></tr><tr>
+				<td><div class="tableCell">{{ testStep.stepOrder }}. {{ testStep.instruction }}</div></td></tr><tr>
 			    {% endfor %}
 			</tr>
 		</tbody>
