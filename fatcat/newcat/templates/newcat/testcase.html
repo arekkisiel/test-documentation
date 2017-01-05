@@ -35,12 +35,12 @@
 				</tr>
 		</thead>
 		<tbody>
-			{% for testStep in testStepsList %}
 			<tr>
-				<td><div>{{ testCase.testSituation }}</div></td>
-				<td><div class="tableCell">{{ testStep.instruction }}</div></td>
+				<td rowspan="{{ testStepsList|length }}"><div class="tableCell">{{ testCase.testSituation }}</div></td>
+				{% for testStep in testStepsList reversed %}
+				<td><div class="tableCell">{{ testStep.instruction }}</div></td></tr><tr>
+			    {% endfor %}
 			</tr>
-			{% endfor %}
 		</tbody>
 	</table>
 	<table id="expectedResults">
@@ -51,7 +51,7 @@
 				</tr>
 		</thead>
 		<tbody>
-			{% for expectedResult in expectedResultsList %}
+			{% for expectedResult in expectedResultsList reversed %}
 			<tr>
 				<td><div class="tableCell">{{ expectedResult.assertType }}</div></td>
 				<td><div class="tableCell">{{ expectedResult.expectedResult }}</div></td>
