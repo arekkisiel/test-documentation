@@ -16,6 +16,11 @@
 							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/group', 'newwindow', 'width=900, height=500')">Create New</button>
 							Refresh to see new groups</div></td>
 						<td><div class="tableCell">
+							<label>System Requirement:</label>
+							{% render_field testCaseForm.systemRequirement class+="form-control" %}
+							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/requirement', 'newwindow', 'width=900, height=500')">Create New</button>
+							Refresh to see new groups</div></td>
+						<td><div class="tableCell">
 							<label>Tested Functionality:</label>
 							{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
 					</tr>
@@ -33,9 +38,11 @@
 							<label>Status:</label>
 							{% render_field testCaseForm.status class+="form-control" %}</div></td></tr>
 					<tr>
-						<td><div class="tableCell">
-							{{ testStepsFormset }}</div></td>
-						<td><div class="tableCell">
+						<td>{% for field in testStepsFormset %}
+							<div class="control-group">
+							{{ field }}</div>
+						{% endfor %}</td>
+						<td><div class="control-group">
 							{{ expectedResultFormset }}</div></td>
 					</tr>
 				</table>

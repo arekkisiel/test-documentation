@@ -7,17 +7,18 @@ from django.template import loader
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestCaseForm, TestStepsForm, ExpectedResultForm, \
-    TestGroupForm
+    TestGroupForm, RequirementForm, SystemRequirement
+
 
 #### List Views
 
 def list_sysReq(request, sysReq):
-    testCasesList = TestCase.objects.filter(system_requirements = sysReq)
+    testCasesList = TestCase.objects.filter(systemRequirement = sysReq)
     context = RequestContext(request, {'testCasesList': testCasesList})
     return TemplateResponse(request, 'newcat/list_cases.html', context)
 
-def list_filename(request, filename):
-    testCasesList = TestCase.objects.filter(filename = filename + '.csv')
+def list_status(request, status):
+    testCasesList = TestCase.objects.filter(status = status)
     context = RequestContext(request, {'testCasesList': testCasesList})
     return TemplateResponse(request, 'newcat/list_cases.html', context)
 
@@ -46,10 +47,12 @@ def create_testcase(request):
         testStepsFormset = testStepsFormset(request.POST, request.FILES)
         expectedResultFormset = expectedResultFormset(request.POST, request.FILES)
         testGroup = testCaseForm.data['testGroup']
+        systemRequirement = testCaseForm.data['systemRequirement']
 
         new_testcase = TestCase(
             testName = testCaseForm.data['testName'],
             testGroup = TestGroup.objects.get(testGroupName = testGroup),
+            systemRequirement=SystemRequirement.objects.get(sysReq_MKS = systemRequirement),
             testedFunctionality = testCaseForm.data['testedFunctionality'],
             testEngineer = testCaseForm.data['testEngineer'],
             implementedBy = testCaseForm.data['implementedBy'],
@@ -57,22 +60,25 @@ def create_testcase(request):
             status = testCaseForm.data['status'])
         new_testcase.save()
 
-        testStepData = testStepsFormset.cleaned_data
-        for testStep in testStepData:
-            new_teststep = TestStep(
-                testCase = new_testcase,
-                instruction = testStep['instruction']
-            )
-            new_teststep.save()
-
-        expectedResultData = expectedResultFormset.cleaned_data
-        for expectedResult in expectedResultData:
-            new_expectedResult = ExpectedResult(
-                assertType = expectedResult['assertType'],
-                expectedResult = expectedResult['expectedResult'],
-                testCase = new_testcase
-            )
-            new_expectedResult.save()
+        for form in testStepsFormset:
+            if form.is_valid():
+                testStepData = form.cleaned_data
+                if testStepData:
+                    new_teststep = TestStep(
+                        testCase = new_testcase,
+                        instruction = testStepData['instruction']
+                    )
+                    new_teststep.save()
+        for form in expectedResultFormset:
+            if form.is_valid():
+                expectedResultData = form.cleaned_data
+                if expectedResultData:
+                    new_expectedResult = ExpectedResult(
+                        assertType = expectedResultData['assertType'],
+                        expectedResult = expectedResultData['expectedResult'],
+                        testCase = new_testcase
+                    )
+                    new_expectedResult.save()
         return HttpResponseRedirect("/newcat/testcase/")
     else:
         testStepsFormset = testStepsFormset()
@@ -92,6 +98,19 @@ def create_testgroup(request):
             new_testgroup.save()
             return HttpResponseRedirect("/newcat/close/")
     template = loader.get_template('newcat/testgroup_create.html')
+    context = RequestContext(request, {
+        'form': form,
+    })
+    return HttpResponse(template.render(context))
+
+def create_requirement(request):
+    form = RequirementForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            new_requirement = SystemRequirement(sysReq_MKS = form.data['sysReq_MKS'], title = form.data['title'])
+            new_requirement.save()
+            return HttpResponseRedirect("/newcat/close/")
+    template = loader.get_template('newcat/requirement_create.html')
     context = RequestContext(request, {
         'form': form,
     })

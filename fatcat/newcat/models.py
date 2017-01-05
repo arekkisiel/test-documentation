@@ -2,7 +2,6 @@ from django.db import models
 
 # Create your models here.
 from django import forms
-from django.forms import BaseInlineFormSet
 
 
 class TestGroup(models.Model):
@@ -10,6 +9,15 @@ class TestGroup(models.Model):
 
     def __str__(self):
         return self.testGroupName
+
+class SystemRequirement(models.Model):
+    sysReq_MKS = models.BigIntegerField(unique=True)
+    title = models.CharField(max_length=100, unique=True)
+
+    def __int__(self):
+        return self.sysReq_MKS
+    def __str__(self):
+        return repr(self.sysReq_MKS)+ "  " + self.title
 
 
 class TestCase(models.Model):
@@ -19,6 +27,7 @@ class TestCase(models.Model):
     implementedBy = models.CharField(max_length=200)
     testSituation = models.CharField(max_length=1000)
     testGroup = models.ForeignKey(TestGroup, to_field='testGroupName')
+    systemRequirement = models.ForeignKey(SystemRequirement, to_field='sysReq_MKS')
     DEFINED = 'Defined'
     IMPLEMENTED = 'Implemented'
     OPERATIONAL = 'Operational'
@@ -70,6 +79,8 @@ class ExpectedResult(models.Model):
     def __str__(self):
         return self
 
+#### Forms
+
 class TestCaseForm(forms.ModelForm):
     class Meta:
         model = TestCase
@@ -78,6 +89,11 @@ class TestCaseForm(forms.ModelForm):
 class TestGroupForm(forms.ModelForm):
     class Meta:
         model = TestGroup
+        exclude = ()
+
+class RequirementForm(forms.ModelForm):
+    class Meta:
+        model = SystemRequirement
         exclude = ()
 
 class ExpectedResultForm(forms.ModelForm):
