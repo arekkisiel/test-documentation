@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "newbase.html" %}
 {% block content %}
 {% load static %}
 		<div class="container">
 			<h1>Here you can create new test case</h1>
-			<form action="/newcat/create/" method="post">{% csrf_token %}
+			<form action="/newcat/create/" method="post" id="createTestCaseForm">{% csrf_token %}
 				<table class="testList">
 					<tr>
 						<td><div class="tableCell">
@@ -14,12 +14,12 @@
 							<label>Test Group:</label>
 							{% render_field testCaseForm.testGroup class+="form-control" %}
 							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/group', 'newwindow', 'width=900, height=500')">Create New</button>
-							Refresh to see new groups</div></td>
+							<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
 						<td><div class="tableCell">
 							<label>System Requirement:</label>
 							{% render_field testCaseForm.systemRequirement class+="form-control" %}
 							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/requirement', 'newwindow', 'width=900, height=500')">Create New</button>
-							Refresh to see new groups</div></td>
+							<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
 						<td><div class="tableCell">
 							<label>Tested Functionality:</label>
 							{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
@@ -51,4 +51,10 @@
 				<button type="button" class="btn btn-info"><a href="http://localhost:8000/newcat/testcase/">Cancel</a></button>
 			</form>
 		</div>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(window).unload(saveSettings);
+    loadSettings();
+});
+</script>
 {% endblock %}

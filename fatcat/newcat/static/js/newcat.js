@@ -17,13 +17,43 @@ function searchFunction(queryInput, queryField) {
   }
 }
 
-function popup(mylink, windowname) {
-    if (! window.focus)return true;
-    var href;
-    if (typeof(mylink) == 'string')
-        href=mylink;
-    else
-        href=mylink.href;
-    window.open(href, windowname, 'width=400,height=200,scrollbars=yes');
-    return false;
+function saveSettings(){
+sessionStorage.setItem("formdata",formToString($("#createTestCaseForm")));
 }
+
+function loadSettings(){
+    var storedform = sessionStorage.getItem("formdata");
+    stringToForm(storedform,$("#createTestCaseForm"));
+    }
+
+function formToString(filledForm) {
+  formObject = new Object();
+    filledForm.find("input, select, textarea").each(function() {
+        if (this.id) {
+            elem = $(this);
+            if (elem.attr("type") == 'checkbox' || elem.attr("type") == 'radio') {
+                formObject[this.id] = elem.attr("checked");
+            } else {
+                formObject[this.id] = elem.val();
+            }
+        }
+    });
+    formString = JSON.stringify(formObject);
+    return formString;
+}
+
+function stringToForm(formString, unfilledForm) {
+    formObject = JSON.parse(formString);
+    unfilledForm.find("input, select, textarea").each(function() {
+        if (this.id) {
+            id = this.id;
+            elem = $(this);
+            if (elem.attr("type") == "checkbox" || elem.attr("type") == "radio" ) {
+                elem.attr("checked", formObject[id]);
+            } else {
+                elem.val(formObject[id]);
+            }
+        }
+    });
+}
+
