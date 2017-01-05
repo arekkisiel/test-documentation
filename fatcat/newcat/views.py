@@ -39,8 +39,8 @@ def test_case(request, testCaseId):
 
 def create_testcase(request):
     testCaseForm = TestCaseForm()
-    testStepsFormset = formset_factory(TestStepsForm)
-    expectedResultFormset = formset_factory(ExpectedResultForm)
+    testStepsFormset = formset_factory(TestStepsForm, extra=3)
+    expectedResultFormset = formset_factory(ExpectedResultForm, extra=3)
     if request.method == 'POST':
         testCaseForm = TestCaseForm(request.POST)
         testStepsFormset = testStepsFormset(request.POST, request.FILES)
