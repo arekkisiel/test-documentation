@@ -30,6 +30,7 @@ def list_cases(request):
 def test_case(request, testCaseId):
     testCase = TestCase.objects.get(id=testCaseId)
     testStepsList = TestStep.objects.filter(testCase = testCase.id)
+    testStepsList = testStepsList.order_by('stepOrder')
     expectedResultsList = ExpectedResult.objects.filter(testCase=testCase)
     context = {'testCase': testCase,
                'testStepsList': testStepsList,
@@ -66,7 +67,8 @@ def create_testcase(request):
                 if testStepData:
                     new_teststep = TestStep(
                         testCase = new_testcase,
-                        instruction = testStepData['instruction']
+                        instruction = testStepData['instruction'],
+                        stepOrder = testStepData['stepOrder']
                     )
                     new_teststep.save()
         for form in expectedResultFormset:
