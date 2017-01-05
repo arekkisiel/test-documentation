@@ -40,7 +40,7 @@
 						<a><span>&nbsp;</span></a>
 					</li>
 					<li class="login">
-						<a onclick="EASTEREGG.showEasterEgg();"><span>&nbsp;&nbsp;&nbsp;</span></a>
+						<a onclick="EASTEREGG.showEasterEgg(eggPath);"><span>&nbsp;&nbsp;&nbsp;</span></a>
 					</li>
 				</ul>
 				<b class="shadow"></b>
@@ -49,4 +49,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		</div>
 	</body>
+<script>
+    var eggPath = "{% static 'img/cat.jpg' %}"
+</script>
 </html>

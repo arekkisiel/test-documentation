@@ -11,10 +11,8 @@
 
 		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 		<link rel="stylesheet" type="text/css" href="{% static 'css/bamana.css' %}">
-
 		<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		<script type="text/javascript" src="{% static 'js/bamana.js' %}"></script>
 		<script type="text/javascript" src="{% static 'js/newcat.js' %}"></script>
 		<script type="text/javascript" src="{% static 'js/jquery.tablesorter.pager.js' %}"></script>
 	</head>
@@ -40,7 +38,7 @@
 						<a><span>&nbsp;</span></a>
 					</li>
 					<li class="login">
-						<a onclick="EASTEREGG.showEasterEgg();"><span>&nbsp;&nbsp;&nbsp;</span></a>
+						<a onclick="EASTEREGG.showEasterEgg(eggPath);"><span>&nbsp;&nbsp;&nbsp;</span></a>
 					</li>
 				</ul>
 				<b class="shadow"></b>
@@ -49,4 +47,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		</div>
 	</body>
+<script>
+    var eggPath = "{% static 'img/bamana.png' %}"
+</script>
 </html>
