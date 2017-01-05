@@ -14,6 +14,7 @@
 			</tr>
 		</thead>
 		<tbody>
+		<tr>
 			<td><div class="tableCell">{{ testCase.id }}</div></td>
 			<td><div class="tableCell">{{ testCase.testName }}</div></td>
 			<td><div class="tableCell">{{ testCase.testGroup }}</div></td>
@@ -21,17 +22,20 @@
 			<td><div class="tableCell">{{ testCase.testEngineer }}</div></td>
 			<td><div class="tableCell">{{ testCase.implementedBy }}</div></td>
 			<td><div class="tableCell">{{ testCase.status }}</div></td>
+		</tr>
 		</tbody>
 	</table>
 	<table id="testSteps" class="testList">
 		<thead>
 				<tr>
+					<th>Test Situation:</th>
 					<th>Test Steps:</th>
 				</tr>
 		</thead>
 		<tbody>
 			{% for testStep in testStepsList %}
 			<tr>
+				<td><div>{{ testCase.testSituation }}</div></td>
 				<td><div class="tableCell">{{ testStep.instruction }}</div></td>
 			</tr>
 			{% endfor %}
