@@ -1,34 +1,34 @@
 {% extends "newbase.html" %}
 {% block content %}
 {% load static %}
-	<table id="testCaseTable" class="testList">
+	<table id="testCaseTable" class="table-hover">
 		<thead>
 		<tr>
-			<th><div class="tableCellFromList">Test Id</div></th>
-			<th><div class="tableCellFromList">System Requirement</div></th>
-			<th><div class="tableCellFromList">Test Name</div></th>
-			<th><div class="tableCellFromList">Test Engineer</div></th>
-			<th><div class="tableCellFromList">Implemented By</div></th>
-			<th><div class="tableCellFromList">Status</div></th>
+			<th><div style="text-align:center">Test Id</div></th>
+			<th><div style="text-align:center">System Requirement</div></th>
+			<th><div style="text-align:center">Test Name</div></th>
+			<th><div style="text-align:center">Test Engineer</div></th>
+			<th><div style="text-align:center">Implemented By</div></th>
+			<th><div style="text-align:center">Status</div></th>
 		</tr>
 		<tr>
-		  	<th><input class="tableQuery" type="text" id="testIdInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-			<th><input class="tableQuery" type="text" id="sysReqInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  	<th><input class="tableQuery" type="text" id="testNameInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  	<th><input class="tableQuery" type="text" id="testEngInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  	<th><input class="tableQuery" type="text" id="implByInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  	<th><input class="tableQuery" type="text" id="statusInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  	<th><input type="text" class="search-query" id="testIdInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+			<th><input type="text" class="search-query" id="sysReqInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  	<th><input type="text" class="search-query" id="testNameInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  	<th><input type="text" class="search-query" id="testEngInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  	<th><input type="text" class="search-query" id="implByInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  	<th><input type="text" class="search-query" id="statusInput" onkeyup="searchFunction()" placeholder="Search..."></th>
 		</tr>
 		</thead>
 		<tbody>
 		{% for testCase in testCasesList %}
 			<tr>
-				<td><div class="tableCell"><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
-				<td><div class="tableCell"><a href="http://localhost:8000/newcat/requirement/{{ testCase.systemRequirement.sysReq_MKS }}">{{ testCase.systemRequirement }}</a></div></td>
-				<td><div class="tableCell">{{ testCase.testName }}</div></td>
-				<td><div class="tableCell">{{ testCase.testEngineer }}</div></td>
-				<td><div class="tableCell">{{ testCase.implementedBy }}</div></td>
-				<td><div class="tableCell"><a href="http://localhost:8000/newcat/status/{{ testCase.status }}">{{ testCase.status }}</a></div></td>
+				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
+				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/requirement/{{ testCase.systemRequirement.sysReq_MKS }}">{{ testCase.systemRequirement }}</a></div></td>
+				<td><div style="text-align:center">{{ testCase.testName }}</div></td>
+				<td><div style="text-align:center">{{ testCase.testEngineer }}</div></td>
+				<td><div style="text-align:center">{{ testCase.implementedBy }}</div></td>
+				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/status/{{ testCase.status }}">{{ testCase.status }}</a></div></td>
 			</tr>
 		{% endfor %}
 		</tbody>

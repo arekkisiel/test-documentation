@@ -1,33 +1,37 @@
 {% extends "newbase.html" %}
 {% block content %}
 {% load static %}
-	<table id="testCase" class="testList">
+	<table id="testCase" class="table table-condensed">
 		<thead>
 			<tr>
-			  	<th>Id</th>
-			  	<th>Test Name</th>
-			  	<th>Test Group</th>
-				<th>System Requirement</th>
+			  	<th><div>Id</div></th>
+				<th><div>Test Name</div></th>
+				<th><div>Test Group</div></th>
+				<th><div>System Requirement</div></th>
+                </tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td><div>{{ testCase.id }}</div></td>
+			<td><div>{{ testCase.testName }}</div></td>
+			<td><div>{{ testCase.testGroup }}</div></td>
+			<td><div>{{ testCase.systemRequirement }}</div></td>
+        </tr>
+        </tbody>
+        <thead><tr>
 			  	<th>Tested Functionality</th>
 			  	<th>Test Engineer</th>
 			    <th>Implemented By</th>
 				<th>Status</th>
-			</tr>
-		</thead>
-		<tbody>
-		<tr>
-			<td><div class="tableCell">{{ testCase.id }}</div></td>
-			<td><div class="tableCell">{{ testCase.testName }}</div></td>
-			<td><div class="tableCell">{{ testCase.testGroup }}</div></td>
-			<td><div class="tableCell">{{ testCase.systemRequirement }}</div></td>
-			<td><div class="tableCell">{{ testCase.testedFunctionality }}</div></td>
-			<td><div class="tableCell">{{ testCase.testEngineer }}</div></td>
-			<td><div class="tableCell">{{ testCase.implementedBy }}</div></td>
-			<td><div class="tableCell">{{ testCase.status }}</div></td>
+            </tr></thead><tbody><tr>
+			<td><div>{{ testCase.testedFunctionality }}</div></td>
+			<td><div>{{ testCase.testEngineer }}</div></td>
+			<td><div>{{ testCase.implementedBy }}</div></td>
+			<td><div>{{ testCase.status }}</div></td>
 		</tr>
 		</tbody>
 	</table>
-	<table id="testSteps" class="testList">
+	<table id="testSteps" class="table table-condensed">
 		<thead>
 				<tr>
 					<th>Test Situation:</th>
@@ -43,7 +47,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<table id="expectedResults">
+	<table id="expectedResults" class="table table-condensed">
 		<thead>
 				<tr>
 					<th>Assert Type:</th>
@@ -59,8 +63,10 @@
 			{% endfor %}
 		</tbody>
 	</table>
-	<button><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit">Edit Case</a> </button>
-	<button><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit/steps">Edit Steps</a> </button>
-	<button><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit/assertions">Edit Assertions</a> </button>
+    <nav>
+        <button class="btn btn-default btn-sm"><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit">Edit Case</a> </button>
+        <button class="btn btn-default btn-sm"><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit/steps">Edit Steps</a> </button>
+        <button class="btn btn-default btn-sm"><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}/edit/assertions">Edit Assertions</a> </button>
+    </nav>
 {% endblock %}
 

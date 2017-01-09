@@ -4,47 +4,55 @@
 		<div class="container">
 			<h1>Here you can create new test case</h1>
 			<form action="/newcat/create/" method="post" id="createTestCaseForm">{% csrf_token %}
-				<table class="testList">
+				<table class="table table-condensed">
 					<tr>
-						<td><div class="tableCell">
+						<td><div>
 							{% load widget_tweaks %}
 							<label>Test Name:</label>
 							{% render_field testCaseForm.testName class+="form-control" %}</div></td>
-						<td><div class="tableCell">
+						<td><div>
 							<label>Test Group:</label>
 							{% render_field testCaseForm.testGroup class+="form-control" %}
 							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/group', 'newwindow', 'width=900, height=500')">Create New</button>
 							<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
-						<td><div class="tableCell">
+						<td><div>
 							<label>System Requirement:</label>
 							{% render_field testCaseForm.systemRequirement class+="form-control" %}
 							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/requirement', 'newwindow', 'width=900, height=500')">Create New</button>
 							<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
-						<td><div class="tableCell">
+						<td><div>
 							<label>Tested Functionality:</label>
 							{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
 					</tr>
 					<tr>
-						<td><div class="tableCell">
+						<td><div>
 							<label>Test Engineer:</label>
 							{% render_field testCaseForm.testEngineer class+="form-control" %}</div></td>
-						<td><div class="tableCell">
+						<td><div>
 							<label>Implemented By:</label>
 							{% render_field testCaseForm.implementedBy class+="form-control" %}</div></td>
-						<td><div class="tableCell">
+						<td><div>
 							<label>Test Situation:</label>
 							{% render_field testCaseForm.testSituation class+="form-control" %}</div></td>
-						<td><div class="tableCell">
+						<td><div>
 							<label>Status:</label>
 							{% render_field testCaseForm.status class+="form-control" %}</div></td></tr>
+					{% for field in testStepsFormset %}
+                </table>
+                <table class="table" style="text:bold">
 					<tr>
-						<td>{% for field in testStepsFormset %}
-							<div class="control-group">
-							{{ field }}</div>
-						{% endfor %}</td>
-						<td><div class="control-group">
-							{{ expectedResultFormset }}</div></td>
+                        <td><label>Instruction:</label> {{ field.instruction }}</td>
+                        <td><label>Step Order:</label> {{ field.stepOrder }}</td>
 					</tr>
+					{% endfor %}
+                </table>
+                <table class="table">
+					{% for field in expectedResultFormset %}
+					<tr>
+                        <td><label>Assertion Type:</label> {{ field.assertType }}</td>
+                        <td><label>Expected Result:</label> {{ field.expectedResult }}</td>
+					</tr>
+					{% endfor %}
 				</table>
 				<button type="submit" class="btn btn-info">Submit</button>
 				<button type="reset" class="btn btn-info">Reset</button>
