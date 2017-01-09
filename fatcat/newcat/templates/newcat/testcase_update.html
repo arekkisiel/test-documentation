@@ -18,6 +18,11 @@
 				<td><div class="tableCell">
 					<label>Tested Functionality:</label>
 					{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
+				<td><div class="tableCell">
+					<label>Test Group:</label>
+					{% render_field testCaseForm.systemRequirement class+="form-control" %}
+					<button type="button" onclick="window.open('http://localhost:8000/newcat/create/requirement', 'newwindow', 'width=900, height=500')">Create New</button>
+					Refresh to see new SR</div></td>
 			</tr>
 			<tr>
 				<td><div class="tableCell">
