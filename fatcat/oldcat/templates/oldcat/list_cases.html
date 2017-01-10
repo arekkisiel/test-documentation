@@ -1,24 +1,16 @@
 {% extends "oldbase.html" %}
 {% block content %}
 {% load static %}
-	<table id="testCaseTable" class="table-hover">
+	<table id="testCaseTable" class="table table-hover">
 		<thead>
-		<tr>
-			<th><div class="tableCellFromList">Test Id</div></th>
-			<th><div class="tableCellFromList">System Requirement</div></th>
-			<th><div class="tableCellFromList">Test Unit</div></th>
-			<th><div class="tableCellFromList">Test Id</div></th>
-			<th><div class="tableCellFromList">Implemented By</div></th>
-			<th><div class="tableCellFromList">Filename</div></th>
-		</tr>
-		<tr>
-		  <th><input class="search-query" type="text" id="idInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="search-query" type="text" id="sysReqInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="search-query" type="text" id="testUnitInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="search-query" type="text" id="testIdInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="search-query" type="text" id="implByInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="search-query" type="text" id="fileInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		</tr>
+            <tr>
+                <th><div class="tableCellFromList">Test Id</div></th>
+                <th><div class="tableCellFromList">System Requirement</div></th>
+                <th><div class="tableCellFromList">Test Unit</div></th>
+                <th><div class="tableCellFromList">Test Id</div></th>
+                <th><div class="tableCellFromList">Implemented By</div></th>
+                <th><div class="tableCellFromList">Filename</div></th>
+            </tr>
 		</thead>
 		<tbody>
 		{% for testCase in testCasesList %}
@@ -33,4 +25,10 @@
 		{% endfor %}
 		</tbody>
 	</table>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#testCaseTable').DataTable();
+    $('#testCaseTable').fadeIn(1000);
+});
+</script>
 {% endblock%}
