@@ -37,23 +37,7 @@
 						<td><div>
 							<label>Status:</label>
 							{% render_field testCaseForm.status class+="form-control" %}</div></td></tr>
-					{% for field in testStepsFormset %}
                 </table>
-                <table class="table" style="text:bold">
-					<tr>
-                        <td><label>Instruction:</label> {{ field.instruction }}</td>
-                        <td><label>Step Order:</label> {{ field.stepOrder }}</td>
-					</tr>
-					{% endfor %}
-                </table>
-                <table class="table">
-					{% for field in expectedResultFormset %}
-					<tr>
-                        <td><label>Assertion Type:</label> {{ field.assertType }}</td>
-                        <td><label>Expected Result:</label> {{ field.expectedResult }}</td>
-					</tr>
-					{% endfor %}
-				</table>
 				<button type="submit" class="btn btn-info">Submit</button>
 				<button type="reset" class="btn btn-info">Reset</button>
 				<button type="button" class="btn btn-info"><a href="http://localhost:8000/newcat/testcase/">Cancel</a></button>

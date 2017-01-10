@@ -41,15 +41,10 @@ def test_case(request, testCaseId):
 
 def create_testcase(request):
     testCaseForm = TestCaseForm()
-    testStepsFormset = formset_factory(TestStepsForm, extra=3)
-    expectedResultFormset = formset_factory(ExpectedResultForm, extra=3)
     if request.method == 'POST':
-        testCaseForm = TestCaseForm(request.POST)
-        testStepsFormset = testStepsFormset(request.POST, request.FILES)
-        expectedResultFormset = expectedResultFormset(request.POST, request.FILES)
+        testCaseForm = TestCaseForm(request.POST, prefix='testCase')
         testGroup = testCaseForm.data['testGroup']
         systemRequirement = testCaseForm.data['systemRequirement']
-
         new_testcase = TestCase(
             testName = testCaseForm.data['testName'],
             testGroup = TestGroup.objects.get(testGroupName = testGroup),
@@ -60,37 +55,12 @@ def create_testcase(request):
             testSituation = testCaseForm.data['testSituation'],
             status = testCaseForm.data['status'])
         new_testcase.save()
-
-        for form in testStepsFormset:
-            if form.is_valid():
-                testStepData = form.cleaned_data
-                if testStepData:
-                    new_teststep = TestStep(
-                        testCase = new_testcase,
-                        instruction = testStepData['instruction'],
-                        stepOrder = testStepData['stepOrder']
-                    )
-                    new_teststep.save()
-        for form in expectedResultFormset:
-            if form.is_valid():
-                expectedResultData = form.cleaned_data
-                if expectedResultData:
-                    new_expectedResult = ExpectedResult(
-                        assertType = expectedResultData['assertType'],
-                        expectedResult = expectedResultData['expectedResult'],
-                        testCase = new_testcase
-                    )
-                    new_expectedResult.save()
         return HttpResponseRedirect("/newcat/testcase/")
     else:
-        testStepsFormset = testStepsFormset()
-        expectedResultFormset = expectedResultFormset()
         context = RequestContext(request, {
             'testCaseForm': testCaseForm,
-            'testStepsFormset': testStepsFormset,
-            'expectedResultFormset': expectedResultFormset,
-    })
-    return render(request, 'newcat/testcase_create.html', context)
+        })
+        return render(request, 'newcat/testcase_create.html', context)
 
 def create_testgroup(request):
     form = TestGroupForm(request.POST or None)
