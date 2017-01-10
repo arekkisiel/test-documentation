@@ -1,24 +1,16 @@
 {% extends "newbase.html" %}
 {% block content %}
 {% load static %}
-	<table id="testCaseTable" class="table-hover">
+	<table id="testCaseTable" class="table table-hover">
 		<thead>
-		<tr>
-			<th><div style="text-align:center">Test Id</div></th>
-			<th><div style="text-align:center">System Requirement</div></th>
-			<th><div style="text-align:center">Test Name</div></th>
-			<th><div style="text-align:center">Test Engineer</div></th>
-			<th><div style="text-align:center">Implemented By</div></th>
-			<th><div style="text-align:center">Status</div></th>
-		</tr>
-		<tr>
-		  	<th><input type="text" class="search-query" id="testIdInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-			<th><input type="text" class="search-query" id="sysReqInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  	<th><input type="text" class="search-query" id="testNameInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  	<th><input type="text" class="search-query" id="testEngInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  	<th><input type="text" class="search-query" id="implByInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  	<th><input type="text" class="search-query" id="statusInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		</tr>
+            <tr>
+                <th><div style="text-align:center">Test Id</div></th>
+                <th><div style="text-align:center">System Requirement</div></th>
+                <th><div style="text-align:center">Test Name</div></th>
+                <th><div style="text-align:center">Test Engineer</div></th>
+                <th><div style="text-align:center">Implemented By</div></th>
+                <th><div style="text-align:center">Status</div></th>
+            </tr>
 		</thead>
 		<tbody>
 		{% for testCase in testCasesList %}
@@ -33,4 +25,10 @@
 		{% endfor %}
 		</tbody>
 	</table>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#testCaseTable').DataTable();
+    $('#testCaseTable').fadeIn(1000);
+});
+</script>
 {% endblock%}

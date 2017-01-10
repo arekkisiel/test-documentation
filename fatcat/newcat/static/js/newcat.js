@@ -1,34 +1,3 @@
-function searchFunction() {
-    var testIdInput, sysReqInput, testNameInput, testEngInput, implByInput, statusInput, filter, table, field, tr, i, k, filtered;
-    testIdInput = document.getElementById("testIdInput").value.toUpperCase();
-    sysReqInput = document.getElementById("sysReqInput").value.toUpperCase();
-    testNameInput = document.getElementById("testNameInput").value.toUpperCase();
-    testEngInput = document.getElementById("testEngInput").value.toUpperCase();
-    implByInput = document.getElementById("implByInput").value.toUpperCase();
-    statusInput = document.getElementById("statusInput").value.toUpperCase();
-
-    filter = [testIdInput, sysReqInput, testNameInput, testIdInput, implByInput, statusInput];
-    table = document.getElementById("testCaseTable");
-    tr = table.getElementsByTagName("tr");
-
-    for (i = 0; i < tr.length; i++) {
-        filtered = false;
-        for (k = 0; k < 6; k++){
-            if(!filtered){
-                field = tr[i].getElementsByTagName("td")[k];
-                if (field) {
-                    if (field.innerHTML.toUpperCase().indexOf(filter[k]) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                        filtered = true;
-                    }
-                }
-            }
-        }
-    }
-}
-
 function saveSettings(){
 sessionStorage.setItem("formdata",formToString($("#createTestCaseForm")));
 }

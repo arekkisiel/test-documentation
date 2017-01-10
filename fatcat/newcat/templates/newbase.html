@@ -11,6 +11,7 @@
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script type="text/javascript" src="{% static 'js/newcat.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
 	</head>
 	<body>
 		<div id="content">
@@ -18,7 +19,6 @@
 				<div id="logo">
 					<img src="{% static 'img/tomtom-logo.png' %}" width="190" height="28" alt="TomTom"/>
 				</div>
-                <h3>Test Documentation for FATs - CoreDB</h3>
 				<ul class="header-menu">
 					<li class="first home">
 						<a id="header.home" href="http://localhost:8000/newcat"><span>&nbsp;</span></a>
@@ -41,7 +41,6 @@
 			</div>
             <div class="block">
                 {% block content %}{% endblock %}</div>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		</div>
         <div id="footer">
             <p>

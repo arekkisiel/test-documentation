@@ -24,17 +24,17 @@ h3 {
     margin-right: 10%;
 }
 
-.search-query {
-    padding-right: 3px;
-    padding-right: 4px \9;
-    padding-left: 3px;
-    padding-left: 4px \9;
-    /* IE7-8 doesn't have border-radius, so don't indent the padding */
+.paginate_button{
+    border-radius: 100%;
+    margin: 10px;
+}
 
-    margin-bottom: 0;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
+.current{
+    color: red;
+}
+
+#testCaseTable{
+   display:none;
 }
 
 #header {
