@@ -114,8 +114,9 @@ def edit_testcase(request, testCaseId):
     })
     return render(request, 'newcat/testcase_update.html', context)
 
-def edit_teststeps(request, testCaseId):
-    testStepsFormset = inlineformset_factory(TestCase, TestStep, form=TestStepsForm, extra=3)
+def edit_teststeps(request, testCaseId, extraForms=3):
+    extraForms = int(extraForms)
+    testStepsFormset = inlineformset_factory(TestCase, TestStep, form=TestStepsForm, extra=extraForms)
     if request.method == 'POST':
         formset = testStepsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
         if formset.is_valid():
@@ -127,12 +128,14 @@ def edit_teststeps(request, testCaseId):
         formset = testStepsFormset(instance=TestCase.objects.get(id=testCaseId))
         context = RequestContext(request, {
             'testCaseId': testCaseId,
-            'formset': formset
+            'formset': formset,
+            'extraForms': extraForms,
     })
     return render(request, 'newcat/teststeps_update.html', context)
 
-def edit_expected_results(request, testCaseId):
-    expectedResultsFormset = inlineformset_factory(TestCase, ExpectedResult, form=ExpectedResultForm, extra=3)
+def edit_expected_results(request, testCaseId, extraForms=3):
+    extraForms=int(extraForms)
+    expectedResultsFormset = inlineformset_factory(TestCase, ExpectedResult, form=ExpectedResultForm, extra=extraForms)
     if request.method == 'POST':
         formset = expectedResultsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
         if formset.is_valid():
@@ -144,7 +147,8 @@ def edit_expected_results(request, testCaseId):
         formset = expectedResultsFormset(instance=TestCase.objects.get(id=testCaseId))
         context = RequestContext(request, {
             'testCaseId': testCaseId,
-            'formset': formset
+            'formset': formset,
+            'extraForms': extraForms,
     })
     return render(request, 'newcat/expectedresults_update.html', context)
 

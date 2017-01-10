@@ -27,10 +27,24 @@
                 </tr>
             {% endfor %}
 		</table>
-		<button type="submit" class="btn btn-info">Submit</button>
-        <button type="reset" class="btn btn-info">Reset</button>
-        <button type="button" class="btn btn-info"><a href="http://localhost:8000/newcat/testcase/{{ testCaseId }}/">Cancel</a></button>
+		<button type="submit" class="btn btn-default btn-sm">Submit</button>
+        <button type="reset" class="btn btn-default btn-sm">Reset</button>
+        <a class="btn btn-default btn-sm" href="http://localhost:8000/newcat/testcase/{{ testCaseId }}/">Cancel</a>
+        <a class="btn btn-default btn-sm" onclick="increment(extraForms)">Add More Asserts</a>
+        <a class="btn btn-default btn-sm" onclick="decrement(extraForms)">Add Less Asserts</a>
 	</form>
 </div>
+<script>
+    var extraForms = {{ extraForms }};
+
+    function increment(param){
+        param++;
+        window.location.href = "http://localhost:8000/newcat/testcase/{{ testCaseId }}/edit/assertions/"+param;
+    }
+    function decrement(param){
+        if (param>1){param--;}
+        window.location.href = "http://localhost:8000/newcat/testcase/{{ testCaseId }}/edit/assertions/"+param;
+    }
+</script>
 {% endblock %}
 

@@ -3,34 +3,52 @@
 {% load static %}
 <div class="container">
 	<h1>Here you can define test steps for your test case.</h1>
-	<form action="/newcat/testcase/{{ testCaseId }}/edit/steps/" method="post">{% csrf_token %}
+	<form class="updateTestSteps" action="/newcat/testcase/{{ testCaseId }}/edit/steps/" method="post">{% csrf_token %}
 		<table class="table table-condensed">
-            <tr>
-                <th><label>Step Order:</label></th>
-                <th><label>Test Step:</label></th>
-                <th><label>Delete:</label></th>
-            </tr>
+            <thead>
+                <tr>
+                    <th><label>Step Order:</label></th>
+                    <th><label>Test Step:</label></th>
+                    <th><label>Delete:</label></th>
+                </tr>
+            </thead>
             {% load widget_tweaks %}
             {{ formset.management_form }}
-            {% for form in formset %}
-                <tr>
-                    {% render_field form.id class+="form-control input-sm" %}
-                    <td class="col-md-1"><div>
-                        {% render_field form.stepOrder class+="form-control" %}
-                        </div></td>
-                    <td class="col-md-8"><div>
-                        {% render_field form.instruction class+="form-control" %}
-                        </div></td>
-                    <td class="col-md-1"><div>
-                        {% render_field form.DELETE class+="form-control input-sm" %}
-                        </div></td>
-                </tr>
-            {% endfor %}
+            <tbody class="tbody">
+                {% for form in formset %}
+                    <tr>
+                        {% render_field form.id class+="form-control input-sm" %}
+                        <td class="col-md-1"><div>
+                            {% render_field form.stepOrder class+="form-control" %}
+                            </div></td>
+                        <td class="col-md-8"><div>
+                            {% render_field form.instruction class+="form-control" %}
+                            </div></td>
+                        <td class="col-md-1"><div>
+                            {% render_field form.DELETE class+="form-control input-sm" %}
+                            </div></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
 		</table>
-		<button type="submit" class="btn btn-info">Submit</button>
-        <button type="reset" class="btn btn-info">Reset</button>
-        <button type="button" class="btn btn-info"><a href="http://localhost:8000/newcat/testcase/{{ testCaseId }}/">Cancel</a></button>
-	</form>
+		<button type="submit" class="btn btn-default btn-sm">Submit</button>
+        <button type="reset" class="btn btn-default btn-sm">Reset</button>
+        <a class="btn btn-default btn-sm" href="http://localhost:8000/newcat/testcase/{{ testCaseId }}/">Cancel</a>
+        <a class="btn btn-default btn-sm" onclick="increment(extraForms)">Add More Steps</a>
+        <a class="btn btn-default btn-sm"  onclick="decrement(extraForms)">Add Less Steps</a>
+    </form>
 </div>
+<script>
+    var extraForms = {{ extraForms }};
+
+    function increment(param){
+        param++;
+        window.location.href = "http://localhost:8000/newcat/testcase/{{ testCaseId }}/edit/steps/"+param;
+    }
+    function decrement(param){
+        if (param>1){param--;}
+        window.location.href = "http://localhost:8000/newcat/testcase/{{ testCaseId }}/edit/steps/"+param;
+    }
+</script>
 {% endblock %}
 
