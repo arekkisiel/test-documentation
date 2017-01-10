@@ -1,10 +1,10 @@
 {% extends "oldbase.html" %}
 {% block content %}
 {% load static %}
-	<table id="testCaseTable" class="testList">
+	<table id="testCaseTable" class="table-hover">
 		<thead>
 		<tr>
-			<th><div class="tableCellFromList">Id</div></th>
+			<th><div class="tableCellFromList">Test Id</div></th>
 			<th><div class="tableCellFromList">System Requirement</div></th>
 			<th><div class="tableCellFromList">Test Unit</div></th>
 			<th><div class="tableCellFromList">Test Id</div></th>
@@ -12,12 +12,12 @@
 			<th><div class="tableCellFromList">Filename</div></th>
 		</tr>
 		<tr>
-		  <th><input class="tableQuery" type="text" id="idInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="tableQuery" type="text" id="sysReqInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="tableQuery" type="text" id="testUnitInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="tableQuery" type="text" id="testIdInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="tableQuery" type="text" id="implByInput" onkeyup="searchFunction()" placeholder="Search..."></th>
-		  <th><input class="tableQuery" type="text" id="fileInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  <th><input class="search-query" type="text" id="idInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  <th><input class="search-query" type="text" id="sysReqInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  <th><input class="search-query" type="text" id="testUnitInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  <th><input class="search-query" type="text" id="testIdInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  <th><input class="search-query" type="text" id="implByInput" onkeyup="searchFunction()" placeholder="Search..."></th>
+		  <th><input class="search-query" type="text" id="fileInput" onkeyup="searchFunction()" placeholder="Search..."></th>
 		</tr>
 		</thead>
 		<tbody>

@@ -1,3 +1,51 @@
+body {
+	font-family: Verdana, sans-serif;
+	font-size: 10pt;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	width: 100%;
+}
+
+html, #content {
+	height: 100%;
+}
+body > #content {
+	height: auto;
+	min-height: 100%;
+}
+h3 {
+    text-align: center;
+    position: relative;
+}
+
+.block {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.search-query {
+    width: 100%;
+    padding-right: 3px;
+    padding-right: 4px \9;
+    padding-left: 3px;
+    padding-left: 4px \9;
+    /* IE7-8 doesn't have border-radius, so don't indent the padding */
+
+    margin-bottom: 0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.tableCellFromList{
+    width: 250px;
+    color: black;
+    float: left;
+    text-align: center;
+    word-wrap: break-word;
+ }
+
 #header {
 	/*position:absolute;*/
 	height:96px;
