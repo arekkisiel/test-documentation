@@ -20,4 +20,5 @@ urlpatterns = [
 
     url(r'^$', views.index, name='index'),
     url(r'^close/$', views.close_window, name='close_window'),
+    url(r'^error/$', views.error, name='error'),
 ]

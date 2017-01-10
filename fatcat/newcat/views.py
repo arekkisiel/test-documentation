@@ -42,20 +42,23 @@ def test_case(request, testCaseId):
 def create_testcase(request):
     testCaseForm = TestCaseForm()
     if request.method == 'POST':
-        testCaseForm = TestCaseForm(request.POST, prefix='testCase')
-        testGroup = testCaseForm.data['testGroup']
-        systemRequirement = testCaseForm.data['systemRequirement']
-        new_testcase = TestCase(
-            testName = testCaseForm.data['testName'],
-            testGroup = TestGroup.objects.get(testGroupName = testGroup),
-            systemRequirement=SystemRequirement.objects.get(sysReq_MKS = systemRequirement),
-            testedFunctionality = testCaseForm.data['testedFunctionality'],
-            testEngineer = testCaseForm.data['testEngineer'],
-            implementedBy = testCaseForm.data['implementedBy'],
-            testSituation = testCaseForm.data['testSituation'],
-            status = testCaseForm.data['status'])
-        new_testcase.save()
-        return HttpResponseRedirect("/newcat/testcase/")
+        testCaseForm = TestCaseForm(request.POST)
+        if testCaseForm.is_valid():
+            testGroup = testCaseForm.data['testGroup']
+            systemRequirement = testCaseForm.data['systemRequirement']
+            new_testcase = TestCase(
+                testName = testCaseForm.data['testName'],
+                testGroup = TestGroup.objects.get(testGroupName = testGroup),
+                systemRequirement=SystemRequirement.objects.get(sysReq_MKS = systemRequirement),
+                testedFunctionality = testCaseForm.data['testedFunctionality'],
+                testEngineer = testCaseForm.data['testEngineer'],
+                implementedBy = testCaseForm.data['implementedBy'],
+                testSituation = testCaseForm.data['testSituation'],
+                status = testCaseForm.data['status'])
+            new_testcase.save()
+            return HttpResponseRedirect("/newcat/testcase/")
+        else:
+            return HttpResponseRedirect("/newcat/error/")
     else:
         context = RequestContext(request, {
             'testCaseForm': testCaseForm,
@@ -69,6 +72,8 @@ def create_testgroup(request):
             new_testgroup = TestGroup(testGroupName = form.data['testGroupName'])
             new_testgroup.save()
             return HttpResponseRedirect("/newcat/close/")
+        else:
+            return HttpResponseRedirect("/newcat/error/")
     template = loader.get_template('newcat/testgroup_create.html')
     context = RequestContext(request, {
         'form': form,
@@ -82,6 +87,8 @@ def create_requirement(request):
             new_requirement = SystemRequirement(sysReq_MKS = form.data['sysReq_MKS'], title = form.data['title'])
             new_requirement.save()
             return HttpResponseRedirect("/newcat/close/")
+        else:
+            return HttpResponseRedirect("/newcat/error/")
     template = loader.get_template('newcat/requirement_create.html')
     context = RequestContext(request, {
         'form': form,
@@ -96,7 +103,9 @@ def edit_testcase(request, testCaseId):
         testCaseForm = TestCaseForm(request.POST or None, instance=testCaseInstance)
         if testCaseForm.is_valid():
             testCaseForm.save()
-        return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+            return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+        else:
+            return HttpResponseRedirect("/newcat/error/")
     else:
         testCaseForm = TestCaseForm(instance=testCaseInstance)
         context = RequestContext(request, {
@@ -111,7 +120,9 @@ def edit_teststeps(request, testCaseId):
         formset = testStepsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
         if formset.is_valid():
             formset.save()
-        return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+            return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+        else:
+            return HttpResponseRedirect("/newcat/error/")
     else:
         formset = testStepsFormset(instance=TestCase.objects.get(id=testCaseId))
         context = RequestContext(request, {
@@ -126,7 +137,9 @@ def edit_expected_results(request, testCaseId):
         formset = expectedResultsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
         if formset.is_valid():
             formset.save()
-        return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+            return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+        else:
+            return HttpResponseRedirect("/newcat/error/")
     else:
         formset = expectedResultsFormset(instance=TestCase.objects.get(id=testCaseId))
         context = RequestContext(request, {
@@ -142,3 +155,6 @@ def index(request):
 
 def close_window(request):
     return render(request, 'newcat/close.html')
+
+def error(request):
+    return render(request, 'newcat/error.html')
