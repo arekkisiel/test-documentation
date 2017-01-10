@@ -2,16 +2,27 @@
 {% block content %}
 {% load static %}
 <div class="container">
-	<h1>Here you can create new test case</h1>
+	<h1>Here you can define test steps for your test case.</h1>
 	<form action="/newcat/testcase/{{ testCaseId }}/edit/steps/" method="post">{% csrf_token %}
-		<table class="testList">
+		<table class="table table-condensed">
+            <tr>
+                <th><label>Step Order:</label></th>
+                <th><label>Test Step:</label></th>
+                <th><label>Delete:</label></th>
+            </tr>
             {% load widget_tweaks %}
             {{ formset.management_form }}
             {% for form in formset %}
                 <tr>
-                    <td><div class="tableCell">
-                        <label>Test Steps:</label>
-                        {{ form }}
+                    {% render_field form.id class+="form-control input-sm" %}
+                    <td class="col-md-1"><div>
+                        {% render_field form.stepOrder class+="form-control" %}
+                        </div></td>
+                    <td class="col-md-8"><div>
+                        {% render_field form.instruction class+="form-control" %}
+                        </div></td>
+                    <td class="col-md-1"><div>
+                        {% render_field form.DELETE class+="form-control input-sm" %}
                         </div></td>
                 </tr>
             {% endfor %}
