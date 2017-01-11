@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.forms import formset_factory, inlineformset_factory
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -6,8 +7,9 @@ from django.template import RequestContext
 from django.template import loader
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
-from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestCaseForm, TestStepsForm, ExpectedResultForm, \
-    TestGroupForm, RequirementForm, SystemRequirement, ComponentForm, Component
+from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm, ExpectedResultForm, \
+    TestGroupForm, RequirementForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm, TestCaseLateForm, \
+    TestCaseForm
 
 
 #### List Views
@@ -44,26 +46,17 @@ def test_case(request, testCaseId):
 
 #### Create Views
 
-def create_testcase(request):
-    testCaseForm = TestCaseForm()
+def create_testcase_base(request):
+    testCaseForm = TestCaseBaseForm(request.POST or None)
     if request.method == 'POST':
-        testCaseForm = TestCaseForm(request.POST)
         if testCaseForm.is_valid():
-            testGroup = testCaseForm.data['testGroup']
-            component = testCaseForm.data['component']
-            systemRequirement = testCaseForm.data['systemRequirement']
-            new_testcase = TestCase(
-                testName = testCaseForm.data['testName'],
-                testGroup = TestGroup.objects.get(testGroupName = testGroup),
-                systemRequirement=SystemRequirement.objects.get(sysReq_MKS = systemRequirement),
-                component=Component.objects.get(componentName = component),
-                testedFunctionality = testCaseForm.data['testedFunctionality'],
-                testEngineer = testCaseForm.data['testEngineer'],
-                implementedBy = testCaseForm.data['implementedBy'],
-                testSituation = testCaseForm.data['testSituation'],
-                status = testCaseForm.data['status'])
-            new_testcase.save()
-            return HttpResponseRedirect("/newcat/testcase/")
+            request.session['sr'] = testCaseForm.data['systemRequirement']
+            request.session['testGroup'] = testCaseForm.data['testGroup']
+            request.session['component'] = testCaseForm.data['component']
+            request.session['testedFunctionality'] = testCaseForm.data['testedFunctionality']
+            request.session['testEngineer'] = testCaseForm.data['testEngineer']
+            request.session['implementedBy'] = testCaseForm.data['implementedBy']
+            return HttpResponseRedirect('cases')
         else:
             return HttpResponseRedirect("/newcat/error/")
     else:
@@ -71,6 +64,33 @@ def create_testcase(request):
             'testCaseForm': testCaseForm,
         })
         return render(request, 'newcat/testcase_create.html', context)
+
+def create_testcase_late(request):
+    testCaseLateForm = TestCaseLateForm(request.POST or None)
+    if request.method == 'POST':
+        if testCaseLateForm.is_valid():
+            new_testcase = TestCase(
+                systemRequirement = SystemRequirement.objects.get(sysReq_MKS = request.session['sr']),
+                component = Component.objects.get(componentName=request.session['component']),
+                testedFunctionality = request.session['testedFunctionality'],
+                testEngineer = request.session['testEngineer'],
+                implementedBy = request.session['implementedBy'],
+                testName = testCaseLateForm.data['testName'],
+                testGroup = TestGroup.objects.get(testGroupName=request.session['testGroup']),
+                testSituation=testCaseLateForm.data['testSituation'],
+                status=testCaseLateForm.data['status']
+            )
+            new_testcase.save()
+            return HttpResponseRedirect("/newcat/testcase/")
+        else:
+            return HttpResponseRedirect("/newcat/error/")
+    else:
+        context = RequestContext(request, {
+            'testCaseLateForm': testCaseLateForm,
+        })
+        return render(request, 'newcat/testcase_create_late.html', context)
+
+
 
 def create_testgroup(request):
     form = TestGroupForm(request.POST or None)

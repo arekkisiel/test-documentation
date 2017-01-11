@@ -16,7 +16,8 @@ urlpatterns = [
     url(r'^testcase/(?P<testCaseId>[0-9]+)/edit/assertions/$', views.edit_expected_results, name='edit_expected_results'),
     url(r'^testcase/(?P<testCaseId>[0-9]+)/edit/assertions/(?P<extraForms>[0-9]+)/$', views.edit_expected_results, name='extra_expected_results'),
 
-    url(r'^create/$', views.create_testcase, name='create_testcase'),
+    url(r'^create/$', views.create_testcase_base, name='create_testcase'),
+    url(r'^create/cases/$', views.create_testcase_late, name='create_testcase_late'),
     url(r'^create/group/$', views.create_testgroup, name='create_testgroup'),
     url(r'^create/component/$', views.create_component, name='create_component'),
     url(r'^create/requirement/$', views.create_requirement, name='create_requirement'),

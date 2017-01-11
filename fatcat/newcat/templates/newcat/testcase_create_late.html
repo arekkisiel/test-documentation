@@ -1,0 +1,33 @@
+{% extends "newbase.html" %}
+{% block content %}
+{% load static %}
+{% load widget_tweaks %}
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<div class="container">
+			<h1>Here you can create new test case</h1>
+			<form action="" method="post" id="createTestCaseForm">{% csrf_token %}
+                <table class="table table-condensed">
+                    <tr>
+                        <td><div>
+							<label>Test Name:</label>
+							{% render_field testCaseLateForm.testName class+="form-control" %}</div></td>
+                        <td><div>
+							<label>Test Situation:</label>
+							{% render_field testCaseLateForm.testSituation class+="form-control" %}</div></td>
+                        <td><div>
+							<label>Status:</label>
+							{% render_field testCaseLateForm.status class+="form-control" %}</div></td>
+                    </tr>
+                </table>
+				<button type="submit" class="btn btn-info">Submit</button>
+				<button type="reset" class="btn btn-info">Reset</button>
+				<a class="btn btn-info" href="http://localhost:8000/newcat/testcase/">Cancel</a>
+			</form>
+		</div>
+<script type="text/javascript">
+$(document).ready(function() {
+    $(window).unload(saveSettings);
+    loadSettings();
+});
+</script>
+{% endblock %}

@@ -51,6 +51,8 @@ class TestCase(models.Model):
 
     def __str__(self):
         return self
+    def TestCase(self):
+        return self
 
 class TestStep(models.Model):
     testCase = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
@@ -92,10 +94,20 @@ class ExpectedResult(models.Model):
 
 #### Forms
 
+class TestCaseBaseForm(forms.ModelForm):
+    class Meta:
+        model = TestCase
+        exclude = ('testName', 'testSituation', 'status')
+
+class TestCaseLateForm(forms.ModelForm):
+    class Meta:
+        model = TestCase
+        fields = ('testName', 'testSituation', 'status')
+
 class TestCaseForm(forms.ModelForm):
     class Meta:
         model = TestCase
-        exclude = ()
+        fields = ()
 
 class TestGroupForm(forms.ModelForm):
     class Meta:
