@@ -1,6 +1,7 @@
 {% extends "newbase.html" %}
 {% block content %}
 {% load static %}
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<div class="container">
 			<h1>Here you can create new test case</h1>
 			<form action="/newcat/create/" method="post" id="createTestCaseForm">{% csrf_token %}
@@ -40,7 +41,7 @@
                 </table>
 				<button type="submit" class="btn btn-info">Submit</button>
 				<button type="reset" class="btn btn-info">Reset</button>
-				<button type="button" class="btn btn-info"><a href="http://localhost:8000/newcat/testcase/">Cancel</a></button>
+				<a class="btn btn-info" href="http://localhost:8000/newcat/testcase/">Cancel</a>
 			</form>
 		</div>
 <script type="text/javascript">
