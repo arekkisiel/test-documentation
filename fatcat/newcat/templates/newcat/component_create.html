@@ -1,0 +1,14 @@
+{% extends "newbase.html" %}
+{% block content %}
+{% load static %}
+		<div class="container">
+			<form action="/newcat/create/component/" method="post">{% csrf_token %}
+				<div>
+					{% load widget_tweaks %}
+					<label>Component Name:</label>
+					{% render_field form.componentName class+="form-control" %}
+					<button type="submit" class="btn btn-info">Submit</button>
+				</div>
+			</form>
+		</div>
+{% endblock %}

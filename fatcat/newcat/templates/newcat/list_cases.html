@@ -3,8 +3,11 @@
 {% load static %}
 	<table id="testCaseTable" class="table table-hover">
 		<thead>
+			<tr>
+			</tr>
             <tr>
                 <th><div style="text-align:center">Test Id</div></th>
+                <th><div style="text-align:center">Component</div></th>
                 <th><div style="text-align:center">System Requirement</div></th>
                 <th><div style="text-align:center">Test Name</div></th>
                 <th><div style="text-align:center">Test Engineer</div></th>
@@ -16,6 +19,7 @@
 		{% for testCase in testCasesList %}
 			<tr>
 				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
+                <td><div style="text-align:center"><a href="http://localhost:8000/newcat/component/{{ testCase.component }}">{{ testCase.component }}</a></div></td>
 				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/requirement/{{ testCase.systemRequirement.sysReq_MKS }}">{{ testCase.systemRequirement }}</a></div></td>
 				<td><div style="text-align:center">{{ testCase.testName }}</div></td>
 				<td><div style="text-align:center">{{ testCase.testEngineer }}</div></td>

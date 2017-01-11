@@ -10,6 +10,12 @@ class TestGroup(models.Model):
     def __str__(self):
         return self.testGroupName
 
+class Component(models.Model):
+    componentName = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.componentName
+
 class SystemRequirement(models.Model):
     sysReq_MKS = models.BigIntegerField(unique=True)
     title = models.CharField(max_length=100, unique=True)
@@ -28,6 +34,7 @@ class TestCase(models.Model):
     testSituation = models.CharField(max_length=1000)
     testGroup = models.ForeignKey(TestGroup, to_field='testGroupName')
     systemRequirement = models.ForeignKey(SystemRequirement, to_field='sysReq_MKS')
+    component = models.ForeignKey(Component, to_field='componentName')
     DEFINED = 'Defined'
     IMPLEMENTED = 'Implemented'
     OPERATIONAL = 'Operational'
@@ -93,6 +100,11 @@ class TestCaseForm(forms.ModelForm):
 class TestGroupForm(forms.ModelForm):
     class Meta:
         model = TestGroup
+        exclude = ()
+
+class ComponentForm(forms.ModelForm):
+    class Meta:
+        model = Component
         exclude = ()
 
 class RequirementForm(forms.ModelForm):

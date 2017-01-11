@@ -21,6 +21,11 @@
 							{% render_field testCaseForm.systemRequirement class+="form-control" %}
 							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/requirement', 'newwindow', 'width=900, height=500')">Create New</button>
 							<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
+                        <td><div>
+							<label>Tested Component:</label>
+							{% render_field testCaseForm.component class+="form-control" %}
+							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/component', 'newwindow', 'width=900, height=500')">Create New</button>
+							<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
 						<td><div>
 							<label>Tested Functionality:</label>
 							{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>

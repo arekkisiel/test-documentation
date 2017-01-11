@@ -7,7 +7,7 @@ from django.template import loader
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestCaseForm, TestStepsForm, ExpectedResultForm, \
-    TestGroupForm, RequirementForm, SystemRequirement
+    TestGroupForm, RequirementForm, SystemRequirement, ComponentForm, Component
 
 
 #### List Views
@@ -19,6 +19,11 @@ def list_sysReq(request, sysReq):
 
 def list_status(request, status):
     testCasesList = TestCase.objects.filter(status = status)
+    context = RequestContext(request, {'testCasesList': testCasesList})
+    return TemplateResponse(request, 'newcat/list_cases.html', context)
+
+def list_component(request, component):
+    testCasesList = TestCase.objects.filter(component = component)
     context = RequestContext(request, {'testCasesList': testCasesList})
     return TemplateResponse(request, 'newcat/list_cases.html', context)
 
@@ -45,11 +50,13 @@ def create_testcase(request):
         testCaseForm = TestCaseForm(request.POST)
         if testCaseForm.is_valid():
             testGroup = testCaseForm.data['testGroup']
+            component = testCaseForm.data['component']
             systemRequirement = testCaseForm.data['systemRequirement']
             new_testcase = TestCase(
                 testName = testCaseForm.data['testName'],
                 testGroup = TestGroup.objects.get(testGroupName = testGroup),
                 systemRequirement=SystemRequirement.objects.get(sysReq_MKS = systemRequirement),
+                component=Component.objects.get(componentName = component),
                 testedFunctionality = testCaseForm.data['testedFunctionality'],
                 testEngineer = testCaseForm.data['testEngineer'],
                 implementedBy = testCaseForm.data['implementedBy'],
@@ -75,6 +82,21 @@ def create_testgroup(request):
         else:
             return HttpResponseRedirect("/newcat/error/")
     template = loader.get_template('newcat/testgroup_create.html')
+    context = RequestContext(request, {
+        'form': form,
+    })
+    return HttpResponse(template.render(context))
+
+def create_component(request):
+    form = ComponentForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            new_component = Component(componentName = form.data['componentName'])
+            new_component.save()
+            return HttpResponseRedirect("/newcat/close/")
+        else:
+            return HttpResponseRedirect("/newcat/error/")
+    template = loader.get_template('newcat/component_create.html')
     context = RequestContext(request, {
         'form': form,
     })

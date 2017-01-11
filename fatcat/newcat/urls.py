@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^testcase/$', views.list_cases, name='list_cases'),
     url(r'^requirement/(?P<sysReq>[\w\-]+)/$', views.list_sysReq, name='sysReq'),
     url(r'^status/(?P<status>[\w\-]+)/$', views.list_status, name='status'),
+    url(r'^component/(?P<component>[\w\-]+)/$', views.list_component, name='component'),
 
     url(r'^testcase/(?P<testCaseId>[0-9]+)/$', views.test_case, name='test_case'),
 
@@ -17,6 +18,7 @@ urlpatterns = [
 
     url(r'^create/$', views.create_testcase, name='create_testcase'),
     url(r'^create/group/$', views.create_testgroup, name='create_testgroup'),
+    url(r'^create/component/$', views.create_component, name='create_component'),
     url(r'^create/requirement/$', views.create_requirement, name='create_requirement'),
 
 

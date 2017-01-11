@@ -21,6 +21,11 @@
 					<button type="button" onclick="window.open('http://localhost:8000/newcat/create/requirement', 'newwindow', 'width=900, height=500')">Create New</button>
 					<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
 				<td><div>
+					<label>Component:</label>
+					{% render_field testCaseForm.component class+="form-control" %}
+					<button type="button" onclick="window.open('http://localhost:8000/newcat/create/component', 'newwindow', 'width=900, height=500')">Create New</button>
+					<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
+				<td><div>
 					<label>Tested Functionality:</label>
 					{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
 
@@ -41,7 +46,7 @@
 		</table>
 		<button type="submit" class="btn btn-info">Submit</button>
         <button type="reset" class="btn btn-info">Reset</button>
-        <button type="button" class="btn btn-info"><a href="http://localhost:8000/newcat/testcase/{{ testCaseInstance.id }}/">Cancel</a></button>
+        <a class="btn btn-info" href="http://localhost:8000/newcat/testcase/{{ testCaseInstance.id }}/">Cancel</a>
 	</form>
 </div>
 {% endblock %}
