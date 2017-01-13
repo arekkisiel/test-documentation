@@ -82,11 +82,10 @@ def create_testcase_late(request):
     testCaseFormset = modelformset_factory(TestCase, form=TestCaseForm, extra=numberOfCases)
     if request.method == 'POST':
         formset = testCaseFormset(request.POST)
-        if formset.is_valid():
-            formset.save()
-            return HttpResponseRedirect("/newcat/testcase/")
-        else:
-            return render(request, 'newcat/testcase_create_late.html', {'formset': formset})
+        for form in formset:
+            if form.is_valid():
+                form.save()
+        return HttpResponseRedirect("/newcat/testcase/")
     else:
         queryset = TestCase.objects.none()
         formset = testCaseFormset(queryset=queryset, initial=dataDict)
