@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     url(r'^testcase/$', views.list_cases, name='list_cases'),
+    url(r'^group/(?P<group>[\w\-]+)/$', views.list_group, name='list_group'),
     url(r'^requirement/(?P<sysReq>[\w\-]+)/$', views.list_sysReq, name='sysReq'),
     url(r'^status/(?P<status>[\w\-]+)/$', views.list_status, name='status'),
     url(r'^component/(?P<component>[\w\-]+)/$', views.list_component, name='component'),
@@ -22,6 +23,7 @@ urlpatterns = [
     url(r'^create/component/$', views.create_component, name='create_component'),
     url(r'^create/requirement/$', views.create_requirement, name='create_requirement'),
 
+    url(r'^group/(?P<group>[\w\-]+)/export/$', views.export_list, name='export_list'),
 
     url(r'^$', views.index, name='index'),
     url(r'^close/$', views.close_window, name='close_window'),

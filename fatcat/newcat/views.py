@@ -6,7 +6,8 @@ from django.template import RequestContext
 from django.template import loader
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
-from django.forms.models import model_to_dict, modelformset_factory
+from django.forms.models import modelformset_factory
+import xlwt
 
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm, ExpectedResultForm, \
     TestGroupForm, RequirementForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm,\
@@ -27,6 +28,11 @@ def list_status(request, status):
 
 def list_component(request, component):
     testCasesList = TestCase.objects.filter(component = component)
+    context = RequestContext(request, {'testCasesList': testCasesList})
+    return TemplateResponse(request, 'newcat/list_cases.html', context)
+
+def list_group(request, group):
+    testCasesList = TestCase.objects.filter(testGroup = group)
     context = RequestContext(request, {'testCasesList': testCasesList})
     return TemplateResponse(request, 'newcat/list_cases.html', context)
 
@@ -200,6 +206,37 @@ def edit_expected_results(request, testCaseId, extraForms=3):
     })
     return render(request, 'newcat/expectedresults_update.html', context)
 
+#### Exporting to xls
+
+def export_list(request, group):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="users.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('TestCase')
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
+                  'implementedBy', 'testName', 'testSituation', 'status']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = TestCase.objects.filter(testGroup = group).values_list('systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
+                  'implementedBy', 'testName', 'testSituation', 'status')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
+    return response
 #### Universal Views
 
 def index(request):
