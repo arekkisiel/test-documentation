@@ -7,7 +7,6 @@
 			<h1>Here you can create new test case</h1>
 			<form action="/newcat/create/save/" method="post" id="createTestCaseForm">{% csrf_token %}
                 <table class="table table-condensed">
-                    {{ dataDict }}
                     {{ formset.management_form }}
                     {% for form in formset %}
                     {% render_field form.testGroup class+="form-control hidden" %}
