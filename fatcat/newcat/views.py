@@ -28,13 +28,13 @@ def list_status(request, status):
 
 def list_component(request, component):
     testCasesList = TestCase.objects.filter(component = component)
-    context = RequestContext(request, {'testCasesList': testCasesList})
-    return TemplateResponse(request, 'newcat/list_cases.html', context)
+    context = RequestContext(request, {'testCasesList': testCasesList, 'component': component})
+    return TemplateResponse(request, 'newcat/list_cases_component.html', context)
 
 def list_group(request, group):
     testCasesList = TestCase.objects.filter(testGroup = group)
-    context = RequestContext(request, {'testCasesList': testCasesList})
-    return TemplateResponse(request, 'newcat/list_cases.html', context)
+    context = RequestContext(request, {'testCasesList': testCasesList, 'group': group})
+    return TemplateResponse(request, 'newcat/list_cases_group.html', context)
 
 def list_cases(request):
     testCasesList = TestCase.objects.all()
@@ -208,35 +208,45 @@ def edit_expected_results(request, testCaseId, extraForms=3):
 
 #### Exporting to xls
 
-def export_list(request, group):
+def export_list(request, group=None, component=None):
     response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="users.xls"'
+    response['Content-Disposition'] = 'attachment; filename="Exported.xls"'
 
     wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('TestCase')
-    row_num = 0
+    ws = wb.add_sheet('Results')
+    testcase_num = 0
 
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
-                  'implementedBy', 'testName', 'testSituation', 'status']
+    columns = ['id', 'systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
+                  'implementedBy', 'testName', 'testSituation', 'status', 'testCase', 'stepOrder', 'instruction']
 
     for col_num in range(len(columns)):
-        ws.write(row_num, col_num, columns[col_num], font_style)
+        ws.write(testcase_num, col_num, columns[col_num], font_style)
 
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
-
-    rows = TestCase.objects.filter(testGroup = group).values_list('systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
-                  'implementedBy', 'testName', 'testSituation', 'status')
-    for row in rows:
-        row_num += 1
-        for col_num in range(len(row)):
-            ws.write(row_num, col_num, row[col_num], font_style)
-
+    if group != None:
+        testcases = TestCase.objects.filter(testGroup = group).values_list('id', 'systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
+                      'implementedBy', 'testName', 'testSituation', 'status')
+    if component != None:
+        testcases = TestCase.objects.filter(component = component).values_list('id', 'systemRequirement', 'testGroup', 'component',
+                                                                    'testedFunctionality', 'testEngineer',
+                                                                    'implementedBy', 'testName', 'testSituation',
+                                                                    'status')
+    for testcase in testcases:
+        testcase_num += 1
+        for col_num in range(len(testcase)):
+            ws.write(testcase_num, col_num, testcase[col_num], font_style)
+        teststeps = TestStep.objects.filter(testCase = testcase).values_list('testCase', 'stepOrder', 'instruction')
+        for teststep in teststeps:
+            testcase_num += 1
+            for cols_num in range(len(teststep)):
+                ws.write(testcase_num, cols_num+10, teststep[cols_num], font_style)
     wb.save(response)
     return response
+
 #### Universal Views
 
 def index(request):

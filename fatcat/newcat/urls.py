@@ -23,7 +23,9 @@ urlpatterns = [
     url(r'^create/component/$', views.create_component, name='create_component'),
     url(r'^create/requirement/$', views.create_requirement, name='create_requirement'),
 
-    url(r'^group/(?P<group>[\w\-]+)/export/$', views.export_list, name='export_list'),
+    #exports
+    url(r'^group/(?P<group>[\w\-]+)/export/$', views.export_list, name='export_group'),
+    url(r'^component/(?P<component>[\w\-]+)/export/$', views.export_list, name='export_group'),
 
     url(r'^$', views.index, name='index'),
     url(r'^close/$', views.close_window, name='close_window'),
