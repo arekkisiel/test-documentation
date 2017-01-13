@@ -95,19 +95,16 @@ class ExpectedResult(models.Model):
 #### Forms
 
 class TestCaseBaseForm(forms.ModelForm):
+    numberOfCases = forms.IntegerField()
     class Meta:
         model = TestCase
         exclude = ('testName', 'testSituation', 'status')
 
-class TestCaseLateForm(forms.ModelForm):
-    class Meta:
-        model = TestCase
-        fields = ('testName', 'testSituation', 'status')
-
 class TestCaseForm(forms.ModelForm):
     class Meta:
         model = TestCase
-        fields = ()
+        fields = ('systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
+                  'implementedBy', 'testName', 'testSituation', 'status')
 
 class TestGroupForm(forms.ModelForm):
     class Meta:

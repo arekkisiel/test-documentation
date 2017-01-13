@@ -5,29 +5,30 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<div class="container">
 			<h1>Here you can create new test case</h1>
-			<form action="" method="post" id="createTestCaseForm">{% csrf_token %}
+			<form action="/newcat/create/save/" method="post" id="createTestCaseForm">{% csrf_token %}
                 <table class="table table-condensed">
+                    {{ dataDict }}
+                    {{ formset.management_form }}
+                    {% for form in formset %}
+                    {% render_field form.testGroup class+="form-control hidden" %}
+                    {% render_field form.systemRequirement class+="form-control hidden" %}
+                    {% render_field form.component class+="form-control hidden" %}
+                    {% render_field form.testedFunctionality class+="form-control hidden" %}
+                    {% render_field form.testEngineer class+="form-control hidden" %}
+                    {% render_field form.implementedBy class+="form-control hidden" %}
                     <tr>
-                        <td><div>
-							<label>Test Name:</label>
-							{% render_field testCaseLateForm.testName class+="form-control" %}</div></td>
-                        <td><div>
-							<label>Test Situation:</label>
-							{% render_field testCaseLateForm.testSituation class+="form-control" %}</div></td>
-                        <td><div>
-							<label>Status:</label>
-							{% render_field testCaseLateForm.status class+="form-control" %}</div></td>
+                    <td><label>Test Name</label>
+                        {% render_field form.testName class+="form-control" %}</td>
+                    <td><label>Test Situation</label>
+                        {% render_field form.testSituation class+="form-control" %}</td>
+                    <td><label>Status</label>
+                        {% render_field form.status class+="form-control" %}</td>
                     </tr>
+                    {% endfor %}
                 </table>
 				<button type="submit" class="btn btn-info">Submit</button>
 				<button type="reset" class="btn btn-info">Reset</button>
 				<a class="btn btn-info" href="http://localhost:8000/newcat/testcase/">Cancel</a>
 			</form>
 		</div>
-<script type="text/javascript">
-$(document).ready(function() {
-    $(window).unload(saveSettings);
-    loadSettings();
-});
-</script>
 {% endblock %}
