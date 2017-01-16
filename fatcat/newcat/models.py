@@ -116,7 +116,7 @@ class ComponentForm(forms.ModelForm):
         model = Component
         exclude = ()
 
-class RequirementForm(forms.ModelForm):
+class SystemRequirementForm(forms.ModelForm):
     class Meta:
         model = SystemRequirement
         exclude = ()

@@ -12,18 +12,15 @@
 						<td><div>
 							<label>Test Group:</label>
 							{% render_field testCaseForm.testGroup class+="form-control" %}
-							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/group', 'newwindow', 'width=900, height=500')">Create New</button>
-							<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
+							<button type="button" onclick='$("#createNewGroup").show()'>Create New</button></div></td>
 						<td><div>
 							<label>System Requirement:</label>
 							{% render_field testCaseForm.systemRequirement class+="form-control" %}
-							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/requirement', 'newwindow', 'width=900, height=500')">Create New</button>
-							<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
+							<button type="button" onclick='$("#createNewSystemRequirement").show()'>Create New</button></div></td>
                         <td><div>
 							<label>Tested Component:</label>
 							{% render_field testCaseForm.component class+="form-control" %}
-							<button type="button" onclick="window.open('http://localhost:8000/newcat/create/component', 'newwindow', 'width=900, height=500')">Create New</button>
-							<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
+							<button type="button" onclick='$("#createNewComponent").show()'>Create New</button></div></td>
 						<td><div>
 							<label>Tested Functionality:</label>
 							{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
@@ -39,15 +36,41 @@
 							<label>Number of Cases:</label>
 							{% render_field testCaseForm.numberOfCases class+="form-control" %}</div></td>
                 </table>
-				<button type="submit" class="btn btn-info">Submit</button>
+				<button type="submit" class="btn btn-info" name="testCaseSubmit">Submit</button>
 				<button type="reset" class="btn btn-info">Reset</button>
 				<a class="btn btn-info" href="http://localhost:8000/newcat/testcase/">Cancel</a>
 			</form>
+			<form action="/newcat/create/" method="post" id="createNewGroup" hidden="True">{% csrf_token %}
+                <label>New Group Name:</label>
+                {% render_field testGroupForm.testGroupName class+="form-control" %}
+                <button type="submit" class="btn btn-info" name="testGroupSubmit">Submit</button>
+            </form>
+            <form action="/newcat/create/" method="post" id="createNewSystemRequirement" hidden="True">{% csrf_token %}
+					<label>MKS ID:</label>
+					{% render_field systemRequirementForm.sysReq_MKS class+="form-control" %}
+					<label>Title:</label>
+					{% render_field systemRequirementForm.title class+="form-control" %}
+                <button type="submit" class="btn btn-info" name="systemRequirementSubmit">Submit</button>
+            </form>
+            <form action="/newcat/create/" method="post" id="createNewComponent" hidden="True">{% csrf_token %}
+					<label>Component Name:</label>
+					{% render_field componentForm.componentName class+="form-control" %}
+                <button type="submit" class="btn btn-info" name="componentSubmit">Submit</button>
+            </form>
 		</div>
 <script type="text/javascript">
 $(document).ready(function() {
     $(window).unload(saveSettings);
     loadSettings();
+    {% if newTestGroup %}
+    document.getElementById('id_testCase-testGroup').selectedIndex = document.getElementById('id_testCase-testGroup').options.length-1;
+    {% endif %}
+    {% if newSystemRequirement %}
+    document.getElementById('id_testCase-systemRequirement').selectedIndex = document.getElementById('id_testCase-systemRequirement').options.length-1;
+    {% endif %}
+    {% if newComponent %}
+    document.getElementById('id_testCase-component').selectedIndex = document.getElementById('id_testCase-component').options.length-1;
+    {% endif %}
 });
 </script>
 {% endblock %}

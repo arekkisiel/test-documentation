@@ -1,7 +1,7 @@
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.template import loader
 from django.template.response import TemplateResponse
@@ -10,8 +10,8 @@ from django.forms.models import modelformset_factory
 import xlwt
 
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm, ExpectedResultForm, \
-    TestGroupForm, RequirementForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm,\
-    TestCaseForm
+    TestGroupForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm,\
+    TestCaseForm, SystemRequirementForm
 
 
 #### List Views
@@ -54,29 +54,78 @@ def test_case(request, testCaseId):
 #### Create Views
 def create_testcase(request):
     testCaseForm = TestCaseBaseForm(request.POST or None, prefix='testCase')
+    testGroupForm = TestGroupForm(request.POST or None, prefix='testGroup')
+    systemRequirementForm = SystemRequirementForm(request.POST or None, prefix='systemRequirement')
+    componentForm = ComponentForm(request.POST or None, prefix='component')
     if request.method == 'POST':
-        if testCaseForm.is_valid():
-            systemRequirement = testCaseForm.data['testCase-systemRequirement']
-            testGroup = testCaseForm.data['testCase-testGroup']
-            component = testCaseForm.data['testCase-component']
-            testedFunctionality = testCaseForm.data['testCase-testedFunctionality']
-            testEngineer = testCaseForm.data['testCase-testEngineer']
-            implementedBy = testCaseForm.data['testCase-implementedBy']
-            request.session['numberOfCases'] = testCaseForm.data['testCase-numberOfCases']
-            data = {
-                'systemRequirement': systemRequirement,
-                'testGroup': testGroup,
-                'component': component,
-                'testedFunctionality': testedFunctionality,
-                'testEngineer': testEngineer,
-                'implementedBy': implementedBy}
-            request.session['data'] = data
-            return HttpResponseRedirect('/newcat/create/save/')
-        else:
-            return HttpResponseRedirect("/newcat/error/")
+        if 'componentSubmit' in request.POST:
+            if componentForm.is_valid():
+                new_component = Component(componentName=componentForm.data['component-componentName'])
+                new_component.save()
+                context = RequestContext(request, {
+                    'testCaseForm': testCaseForm,
+                    'testGroupForm': testGroupForm,
+                    'systemRequirementForm': systemRequirementForm,
+                    'componentForm': componentForm,
+                    'newComponent': new_component,
+                })
+                return render(request, 'newcat/testcase_create.html', context)
+            else:
+                return HttpResponseRedirect("/newcat/error/")
+        if 'systemRequirementSubmit' in request.POST:
+            if systemRequirementForm.is_valid():
+                new_requirement = SystemRequirement(sysReq_MKS=systemRequirementForm.data['systemRequirement-sysReq_MKS'], title=systemRequirementForm.data['systemRequirement-title'])
+                new_requirement.save()
+                context = RequestContext(request, {
+                    'testCaseForm': testCaseForm,
+                    'testGroupForm': testGroupForm,
+                    'systemRequirementForm': systemRequirementForm,
+                    'componentForm': componentForm,
+                    'newSystemRequirement': new_requirement,
+                })
+                return render(request, 'newcat/testcase_create.html', context)
+            else:
+                return HttpResponseRedirect("/newcat/error/")
+        if 'testGroupSubmit' in request.POST:
+            if testGroupForm.is_valid():
+                new_testgroup = TestGroup(testGroupName=testGroupForm.data['testGroup-testGroupName'])
+                new_testgroup.save()
+                context = RequestContext(request, {
+                    'testCaseForm': testCaseForm,
+                    'testGroupForm': testGroupForm,
+                    'systemRequirementForm': systemRequirementForm,
+                    'componentForm': componentForm,
+                    'newTestGroup': new_testgroup,
+                })
+                return render(request, 'newcat/testcase_create.html', context)
+            else:
+                return HttpResponseRedirect("/newcat/error/")
+        if 'testCaseSubmit' in request.POST:
+            if testCaseForm.is_valid():
+                systemRequirement = testCaseForm.data['testCase-systemRequirement']
+                testGroup = testCaseForm.data['testCase-testGroup']
+                component = testCaseForm.data['testCase-component']
+                testedFunctionality = testCaseForm.data['testCase-testedFunctionality']
+                testEngineer = testCaseForm.data['testCase-testEngineer']
+                implementedBy = testCaseForm.data['testCase-implementedBy']
+                request.session['numberOfCases'] = testCaseForm.data['testCase-numberOfCases']
+                data = {
+                    'systemRequirement': systemRequirement,
+                    'testGroup': testGroup,
+                    'component': component,
+                    'testedFunctionality': testedFunctionality,
+                    'testEngineer': testEngineer,
+                    'implementedBy': implementedBy}
+                request.session['data'] = data
+                return HttpResponseRedirect('/newcat/create/save/')
+            else:
+                return HttpResponseRedirect("/newcat/error/")
     else:
         context = RequestContext(request, {
             'testCaseForm': testCaseForm,
+            'testGroupForm': testGroupForm,
+            'systemRequirementForm': systemRequirementForm,
+            'componentForm': componentForm,
         })
         return render(request, 'newcat/testcase_create.html', context)
 
@@ -100,54 +149,6 @@ def create_testcase_late(request):
             'dataDict': dataDict,
         })
         return render(request, 'newcat/testcase_create_late.html', context)
-
-
-
-
-def create_testgroup(request):
-    form = TestGroupForm(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            new_testgroup = TestGroup(testGroupName = form.data['testGroupName'])
-            new_testgroup.save()
-            return HttpResponseRedirect("/newcat/close/")
-        else:
-            return HttpResponseRedirect("/newcat/error/")
-    template = loader.get_template('newcat/testgroup_create.html')
-    context = RequestContext(request, {
-        'form': form,
-    })
-    return HttpResponse(template.render(context))
-
-def create_component(request):
-    form = ComponentForm(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            new_component = Component(componentName = form.data['componentName'])
-            new_component.save()
-            return HttpResponseRedirect("/newcat/close/")
-        else:
-            return HttpResponseRedirect("/newcat/error/")
-    template = loader.get_template('newcat/component_create.html')
-    context = RequestContext(request, {
-        'form': form,
-    })
-    return HttpResponse(template.render(context))
-
-def create_requirement(request):
-    form = RequirementForm(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            new_requirement = SystemRequirement(sysReq_MKS = form.data['sysReq_MKS'], title = form.data['title'])
-            new_requirement.save()
-            return HttpResponseRedirect("/newcat/close/")
-        else:
-            return HttpResponseRedirect("/newcat/error/")
-    template = loader.get_template('newcat/requirement_create.html')
-    context = RequestContext(request, {
-        'form': form,
-    })
-    return HttpResponse(template.render(context))
 
 #### Edit and Delete Views
 
@@ -299,9 +300,6 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
 
 def index(request):
     return render(request, 'newcat/index.html')
-
-def close_window(request):
-    return render(request, 'newcat/close.html')
 
 def error(request):
     return render(request, 'newcat/error.html')

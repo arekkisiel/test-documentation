@@ -19,9 +19,6 @@ urlpatterns = [
 
     url(r'^create/$', views.create_testcase, name='create_testcase'),
     url(r'^create/save/$', views.create_testcase_late, name='save_testcase'),
-    url(r'^create/group/$', views.create_testgroup, name='create_testgroup'),
-    url(r'^create/component/$', views.create_component, name='create_component'),
-    url(r'^create/requirement/$', views.create_requirement, name='create_requirement'),
 
     #exports
     url(r'^group/(?P<group>[\w\-]+)/export/$', views.export_list, name='export_group'),
@@ -30,6 +27,5 @@ urlpatterns = [
     url(r'^status/(?P<status>[\w\-]+)/export/$', views.export_list, name='export_status'),
 
     url(r'^$', views.index, name='index'),
-    url(r'^close/$', views.close_window, name='close_window'),
     url(r'^error/$', views.error, name='error'),
 ]
