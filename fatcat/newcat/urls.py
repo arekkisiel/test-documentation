@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     url(r'^testcase/$', views.list_cases, name='list_cases'),
     url(r'^group/(?P<group>[\w\-]+)/$', views.list_group, name='list_group'),
-    url(r'^requirement/(?P<sysReq>[\w\-]+)/$', views.list_sysReq, name='sysReq'),
+    url(r'^requirement/(?P<systemRequirement>[\w\-]+)/$', views.list_systemRequirement, name='sysReq'),
     url(r'^status/(?P<status>[\w\-]+)/$', views.list_status, name='status'),
     url(r'^component/(?P<component>[\w\-]+)/$', views.list_component, name='component'),
 
@@ -26,6 +26,8 @@ urlpatterns = [
     #exports
     url(r'^group/(?P<group>[\w\-]+)/export/$', views.export_list, name='export_group'),
     url(r'^component/(?P<component>[\w\-]+)/export/$', views.export_list, name='export_group'),
+    url(r'^requirement/(?P<systemRequirement>[\w\-]+)/export/$', views.export_list, name='export_sr'),
+    url(r'^status/(?P<status>[\w\-]+)/export/$', views.export_list, name='export_status'),
 
     url(r'^$', views.index, name='index'),
     url(r'^close/$', views.close_window, name='close_window'),

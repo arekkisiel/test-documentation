@@ -16,15 +16,15 @@ from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm
 
 #### List Views
 
-def list_sysReq(request, sysReq):
-    testCasesList = TestCase.objects.filter(systemRequirement = sysReq)
-    context = RequestContext(request, {'testCasesList': testCasesList})
-    return TemplateResponse(request, 'newcat/list_cases.html', context)
+def list_systemRequirement(request, systemRequirement):
+    testCasesList = TestCase.objects.filter(systemRequirement = systemRequirement)
+    context = RequestContext(request, {'testCasesList': testCasesList, 'systemRequirement': systemRequirement})
+    return TemplateResponse(request, 'newcat/list_cases_systemRequirement.html', context)
 
 def list_status(request, status):
     testCasesList = TestCase.objects.filter(status = status)
-    context = RequestContext(request, {'testCasesList': testCasesList})
-    return TemplateResponse(request, 'newcat/list_cases.html', context)
+    context = RequestContext(request, {'testCasesList': testCasesList, 'status': status})
+    return TemplateResponse(request, 'newcat/list_cases_status.html', context)
 
 def list_component(request, component):
     testCasesList = TestCase.objects.filter(component = component)
@@ -208,25 +208,40 @@ def edit_expected_results(request, testCaseId, extraForms=3):
 
 #### Exporting to xls
 
-def export_list(request, group=None, component=None):
+def export_list(request, group=None, component=None, systemRequirement=None, status=None):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="Exported.xls"'
 
     wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Results')
-    testcase_num = 0
 
-    font_style = xlwt.XFStyle()
-    font_style.font.bold = True
+    font = xlwt.Font()
+    font.bold = True
 
-    columns = ['id', 'systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
-                  'implementedBy', 'testName', 'testSituation', 'status', 'testCase', 'stepOrder', 'instruction']
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['light_orange']
 
-    for col_num in range(len(columns)):
-        ws.write(testcase_num, col_num, columns[col_num], font_style)
+    alignment = xlwt.Alignment()
+    alignment.horz = xlwt.Alignment().HORZ_CENTER
+    alignment.vert = xlwt.Alignment().VERT_CENTER
+
+    headerStyle = xlwt.XFStyle()
+    headerStyle.pattern = pattern
+    headerStyle.font = font
+    headerStyle.alignment = alignment
+
+    bodyAlignment = xlwt.Alignment()
+    bodyAlignment.horz = xlwt.Alignment().HORZ_LEFT
+
+    bodyStyle = xlwt.XFStyle()
+    bodyStyle.alignment = bodyAlignment
+
+    generalColumns = ['Id', 'System Requirement', 'Test Group', 'Component', 'Tested Functionality', 'Test Engineer',
+                  'ImplementedBy', 'Test Name', 'Test Situation', 'Status']
+    specificColumns = ['Step Order', 'Instruction',
+               'Assert Type', 'Expected Result']
 
     # Sheet body, remaining rows
-    font_style = xlwt.XFStyle()
     if group != None:
         testcases = TestCase.objects.filter(testGroup = group).values_list('id', 'systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
                       'implementedBy', 'testName', 'testSituation', 'status')
@@ -235,15 +250,48 @@ def export_list(request, group=None, component=None):
                                                                     'testedFunctionality', 'testEngineer',
                                                                     'implementedBy', 'testName', 'testSituation',
                                                                     'status')
+    if systemRequirement != None:
+        testcases = TestCase.objects.filter(systemRequirement = systemRequirement).values_list('id', 'systemRequirement', 'testGroup',
+                                                                             'component',
+                                                                             'testedFunctionality', 'testEngineer',
+                                                                             'implementedBy', 'testName',
+                                                                             'testSituation',
+                                                                             'status')
+
+    if status != None:
+        testcases = TestCase.objects.filter(status = status).values_list('id', 'systemRequirement', 'testGroup',
+                                                                             'component',
+                                                                             'testedFunctionality', 'testEngineer',
+                                                                             'implementedBy', 'testName',
+                                                                             'testSituation',
+                                                                             'status')
     for testcase in testcases:
-        testcase_num += 1
+        ws = wb.add_sheet(str(testcase[0]) + '. ' + str(testcase[7]))
+        ws.row(0).height_mismatch = True
+        ws.row(0).height = 800
+        ws.row(2).height_mismatch = True
+        ws.row(2).height = 800
+        for col_num in range(len(generalColumns)):
+            ws.col(col_num).width = 350 * (len(generalColumns[col_num]))
+            ws.write(0, col_num, generalColumns[col_num], headerStyle)
+        for col_num in range(len(specificColumns)):
+            ws.col(col_num).width = 530 * (len(specificColumns[col_num]))
+            ws.write(2, col_num, specificColumns[col_num], headerStyle)
+        testcase_num = 1
         for col_num in range(len(testcase)):
-            ws.write(testcase_num, col_num, testcase[col_num], font_style)
-        teststeps = TestStep.objects.filter(testCase = testcase).values_list('testCase', 'stepOrder', 'instruction')
-        for teststep in teststeps:
-            testcase_num += 1
-            for cols_num in range(len(teststep)):
-                ws.write(testcase_num, cols_num+10, teststep[cols_num], font_style)
+            ws.write(testcase_num, col_num, testcase[col_num], bodyStyle)
+        testSteps = TestStep.objects.filter(testCase = testcase).values_list('stepOrder', 'instruction')
+        testAssertions = ExpectedResult.objects.filter(testCase = testcase).values_list('assertType', 'expectedResult')
+        teststep_num = testassertion_num =testcase_num
+        for teststep in testSteps:
+            for col_num in range(len(teststep)):
+                ws.write(teststep_num+2, col_num, teststep[col_num], bodyStyle)
+            teststep_num += 1
+        for testAssertion in testAssertions:
+            for col_num in range(len(testAssertion)):
+                ws.write(testassertion_num+2, col_num+2, testAssertion[col_num], bodyStyle)
+            testassertion_num += 1
+
     wb.save(response)
     return response
 
