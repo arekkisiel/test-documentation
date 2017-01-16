@@ -233,6 +233,8 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
 
     bodyAlignment = xlwt.Alignment()
     bodyAlignment.horz = xlwt.Alignment().HORZ_LEFT
+    bodyAlignment.vert = xlwt.Alignment().VERT_CENTER
+    bodyAlignment.wrap = 1
 
     bodyStyle = xlwt.XFStyle()
     bodyStyle.alignment = bodyAlignment
@@ -266,18 +268,22 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
                                                                              'implementedBy', 'testName',
                                                                              'testSituation',
                                                                              'status')
-    for testcase in testcases:
-        ws = wb.add_sheet(str(testcase[0]) + '. ' + str(testcase[7]))
+    for testcase in reversed(testcases):
+        ws = wb.add_sheet(str(testcase[0]) + '.')
         ws.row(0).height_mismatch = True
         ws.row(0).height = 800
         ws.row(2).height_mismatch = True
         ws.row(2).height = 800
         for col_num in range(len(generalColumns)):
-            ws.col(col_num).width = 350 * (len(generalColumns[col_num]))
+            ws.col(col_num).width = 400 * (len(generalColumns[col_num]))
             ws.write(0, col_num, generalColumns[col_num], headerStyle)
         for col_num in range(len(specificColumns)):
-            ws.col(col_num).width = 530 * (len(specificColumns[col_num]))
-            ws.write(2, col_num, specificColumns[col_num], headerStyle)
+            #Two lines
+            #ws.col(col_num).width = 530 * (len(specificColumns[col_num]))
+            #ws.write(2, col_num, specificColumns[col_num], headerStyle)
+            #One line all
+            ws.col(col_num+10).width = 530 * (len(specificColumns[col_num]))
+            ws.write(0, col_num+10, specificColumns[col_num], headerStyle)
         testcase_num = 1
         for col_num in range(len(testcase)):
             ws.write(testcase_num, col_num, testcase[col_num], bodyStyle)
@@ -286,11 +292,21 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
         teststep_num = testassertion_num =testcase_num
         for teststep in testSteps:
             for col_num in range(len(teststep)):
-                ws.write(teststep_num+2, col_num, teststep[col_num], bodyStyle)
+                #ws.row(teststep_num+2).height_mismatch = True
+                #ws.row(teststep_num+2).height = 800
+                #ws.write(teststep_num+2, col_num, teststep[col_num], bodyStyle)
+                ws.row(teststep_num).height_mismatch = True
+                ws.row(teststep_num).height = 800
+                ws.write(teststep_num, col_num+10, teststep[col_num], bodyStyle)
             teststep_num += 1
         for testAssertion in testAssertions:
             for col_num in range(len(testAssertion)):
-                ws.write(testassertion_num+2, col_num+2, testAssertion[col_num], bodyStyle)
+                #ws.row(testassertion_num+2).height_mismatch = True
+                #ws.row(testassertion_num+2).height = 800
+                #ws.write(testassertion_num+2, col_num+2, testAssertion[col_num], bodyStyle)
+                ws.row(testassertion_num).height_mismatch = True
+                ws.row(testassertion_num).height = 800
+                ws.write(testassertion_num, col_num + 12, testAssertion[col_num], bodyStyle)
             testassertion_num += 1
 
     wb.save(response)

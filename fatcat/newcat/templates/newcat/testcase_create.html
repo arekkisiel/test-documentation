@@ -2,6 +2,7 @@
 {% block content %}
 {% load static %}
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<div class="container">
 			<h1>Here you can create new test case</h1>
 			<form action="/newcat/create/" method="post" id="createTestCaseForm">{% csrf_token %}
@@ -12,15 +13,15 @@
 						<td><div>
 							<label>Test Group:</label>
 							{% render_field testCaseForm.testGroup class+="form-control" %}
-							<button type="button" onclick='$("#createNewGroup").show()'>Create New</button></div></td>
+							<button type="button" data-toggle="modal" data-target="#createNewGroupDiv">Create New</button></div></td>
 						<td><div>
 							<label>System Requirement:</label>
 							{% render_field testCaseForm.systemRequirement class+="form-control" %}
-							<button type="button" onclick='$("#createNewSystemRequirement").show()'>Create New</button></div></td>
+							<button type="button" data-toggle="modal" data-target="#createNewSystemRequirementDiv">Create New</button></div></td>
                         <td><div>
 							<label>Tested Component:</label>
 							{% render_field testCaseForm.component class+="form-control" %}
-							<button type="button" onclick='$("#createNewComponent").show()'>Create New</button></div></td>
+							<button type="button" data-toggle="modal" data-target="#createNewComponentDiv">Create New</button></div></td>
 						<td><div>
 							<label>Tested Functionality:</label>
 							{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
@@ -40,23 +41,27 @@
 				<button type="reset" class="btn btn-info">Reset</button>
 				<a class="btn btn-info" href="http://localhost:8000/newcat/testcase/">Cancel</a>
 			</form>
-			<form action="/newcat/create/" method="post" id="createNewGroup" hidden="True">{% csrf_token %}
-                <label>New Group Name:</label>
-                {% render_field testGroupForm.testGroupName class+="form-control" %}
-                <button type="submit" class="btn btn-info" name="testGroupSubmit">Submit</button>
-            </form>
-            <form action="/newcat/create/" method="post" id="createNewSystemRequirement" hidden="True">{% csrf_token %}
+            <div class="col-sm-6 col-sm-offset-3 text-center modal" id="createNewGroupDiv">
+                <form action="/newcat/create/" method="post" id="createNewGroup">{% csrf_token %}
+                    <label>New Group Name:</label>
+                    {% render_field testGroupForm.testGroupName class+="form-control" %}
+                    <button type="submit" class="btn btn-info" name="testGroupSubmit">Submit</button>
+                </form>
+            </div>
+            <div class="col-sm-6 col-sm-offset-3 text-center modal" id="createNewSystemRequirementDiv">
+            <form action="/newcat/create/" method="post" id="createNewSystemRequirement">{% csrf_token %}
 					<label>MKS ID:</label>
 					{% render_field systemRequirementForm.sysReq_MKS class+="form-control" %}
 					<label>Title:</label>
 					{% render_field systemRequirementForm.title class+="form-control" %}
                 <button type="submit" class="btn btn-info" name="systemRequirementSubmit">Submit</button>
-            </form>
-            <form action="/newcat/create/" method="post" id="createNewComponent" hidden="True">{% csrf_token %}
+            </form></div>
+            <div class="col-sm-6 col-sm-offset-3 text-center modal" id="createNewComponentDiv">
+            <form action="/newcat/create/" method="post" id="createNewComponent">{% csrf_token %}
 					<label>Component Name:</label>
 					{% render_field componentForm.componentName class+="form-control" %}
                 <button type="submit" class="btn btn-info" name="componentSubmit">Submit</button>
-            </form>
+            </form></div>
 		</div>
 <script type="text/javascript">
 $(document).ready(function() {
