@@ -1,13 +1,17 @@
+import reversion
+import json
+from django.utils import timezone
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.template import RequestContext
-from django.template import loader
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
 from django.forms.models import modelformset_factory
 import xlwt
+from reversion.models import Version
+from reversion_compare.views import HistoryCompareDetailView
 
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm, ExpectedResultForm, \
     TestGroupForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm,\
@@ -319,3 +323,17 @@ def index(request):
 
 def error(request):
     return render(request, 'newcat/error.html')
+
+####History Views
+
+def list_changes(request):
+    versions = Version.objects.all()
+    context = RequestContext(request, {'versions': versions,})
+    return TemplateResponse(request, 'newcat/list_changes.html', context)
+
+class TestCaseHistoryCompareView(HistoryCompareDetailView):
+    model = TestCase
+
+    def get_context_data(self, **kwargs):
+        context = super(TestCaseHistoryCompareView, self).get_context_data(**kwargs)
+        return context

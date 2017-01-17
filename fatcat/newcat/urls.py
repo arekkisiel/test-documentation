@@ -8,6 +8,8 @@ urlpatterns = [
     url(r'^requirement/(?P<systemRequirement>[\w\-]+)/$', views.list_systemRequirement, name='sysReq'),
     url(r'^status/(?P<status>[\w\-]+)/$', views.list_status, name='status'),
     url(r'^component/(?P<component>[\w\-]+)/$', views.list_component, name='component'),
+    url(r'^history/$', views.list_changes, name='list_changes'),
+    url(r'^testcase/(?P<pk>[0-9]+)/history/$', views.TestCaseHistoryCompareView.as_view(), name='testcase-history' ),
 
     url(r'^testcase/(?P<testCaseId>[0-9]+)/$', views.test_case, name='test_case'),
 

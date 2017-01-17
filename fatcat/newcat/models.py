@@ -1,4 +1,6 @@
 from django.db import models
+import reversion
+from reversion_compare.views import HistoryCompareDetailView
 
 # Create your models here.
 from django import forms
@@ -50,7 +52,7 @@ class TestCase(models.Model):
     status = models.CharField(max_length=11, choices=STATUS)
 
     def __str__(self):
-        return self
+        return self.testName
     def TestCase(self):
         return self
 
@@ -61,7 +63,7 @@ class TestStep(models.Model):
     class Meta:
         unique_together = ("testCase", "stepOrder")
     def __str__(self):
-        return self
+        return self.instruction
 
 
 class ExpectedResult(models.Model):
@@ -90,7 +92,7 @@ class ExpectedResult(models.Model):
     assertType = models.CharField(max_length=11, choices=ASSERT_TYPE)
 
     def __str__(self):
-        return self
+        return self.expectedResult
 
 #### Forms
 
@@ -130,4 +132,13 @@ class TestStepsForm(forms.ModelForm):
     class Meta:
         model = TestStep
         exclude = ('testCase',)
+
+
+# Versioning
+    reversion.register(TestStep)
+    reversion.register(ExpectedResult)
+    reversion.register(TestGroup)
+    reversion.register(SystemRequirement)
+    reversion.register(Component)
+    reversion.register(TestCase, follow=["teststep_set", "expectedresult_set"])
 
