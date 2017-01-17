@@ -20,13 +20,13 @@
 		{% for testCase in testCasesList %}
 			<tr>
 				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
-                <td><div style="text-align:center"><a href="http://localhost:8000/newcat/component/{{ testCase.component }}">{{ testCase.component }}</a></div></td>
-				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/group/{{ testCase.testGroup }}">{{ testCase.testGroup }}</a></div></td>
-				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/requirement/{{ testCase.systemRequirement.sysReq_MKS }}">{{ testCase.systemRequirement }}</a></div></td>
-				<td><div style="text-align:center">{{ testCase.testName }}</div></td>
-				<td><div style="text-align:center">{{ testCase.testEngineer }}</div></td>
-				<td><div style="text-align:center">{{ testCase.implementedBy }}</div></td>
-				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/status/{{ testCase.status }}">{{ testCase.status }}</a></div></td>
+                <td><div style="text-align:center"><a href="http://localhost:8000/newcat/component/{{ testCase.component }}">{{ testCase.component|truncatechars:30 }}</a></div></td>
+				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/group/{{ testCase.testGroup }}">{{ testCase.testGroup|truncatechars:30 }}</a></div></td>
+				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/requirement/{{ testCase.systemRequirement.sysReq_MKS }}">{{ testCase.systemRequirement|truncatechars:30 }}</a></div></td>
+				<td><div style="text-align:center">{{ testCase.testName|truncatechars:30 }}</div></td>
+				<td><div style="text-align:center">{{ testCase.testEngineer|truncatechars:30 }}</div></td>
+				<td><div style="text-align:center">{{ testCase.implementedBy|truncatechars:30 }}</div></td>
+				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/status/{{ testCase.status }}">{{ testCase.status |truncatechars:30}}</a></div></td>
 			</tr>
 		{% endfor %}
 		</tbody>

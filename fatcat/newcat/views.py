@@ -74,8 +74,6 @@ def create_testcase(request):
                     'newComponent': new_component,
                 })
                 return render(request, 'newcat/testcase_create.html', context)
-            else:
-                return HttpResponseRedirect("/newcat/error/")
         if 'systemRequirementSubmit' in request.POST:
             if systemRequirementForm.is_valid():
                 new_requirement = SystemRequirement(sysReq_MKS=systemRequirementForm.data['systemRequirement-sysReq_MKS'], title=systemRequirementForm.data['systemRequirement-title'])
@@ -88,8 +86,6 @@ def create_testcase(request):
                     'newSystemRequirement': new_requirement,
                 })
                 return render(request, 'newcat/testcase_create.html', context)
-            else:
-                return HttpResponseRedirect("/newcat/error/")
         if 'testGroupSubmit' in request.POST:
             if testGroupForm.is_valid():
                 new_testgroup = TestGroup(testGroupName=testGroupForm.data['testGroup-testGroupName'])
@@ -102,8 +98,6 @@ def create_testcase(request):
                     'newTestGroup': new_testgroup,
                 })
                 return render(request, 'newcat/testcase_create.html', context)
-            else:
-                return HttpResponseRedirect("/newcat/error/")
         if 'testCaseSubmit' in request.POST:
             if testCaseForm.is_valid():
                 systemRequirement = testCaseForm.data['testCase-systemRequirement']
@@ -122,16 +116,14 @@ def create_testcase(request):
                     'implementedBy': implementedBy}
                 request.session['data'] = data
                 return HttpResponseRedirect('/newcat/create/save/')
-            else:
-                return HttpResponseRedirect("/newcat/error/")
-    else:
-        context = RequestContext(request, {
-            'testCaseForm': testCaseForm,
-            'testGroupForm': testGroupForm,
-            'systemRequirementForm': systemRequirementForm,
-            'componentForm': componentForm,
-        })
-        return render(request, 'newcat/testcase_create.html', context)
+    context = RequestContext(request, {
+        'testCaseForm': testCaseForm,
+        'testGroupForm': testGroupForm,
+        'systemRequirementForm': systemRequirementForm,
+        'componentForm': componentForm,
+        'displayErrors': True,
+    })
+    return render(request, 'newcat/testcase_create.html', context)
 
 def create_testcase_late(request):
     numberOfCases = int(request.session['numberOfCases'])
@@ -250,28 +242,16 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
 
     # Sheet body, remaining rows
     if group != None:
-        testcases = TestCase.objects.filter(testGroup = group).values_list('id', 'systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
-                      'implementedBy', 'testName', 'testSituation', 'status')
+        testcases_list = TestCase.objects.filter(testGroup = group)
     if component != None:
-        testcases = TestCase.objects.filter(component = component).values_list('id', 'systemRequirement', 'testGroup', 'component',
-                                                                    'testedFunctionality', 'testEngineer',
-                                                                    'implementedBy', 'testName', 'testSituation',
-                                                                    'status')
+        testcases_list = TestCase.objects.filter(component = component)
     if systemRequirement != None:
-        testcases = TestCase.objects.filter(systemRequirement = systemRequirement).values_list('id', 'systemRequirement', 'testGroup',
-                                                                             'component',
-                                                                             'testedFunctionality', 'testEngineer',
-                                                                             'implementedBy', 'testName',
-                                                                             'testSituation',
-                                                                             'status')
-
+        testcases_list = TestCase.objects.filter(systemRequirement = systemRequirement)
     if status != None:
-        testcases = TestCase.objects.filter(status = status).values_list('id', 'systemRequirement', 'testGroup',
-                                                                             'component',
-                                                                             'testedFunctionality', 'testEngineer',
-                                                                             'implementedBy', 'testName',
-                                                                             'testSituation',
-                                                                             'status')
+        testcases_list = TestCase.objects.filter(status = status)
+
+    testcases = testcases_list.values_list('id', 'systemRequirement', 'testGroup', 'component', 'testedFunctionality',
+                                           'testEngineer', 'implementedBy', 'testName', 'testSituation', 'status')
     for testcase in reversed(testcases):
         ws = wb.add_sheet(str(testcase[0]) + '.')
         ws.row(0).height_mismatch = True

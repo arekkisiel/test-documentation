@@ -19,20 +19,18 @@ class Component(models.Model):
         return self.componentName
 
 class SystemRequirement(models.Model):
-    sysReq_MKS = models.BigIntegerField(unique=True)
+    sysReq_MKS = models.CharField(max_length=30, unique=True)
     title = models.CharField(max_length=100, unique=True)
 
-    def __int__(self):
-        return self.sysReq_MKS
     def __str__(self):
         return repr(self.sysReq_MKS)+ "  " + self.title
 
 
 class TestCase(models.Model):
-    testName = models.CharField(max_length=200)
-    testedFunctionality = models.CharField(max_length=200)
-    testEngineer = models.CharField(max_length=200)
-    implementedBy = models.CharField(max_length=200)
+    testName = models.CharField(max_length=100)
+    testedFunctionality = models.CharField(max_length=100)
+    testEngineer = models.CharField(max_length=100)
+    implementedBy = models.CharField(max_length=100)
     testSituation = models.CharField(max_length=1000)
     testGroup = models.ForeignKey(TestGroup, to_field='testGroupName')
     systemRequirement = models.ForeignKey(SystemRequirement, to_field='sysReq_MKS')
@@ -58,7 +56,7 @@ class TestCase(models.Model):
 
 class TestStep(models.Model):
     testCase = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
-    instruction = models.CharField(max_length=1000)
+    instruction = models.CharField(max_length=500)
     stepOrder = models.IntegerField()
     class Meta:
         unique_together = ("testCase", "stepOrder")
@@ -68,7 +66,7 @@ class TestStep(models.Model):
 
 class ExpectedResult(models.Model):
     testCase = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
-    expectedResult = models.CharField(max_length=1000)
+    expectedResult = models.CharField(max_length=500)
     TRUE = 'TRUE'
     FALSE = 'FALSE'
     FAIL = 'FAIL'

@@ -10,71 +10,80 @@
 					<tr>
 							{% load widget_tweaks %}
 						{{ testCaseForm.management_form }}
+						{% if displayErrors %}{{ testCaseForm.non_field_errors }}{% endif %}
 						<td><div>
 							<label>Test Group:</label>
+							{% if displayErrors %}{{ testCaseForm.testGroup.errors }}{% endif %}
 							{% render_field testCaseForm.testGroup class+="form-control" %}
 							<button type="button" data-toggle="modal" data-target="#createNewGroupDiv">Create New</button></div></td>
 						<td><div>
 							<label>System Requirement:</label>
+							{% if displayErrors %}{{ testCaseForm.systemRequirement.errors }}{% endif %}
 							{% render_field testCaseForm.systemRequirement class+="form-control" %}
 							<button type="button" data-toggle="modal" data-target="#createNewSystemRequirementDiv">Create New</button></div></td>
                         <td><div>
 							<label>Tested Component:</label>
+							{% if displayErrors %}{{ testCaseForm.component.errors }}{% endif %}
 							{% render_field testCaseForm.component class+="form-control" %}
 							<button type="button" data-toggle="modal" data-target="#createNewComponentDiv">Create New</button></div></td>
 						<td><div>
 							<label>Tested Functionality:</label>
+							{% if displayErrors %}{{ testCaseForm.testedFunctionality.errors }}{% endif %}
 							{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
 					</tr>
 					<tr>
 						<td><div>
 							<label>Test Engineer:</label>
+							{% if displayErrors %}{{ testCaseForm.testEngineer.errors }}{% endif %}
 							{% render_field testCaseForm.testEngineer class+="form-control" %}</div></td>
 						<td><div>
 							<label>Implemented By:</label>
+							{% if displayErrors %}{{ testCaseForm.implementedBy.errors }}{% endif %}
 							{% render_field testCaseForm.implementedBy class+="form-control" %}</div></td>
-                    <td><div>
+                    	<td><div>
 							<label>Number of Cases:</label>
+							{% if displayErrors %}{{ testCaseForm.numberOfCases.errors }}{% endif %}
 							{% render_field testCaseForm.numberOfCases class+="form-control" %}</div></td>
                 </table>
 				<button type="submit" class="btn btn-info" name="testCaseSubmit">Submit</button>
 				<button type="reset" class="btn btn-info">Reset</button>
 				<a class="btn btn-info" href="http://localhost:8000/newcat/testcase/">Cancel</a>
 			</form>
-            <div class="col-sm-6 col-sm-offset-3 text-center modal" id="createNewGroupDiv">
+            <div class="col-sm-6 col-sm-offset-3 text-center modal modal-container" id="createNewGroupDiv">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <form action="/newcat/create/" method="post" id="createNewGroup">{% csrf_token %}
                     <label>New Group Name:</label>
                     {% render_field testGroupForm.testGroupName class+="form-control" %}
                     <button type="submit" class="btn btn-info" name="testGroupSubmit">Submit</button>
                 </form>
             </div>
-            <div class="col-sm-6 col-sm-offset-3 text-center modal" id="createNewSystemRequirementDiv">
-            <form action="/newcat/create/" method="post" id="createNewSystemRequirement">{% csrf_token %}
-					<label>MKS ID:</label>
-					{% render_field systemRequirementForm.sysReq_MKS class+="form-control" %}
-					<label>Title:</label>
-					{% render_field systemRequirementForm.title class+="form-control" %}
-                <button type="submit" class="btn btn-info" name="systemRequirementSubmit">Submit</button>
-            </form></div>
-            <div class="col-sm-6 col-sm-offset-3 text-center modal" id="createNewComponentDiv">
-            <form action="/newcat/create/" method="post" id="createNewComponent">{% csrf_token %}
+            <div class="col-sm-6 col-sm-offset-3 text-center modal modal-container" id="createNewSystemRequirementDiv">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <form action="/newcat/create/" method="post" id="createNewSystemRequirement">{% csrf_token %}
+                        <label>MKS ID:</label>
+                        {% render_field systemRequirementForm.sysReq_MKS class+="form-control" %}
+                        <label>Title:</label>
+                        {% render_field systemRequirementForm.title class+="form-control" %}
+                    <button type="submit" class="btn btn-info" name="systemRequirementSubmit">Submit</button>
+                </form></div>
+            <div class="col-sm-6 col-sm-offset-3 text-center modal modal-container" id="createNewComponentDiv">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <form action="/newcat/create/" method="post" id="createNewComponent">{% csrf_token %}
 					<label>Component Name:</label>
 					{% render_field componentForm.componentName class+="form-control" %}
                 <button type="submit" class="btn btn-info" name="componentSubmit">Submit</button>
-            </form></div>
+                </form></div>
 		</div>
 <script type="text/javascript">
 $(document).ready(function() {
     $(window).unload(saveSettings);
     loadSettings();
     {% if newTestGroup %}
-    document.getElementById('id_testCase-testGroup').selectedIndex = document.getElementById('id_testCase-testGroup').options.length-1;
-    {% endif %}
-    {% if newSystemRequirement %}
-    document.getElementById('id_testCase-systemRequirement').selectedIndex = document.getElementById('id_testCase-systemRequirement').options.length-1;
-    {% endif %}
-    {% if newComponent %}
-    document.getElementById('id_testCase-component').selectedIndex = document.getElementById('id_testCase-component').options.length-1;
+        document.getElementById('id_testCase-testGroup').selectedIndex = document.getElementById('id_testCase-testGroup').options.length-1;
+    {% elif newSystemRequirement %}
+        document.getElementById('id_testCase-systemRequirement').selectedIndex = document.getElementById('id_testCase-systemRequirement').options.length-1;
+    {% elif newComponent %}
+        document.getElementById('id_testCase-component').selectedIndex = document.getElementById('id_testCase-component').options.length-1;
     {% endif %}
 });
 </script>

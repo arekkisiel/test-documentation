@@ -14,9 +14,9 @@
 		<tbody>
 		<tr>
 			<td><div>{{ testCase.id }}</div></td>
-			<td><div>{{ testCase.testName }}</div></td>
-			<td><div>{{ testCase.testGroup }}</div></td>
-			<td><div>{{ testCase.systemRequirement }}</div></td>
+			<td><div>{{ testCase.testName|wordwrap:12}}</div></td>
+			<td><div>{{ testCase.testGroup|wordwrap:12 }}</div></td>
+			<td><div>{{ testCase.systemRequirement|wordwrap:12 }}</div></td>
         </tr>
         </tbody>
         <thead><tr>
@@ -25,10 +25,10 @@
 			    <th>Implemented By</th>
 				<th>Status</th>
             </tr></thead><tbody><tr>
-			<td><div>{{ testCase.testedFunctionality }}</div></td>
-			<td><div>{{ testCase.testEngineer }}</div></td>
-			<td><div>{{ testCase.implementedBy }}</div></td>
-			<td><div>{{ testCase.status }}</div></td>
+			<td><div>{{ testCase.testedFunctionality|wordwrap:12 }}</div></td>
+			<td><div>{{ testCase.testEngineer|wordwrap:12 }}</div></td>
+			<td><div>{{ testCase.implementedBy|wordwrap:12 }}</div></td>
+			<td><div>{{ testCase.status|wordwrap:12 }}</div></td>
 		</tr>
 		</tbody>
 	</table>
