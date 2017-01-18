@@ -15,12 +15,12 @@
 		<tbody>
 		{% for testCase in testCasesList %}
 			<tr>
-				<td><div style="text-align:center"><a href="/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
-				<td><div style="text-align:center"><a href="/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></div></td>
-				<td><div style="text-align:center">{{ testCase.test_unit }}</div></td>
-				<td><div style="text-align:center">{{ testCase.test_id }}</div></td>
-				<td><div style="text-align:center">{{ testCase.implemented }}</div></td>
-				<td><div style="text-align:center"><a href="/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></div></td>
+				<td><div style="text-align:center"><a href="/oldcat/testcase/{{ testCase.id }}">{{ testCase.id|truncatechars:30 }}</a></div></td>
+				<td><div style="text-align:center"><a href="/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements|truncatechars:30 }}</a></div></td>
+				<td><div style="text-align:center">{{ testCase.test_unit|truncatechars:30 }}</div></td>
+				<td><div style="text-align:center">{{ testCase.test_id|truncatechars:30 }}</div></td>
+				<td><div style="text-align:center">{{ testCase.implemented|truncatechars:30 }}</div></td>
+				<td><div style="text-align:center"><a href="/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename|truncatechars:30 }}</a></div></td>
 			</tr>
 		{% endfor %}
 		</tbody>
