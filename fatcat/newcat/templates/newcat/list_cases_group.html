@@ -19,20 +19,20 @@
 		<tbody>
 		{% for testCase in testCasesList %}
 			<tr>
-				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
-                <td><div style="text-align:center"><a href="http://localhost:8000/newcat/component/{{ testCase.component }}">{{ testCase.component }}</a></div></td>
-				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/group/{{ testCase.testGroup }}">{{ testCase.testGroup }}</a></div></td>
-				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/requirement/{{ testCase.systemRequirement.sysReq_MKS }}">{{ testCase.systemRequirement }}</a></div></td>
+				<td><div style="text-align:center"><a href="/newcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
+                <td><div style="text-align:center"><a href="/newcat/component/{{ testCase.component }}">{{ testCase.component }}</a></div></td>
+				<td><div style="text-align:center"><a href="/newcat/group/{{ testCase.testGroup }}">{{ testCase.testGroup }}</a></div></td>
+				<td><div style="text-align:center"><a href="/newcat/requirement/{{ testCase.systemRequirement.sysReq_MKS }}">{{ testCase.systemRequirement }}</a></div></td>
 				<td><div style="text-align:center">{{ testCase.testName }}</div></td>
 				<td><div style="text-align:center">{{ testCase.testEngineer }}</div></td>
 				<td><div style="text-align:center">{{ testCase.implementedBy }}</div></td>
-				<td><div style="text-align:center"><a href="http://localhost:8000/newcat/status/{{ testCase.status }}">{{ testCase.status }}</a></div></td>
+				<td><div style="text-align:center"><a href="/newcat/status/{{ testCase.status }}">{{ testCase.status }}</a></div></td>
 			</tr>
 		{% endfor %}
 		</tbody>
 	</table>
-	<a class="btn btn-default btn-sm" href="http://localhost:8000/newcat/group/{{ group }}/export/">Export List</a>
-	<a class="btn btn-default btn-sm" href="http://localhost:8000/newcat/testcase/">Show All</a>
+	<a class="btn btn-default btn-sm" href="/newcat/group/{{ group }}/export/">Export List</a>
+	<a class="btn btn-default btn-sm" href="/newcat/testcase/">Show All</a>
 <script type="text/javascript">
 $(document).ready(function(){
     $('#testCaseTable').DataTable();

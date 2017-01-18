@@ -33,7 +33,7 @@
 		</table>
 		<button type="submit" class="btn btn-default btn-sm">Submit</button>
         <button type="reset" class="btn btn-default btn-sm">Reset</button>
-        <a class="btn btn-default btn-sm" href="http://localhost:8000/newcat/testcase/{{ testCaseId }}/">Cancel</a>
+        <a class="btn btn-default btn-sm" href="/newcat/testcase/{{ testCaseId }}/">Cancel</a>
         <a class="btn btn-default btn-sm" onclick="increment(extraForms)">Add More Steps</a>
         <a class="btn btn-default btn-sm"  onclick="decrement(extraForms)">Add Less Steps</a>
     </form>
@@ -43,11 +43,11 @@
 
     function increment(param){
         param++;
-        window.location.href = "http://localhost:8000/newcat/testcase/{{ testCaseId }}/edit/steps/"+param;
+        window.location.href = "/newcat/testcase/{{ testCaseId }}/edit/steps/"+param;
     }
     function decrement(param){
         if (param>1){param--;}
-        window.location.href = "http://localhost:8000/newcat/testcase/{{ testCaseId }}/edit/steps/"+param;
+        window.location.href = "/newcat/testcase/{{ testCaseId }}/edit/steps/"+param;
     }
 </script>
 {% endblock %}

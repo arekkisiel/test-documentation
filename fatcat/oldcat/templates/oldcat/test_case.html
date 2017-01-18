@@ -11,7 +11,7 @@
                 <td>{{ testCase.id }}</td>
                 <td>{{ testCase.test_id }}</td>
                 <td>{{ testCase.test_unit }}</td>
-                <td><a href="http://localhost:8000/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></td>
+                <td><a href="/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></td>
             </tr>
             <tr>
                 <th><label>Additional Info</label></th>
@@ -23,7 +23,7 @@
 					<td>{{ testCase.additional_info }}</td>
 					<td>{{ testCase.precondition }}</td>
 					<td>{{ testCase.implemented }}</td>
-					<td><a href="http://localhost:8000/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></td>
+					<td><a href="/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></td>
 				</tr>
 		</table>
 		<table id="testSteps" class="table table-condensed">
