@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'reversion_compare',
     'oldcat',
     'newcat',
+    'fatcat',
 )
 
 MIDDLEWARE_CLASSES = (

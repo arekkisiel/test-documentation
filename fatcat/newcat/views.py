@@ -298,9 +298,6 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
 
 #### Universal Views
 
-def index(request):
-    return render(request, 'newcat/index.html')
-
 def error(request):
     return render(request, 'newcat/error.html')
 

@@ -5,9 +5,6 @@ from django.template.response import TemplateResponse
 from .models import OldCase
 from django.shortcuts import render
 
-def index(request):
-    return render(request, 'oldcat/index.html')
-
 def list_sysReq(request, sysReq):
     testCasesList = OldCase.objects.filter(system_requirements = sysReq)
     context = RequestContext(request, {'testCasesList': testCasesList})

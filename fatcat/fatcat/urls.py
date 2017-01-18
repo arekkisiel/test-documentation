@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from . import views
 
 
 urlpatterns = [
+    url(r'^fatcat/$', views.index, name='index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^oldcat/', include('oldcat.urls')),
     url(r'^newcat/', include('newcat.urls')),
