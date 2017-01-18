@@ -43,6 +43,10 @@
 				<td><div>
 					<label>Status:</label>
 					{% render_field testCaseForm.status class+="form-control" %}</div></td></tr>
+			<tr><div>
+				<label>Comment:</label>
+				{% render_field testCaseForm.comment class+="form-control" placeholder+="What are you changing?"%}</div>
+			</tr>
 		</table>
 		<button type="submit" class="btn btn-info">Submit</button>
         <button type="reset" class="btn btn-info">Reset</button>

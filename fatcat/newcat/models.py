@@ -101,10 +101,14 @@ class TestCaseBaseForm(forms.ModelForm):
         exclude = ('testName', 'testSituation', 'status')
 
 class TestCaseForm(forms.ModelForm):
+    comment = forms.CharField(max_length=300)
     class Meta:
         model = TestCase
         fields = ('systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
                   'implementedBy', 'testName', 'testSituation', 'status')
+    def save(self, commit=True):
+        reversion.set_comment(self.cleaned_data['comment'])
+        return super(TestCaseForm, self).save(commit=commit)
 
 class TestGroupForm(forms.ModelForm):
     class Meta:

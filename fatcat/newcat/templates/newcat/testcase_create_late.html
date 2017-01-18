@@ -9,6 +9,7 @@
                 <table class="table table-condensed">
                     {{ formset.management_form }}
                     {% for form in formset %}
+                    {% render_field form.comment class+="form-control hidden" value+="Test case created."%}
                     {% render_field form.testGroup class+="form-control hidden" %}
                     {% render_field form.systemRequirement class+="form-control hidden" %}
                     {% render_field form.component class+="form-control hidden" %}
