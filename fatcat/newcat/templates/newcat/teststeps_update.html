@@ -14,21 +14,27 @@
             </thead>
             {% load widget_tweaks %}
             {{ formset.management_form }}
+            {{ formset.non_form_errors }}
             <tbody class="tbody">
                 {% for form in formset %}
                     <tr>
+                        {{ form.id.errors }}
                         {% render_field form.id class+="form-control input-sm" %}
                         <td class="col-md-1"><div>
+                            {{ form.stepOrder.errors }}
                             {% render_field form.stepOrder class+="form-control" %}
                             </div></td>
                         <td class="col-md-8"><div>
+                            {{ form.instruction.errors }}
                             {% render_field form.instruction class+="form-control" %}
                             </div></td>
                         <td class="col-md-1"><div>
+                            {{ form.DELETE.errors }}
                             {% render_field form.DELETE class+="form-control input-sm" %}
                             </div></td>
                     </tr>
                 {% endfor %}
+
             </tbody>
 		</table>
 		<button type="submit" class="btn btn-default btn-sm">Submit</button>

@@ -15,7 +15,7 @@ from reversion_compare.views import HistoryCompareDetailView
 
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm, ExpectedResultForm, \
     TestGroupForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm,\
-    TestCaseForm, SystemRequirementForm
+    TestCaseForm, SystemRequirementForm, TestStepsFormSet
 
 
 #### List Views
@@ -167,20 +167,16 @@ def edit_testcase(request, testCaseId):
 
 def edit_teststeps(request, testCaseId, extraForms=3):
     extraForms = int(extraForms)
-    testStepsFormset = inlineformset_factory(TestCase, TestStep, form=TestStepsForm, extra=extraForms)
+    testStepsFormset = inlineformset_factory(TestCase, TestStep, form=TestStepsForm, formset=TestStepsFormSet, extra=extraForms)
+    formset = testStepsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
     if request.method == 'POST':
-        formset = testStepsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
         if formset.is_valid():
             formset.save()
             return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
-        else:
-            return HttpResponseRedirect("/newcat/error/")
-    else:
-        formset = testStepsFormset(instance=TestCase.objects.get(id=testCaseId))
-        context = RequestContext(request, {
-            'testCaseId': testCaseId,
-            'formset': formset,
-            'extraForms': extraForms,
+    context = RequestContext(request, {
+        'testCaseId': testCaseId,
+        'formset': formset,
+        'extraForms': extraForms
     })
     return render(request, 'newcat/teststeps_update.html', context)
 

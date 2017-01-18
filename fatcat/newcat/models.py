@@ -1,5 +1,6 @@
 from django.db import models
 import reversion
+from django.forms import BaseInlineFormSet
 from reversion_compare.views import HistoryCompareDetailView
 
 # Create your models here.
@@ -134,6 +135,21 @@ class TestStepsForm(forms.ModelForm):
     class Meta:
         model = TestStep
         exclude = ('testCase',)
+
+class TestStepsFormSet(BaseInlineFormSet):
+    def clean(self):
+        if any(self.errors):
+            # Don't bother validating the formset unless each form is valid on its own
+            return
+        values = set()
+        cleaned_data = self.cleaned_data
+        for data in cleaned_data:
+            value = data.get('stepOrder')
+            if value:
+                if value in values:
+                    raise forms.ValidationError('Duplicate values for Step Order are not allowed.')
+                values.add(value)
+
 
 
 # Versioning
