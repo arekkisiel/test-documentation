@@ -5,10 +5,10 @@ from . import views
 urlpatterns = [
 
     url(r'^testcase/$', views.list_cases, name='list_cases'),
-    url(r'^group/(?P<group>[\w\-]+)/$', views.list_group, name='list_group'),
-    url(r'^requirement/(?P<systemRequirement>[\w\-]+)/$', views.list_systemRequirement, name='sysReq'),
+    url(r'^group/(?P<group>[\w|\W]+)/$', views.list_group, name='list_group'),
+    url(r'^requirement/(?P<systemRequirement>[\w|\W]+)/$', views.list_systemRequirement, name='sysReq'),
     url(r'^status/(?P<status>[\w\-]+)/$', views.list_status, name='status'),
-    url(r'^component/(?P<component>[\w\-]+)/$', views.list_component, name='component'),
+    url(r'^component/(?P<component>[\w|\W]+)/$', views.list_component, name='component'),
     url(r'^history/$', views.list_changes, name='list_changes'),
     url(r'^testcase/(?P<pk>[0-9]+)/history/$', views.TestCaseHistoryCompareView.as_view(), name='testcase-history' ),
 
