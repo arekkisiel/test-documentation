@@ -4,23 +4,23 @@
 	<table id="testCaseTable" class="table table-hover">
 		<thead>
             <tr>
-                <th><div class="tableCellFromList">Test Id</div></th>
-                <th><div class="tableCellFromList">System Requirement</div></th>
-                <th><div class="tableCellFromList">Test Unit</div></th>
-                <th><div class="tableCellFromList">Test Id</div></th>
-                <th><div class="tableCellFromList">Implemented By</div></th>
-                <th><div class="tableCellFromList">Filename</div></th>
+                <th><div style="text-align:center">Test Id</div></th>
+                <th><div style="text-align:center">System Requirement</div></th>
+                <th><div style="text-align:center">Test Unit</div></th>
+                <th><div style="text-align:center">Test Id</div></th>
+                <th><div style="text-align:center">Implemented By</div></th>
+                <th><div style="text-align:center">Filename</div></th>
             </tr>
 		</thead>
 		<tbody>
 		{% for testCase in testCasesList %}
 			<tr>
-				<td><div class="tableCellFromList"><a href="/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
-				<td><div class="tableCellFromList"><a href="/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></div></td>
-				<td><div class="tableCellFromList">{{ testCase.test_unit }}</div></td>
-				<td><div class="tableCellFromList">{{ testCase.test_id }}</div></td>
-				<td><div class="tableCellFromList">{{ testCase.implemented }}</div></td>
-				<td><div class="tableCellFromList"><a href="/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></div></td>
+				<td><div style="text-align:center"><a href="/oldcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
+				<td><div style="text-align:center"><a href="/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></div></td>
+				<td><div style="text-align:center">{{ testCase.test_unit }}</div></td>
+				<td><div style="text-align:center">{{ testCase.test_id }}</div></td>
+				<td><div style="text-align:center">{{ testCase.implemented }}</div></td>
+				<td><div style="text-align:center"><a href="/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></div></td>
 			</tr>
 		{% endfor %}
 		</tbody>
