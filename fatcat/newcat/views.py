@@ -1,6 +1,3 @@
-import reversion
-import json
-from django.utils import timezone
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -203,7 +200,19 @@ def edit_expected_results(request, testCaseId, extraForms=3):
 
 def export_list(request, group=None, component=None, systemRequirement=None, status=None):
     response = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = 'attachment; filename="Exported.xls"'
+
+    if group != None:
+        testcases_list = TestCase.objects.filter(testGroup = group)
+        response['Content-Disposition'] = 'attachment; filename="TestGroup"' + group + '".xls"'
+    if component != None:
+        testcases_list = TestCase.objects.filter(component = component)
+        response['Content-Disposition'] = 'attachment; filename="Component"' + component + '".xls"'
+    if systemRequirement != None:
+        testcases_list = TestCase.objects.filter(systemRequirement = systemRequirement)
+        response['Content-Disposition'] = 'attachment; filename="System Requirement"' + systemRequirement + '".xls"'
+    if status != None:
+        testcases_list = TestCase.objects.filter(status = status)
+        response['Content-Disposition'] = 'attachment; filename="Status"' + status + '".xls"'
 
     wb = xlwt.Workbook(encoding='utf-8')
 
@@ -235,16 +244,6 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
                   'ImplementedBy', 'Test Name', 'Test Situation', 'Status']
     specificColumns = ['Step Order', 'Instruction',
                'Assert Type', 'Expected Result']
-
-    # Sheet body, remaining rows
-    if group != None:
-        testcases_list = TestCase.objects.filter(testGroup = group)
-    if component != None:
-        testcases_list = TestCase.objects.filter(component = component)
-    if systemRequirement != None:
-        testcases_list = TestCase.objects.filter(systemRequirement = systemRequirement)
-    if status != None:
-        testcases_list = TestCase.objects.filter(status = status)
 
     testcases = testcases_list.values_list('id', 'systemRequirement', 'testGroup', 'component', 'testedFunctionality',
                                            'testEngineer', 'implementedBy', 'testName', 'testSituation', 'status')

@@ -5,10 +5,10 @@ from . import views
 urlpatterns = [
 
     url(r'^testcase/$', views.list_cases, name='list_cases'),
-    url(r'^group/(?P<group>[\w|\W]+)/$', views.list_group, name='list_group'),
-    url(r'^requirement/(?P<systemRequirement>[\w|\W]+)/$', views.list_systemRequirement, name='sysReq'),
-    url(r'^status/(?P<status>[\w\-]+)/$', views.list_status, name='status'),
-    url(r'^component/(?P<component>[\w|\W]+)/$', views.list_component, name='component'),
+    url(r'^group/(?P<group>[\w\s\-]+)/$', views.list_group, name='list_group'),
+    url(r'^requirement/(?P<systemRequirement>[\w\s\-]+)/$', views.list_systemRequirement, name='list_sysReq'),
+    url(r'^status/(?P<status>[\w\s]+)/$', views.list_status, name='list_status'),
+    url(r'^component/(?P<component>[\w\s\-]+)/$', views.list_component, name='list_component'),
     url(r'^history/$', views.list_changes, name='list_changes'),
     url(r'^testcase/(?P<pk>[0-9]+)/history/$', views.TestCaseHistoryCompareView.as_view(), name='testcase-history' ),
 
@@ -24,10 +24,10 @@ urlpatterns = [
     url(r'^create/save/$', views.create_testcase_late, name='save_testcase'),
 
     #exports
-    url(r'^group/(?P<group>[\w\-]+)/export/$', views.export_list, name='export_group'),
-    url(r'^component/(?P<component>[\w\-]+)/export/$', views.export_list, name='export_group'),
-    url(r'^requirement/(?P<systemRequirement>[\w\-]+)/export/$', views.export_list, name='export_sr'),
-    url(r'^status/(?P<status>[\w\-]+)/export/$', views.export_list, name='export_status'),
+    url(r'^group/(?P<group>[\w\s\-]+)/export/$', views.export_list, name='export_group'),
+    url(r'^component/(?P<component>[\w\s\-]+)/export/$', views.export_list, name='export_component'),
+    url(r'^requirement/(?P<systemRequirement>[\w\s\-]+)/export/$', views.export_list, name='export_sr'),
+    url(r'^status/(?P<status>[\w\s\-]+)/export/$', views.export_list, name='export_status'),
 
     url(r'^error/$', views.error, name='error'),
 ]
