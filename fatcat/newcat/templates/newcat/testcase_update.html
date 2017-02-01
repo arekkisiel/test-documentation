@@ -8,43 +8,54 @@
 			<tr>
 				<td><div>
 					{% load widget_tweaks %}
+					{% if displayErrors %}{{ testCaseForm.non_field_errors }}{% endif %}
 					<label>Test Name:</label>
+					{% if displayErrors %}{{ testCaseForm.testName.errors }}{% endif %}
 					{% render_field testCaseForm.testName class+="form-control" %}</div></td>
 				<td><div>
 					<label>Test Group:</label>
+					{% if displayErrors %}{{ testCaseForm.testGroup.errors }}{% endif %}
 					{% render_field testCaseForm.testGroup class+="form-control" %}
 					<button type="button" onclick="window.open('/newcat/create/group', 'newwindow', 'width=900, height=500')">Create New</button>
 					<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
 				<td><div>
 					<label>System Requirement:</label>
+					{% if displayErrors %}{{ testCaseForm.systemRequirement.errors }}{% endif %}
 					{% render_field testCaseForm.systemRequirement class+="form-control" %}
 					<button type="button" onclick="window.open('/newcat/create/requirement', 'newwindow', 'width=900, height=500')">Create New</button>
 					<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
 				<td><div>
 					<label>Component:</label>
+					{% if displayErrors %}{{ testCaseForm.component.errors }}{% endif %}
 					{% render_field testCaseForm.component class+="form-control" %}
 					<button type="button" onclick="window.open('/newcat/create/component', 'newwindow', 'width=900, height=500')">Create New</button>
 					<img style="margin-left:5px" src="{% static 'img/reload.png' %}" onclick="location.reload()" /></div></td>
 				<td><div>
 					<label>Tested Functionality:</label>
+					{% if displayErrors %}{{ testCaseForm.testedFunctionality.errors }}{% endif %}
 					{% render_field testCaseForm.testedFunctionality class+="form-control" %}</div></td>
 
 			</tr>
 			<tr>
 				<td><div>
 					<label>Test Engineer:</label>
+					{% if displayErrors %}{{ testCaseForm.testEngineer.errors }}{% endif %}
 					{% render_field testCaseForm.testEngineer class+="form-control" %}</div></td>
 				<td><div>
 					<label>Implemented By:</label>
+					{% if displayErrors %}{{ testCaseForm.implementedBy.errors }}{% endif %}
 					{% render_field testCaseForm.implementedBy class+="form-control" %}</div></td>
 				<td><div>
 					<label>Test Situation:</label>
+					{% if displayErrors %}{{ testCaseForm.testSituation.errors }}{% endif %}
 					{% render_field testCaseForm.testSituation class+="form-control" %}</div></td>
 				<td><div>
 					<label>Status:</label>
+					{% if displayErrors %}{{ testCaseForm.status.errors }}{% endif %}
 					{% render_field testCaseForm.status class+="form-control" %}</div></td></tr>
 			<tr><div>
 				<label>Comment:</label>
+				{% if displayErrors %}{{ testCaseForm.comment.errors }}{% endif %}
 				{% render_field testCaseForm.comment class+="form-control" placeholder+="What are you changing?"%}</div>
 			</tr>
 		</table>

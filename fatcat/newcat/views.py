@@ -147,18 +147,15 @@ def create_testcase_late(request):
 
 def edit_testcase(request, testCaseId):
     testCaseInstance = get_object_or_404(TestCase, id=testCaseId)
+    testCaseForm = TestCaseForm(request.POST or None, instance=testCaseInstance)
     if request.method == 'POST':
-        testCaseForm = TestCaseForm(request.POST or None, instance=testCaseInstance)
         if testCaseForm.is_valid():
             testCaseForm.save()
             return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
-        else:
-            return HttpResponseRedirect("/newcat/error/")
-    else:
-        testCaseForm = TestCaseForm(instance=testCaseInstance)
-        context = RequestContext(request, {
-            'testCaseInstance': testCaseInstance,
-            'testCaseForm': testCaseForm
+    context = RequestContext(request, {
+        'testCaseInstance': testCaseInstance,
+        'testCaseForm': testCaseForm,
+        'displayErrors': True,
     })
     return render(request, 'newcat/testcase_update.html', context)
 
