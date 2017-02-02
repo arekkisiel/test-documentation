@@ -26,6 +26,9 @@ class SystemRequirement(models.Model):
     def __str__(self):
         return repr(self.sysReq_MKS)+ "  " + self.title
 
+class TestCaseHistory(models.Model):
+    def TestCaseHistory(self):
+        return self
 
 class TestCase(models.Model):
     testName = models.CharField(max_length=100)
@@ -49,6 +52,13 @@ class TestCase(models.Model):
 		(DELETED, 'Deleted'),
 		)
     status = models.CharField(max_length=11, choices=STATUS)
+    version = models.IntegerField(default=1)
+    current = models.BooleanField(default=True)
+    history = models.ForeignKey(TestCaseHistory)
+
+    class Meta:
+        unique_together = ("id", "version")
+        ordering = ['version']
 
     def __str__(self):
         return self.testName
@@ -61,6 +71,7 @@ class TestStep(models.Model):
     stepOrder = models.IntegerField()
     class Meta:
         unique_together = ("testCase", "stepOrder")
+        ordering = ['stepOrder']
     def __str__(self):
         return self.instruction
 
@@ -99,7 +110,7 @@ class TestCaseBaseForm(forms.ModelForm):
     numberOfCases = forms.IntegerField()
     class Meta:
         model = TestCase
-        exclude = ('testName', 'testSituation', 'status')
+        exclude = ('testName', 'testSituation', 'status', 'version', 'history')
 
 class TestCaseForm(forms.ModelForm):
     comment = forms.CharField(max_length=300)

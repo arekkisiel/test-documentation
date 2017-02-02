@@ -1,7 +1,7 @@
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
@@ -11,46 +11,52 @@ from reversion.models import Version
 from reversion_compare.views import HistoryCompareDetailView
 
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm, ExpectedResultForm, \
-    TestGroupForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm,\
-    TestCaseForm, SystemRequirementForm, TestStepsFormSet
+    TestGroupForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm, \
+    TestCaseForm, SystemRequirementForm, TestStepsFormSet, TestCaseHistory
 
 
 #### List Views
 
 def list_systemRequirement(request, systemRequirement):
-    testCasesList = TestCase.objects.filter(systemRequirement = systemRequirement)
+    testCasesList = TestCase.objects.filter(systemRequirement=systemRequirement)
     context = RequestContext(request, {'testCasesList': testCasesList, 'systemRequirement': systemRequirement})
     return TemplateResponse(request, 'newcat/list_cases_systemRequirement.html', context)
 
+
 def list_status(request, status):
-    testCasesList = TestCase.objects.filter(status = status)
+    testCasesList = TestCase.objects.filter(status=status)
     context = RequestContext(request, {'testCasesList': testCasesList, 'status': status})
     return TemplateResponse(request, 'newcat/list_cases_status.html', context)
 
+
 def list_component(request, component):
-    testCasesList = TestCase.objects.filter(component = component)
+    testCasesList = TestCase.objects.filter(component=component)
     context = RequestContext(request, {'testCasesList': testCasesList, 'component': component})
     return TemplateResponse(request, 'newcat/list_cases_component.html', context)
 
+
 def list_group(request, group):
-    testCasesList = TestCase.objects.filter(testGroup = group)
+    testCasesList = TestCase.objects.filter(testGroup=group)
     context = RequestContext(request, {'testCasesList': testCasesList, 'group': group})
     return TemplateResponse(request, 'newcat/list_cases_group.html', context)
 
+
 def list_cases(request):
-    testCasesList = TestCase.objects.all()
+    testCasesList = TestCase.objects.filter(current=True)
     context = RequestContext(request, {'testCasesList': testCasesList})
     return TemplateResponse(request, 'newcat/list_cases.html', context)
 
+
 def test_case(request, testCaseId):
     testCase = TestCase.objects.get(id=testCaseId)
-    testStepsList = TestStep.objects.filter(testCase = testCase.id)
+    testStepsList = TestStep.objects.filter(testCase=testCase.id)
     testStepsList = testStepsList.order_by('stepOrder')
     expectedResultsList = ExpectedResult.objects.filter(testCase=testCase)
     context = {'testCase': testCase,
                'testStepsList': testStepsList,
                'expectedResultsList': expectedResultsList}
     return render(request, 'newcat/testcase.html', context)
+
 
 #### Create Views
 def create_testcase(request):
@@ -73,7 +79,9 @@ def create_testcase(request):
                 return render(request, 'newcat/testcase_create.html', context)
         if 'systemRequirementSubmit' in request.POST:
             if systemRequirementForm.is_valid():
-                new_requirement = SystemRequirement(sysReq_MKS=systemRequirementForm.data['systemRequirement-sysReq_MKS'], title=systemRequirementForm.data['systemRequirement-title'])
+                new_requirement = SystemRequirement(
+                    sysReq_MKS=systemRequirementForm.data['systemRequirement-sysReq_MKS'],
+                    title=systemRequirementForm.data['systemRequirement-title'])
                 new_requirement.save()
                 context = RequestContext(request, {
                     'testCaseForm': testCaseForm,
@@ -122,17 +130,22 @@ def create_testcase(request):
     })
     return render(request, 'newcat/testcase_create.html', context)
 
+
 def create_testcase_late(request):
     numberOfCases = int(request.session['numberOfCases'])
     dataDict = {}
-    for x in range (0, numberOfCases):
+    for x in range(0, numberOfCases):
         dataDict.update({x: request.session['data']})
     testCaseFormset = modelformset_factory(TestCase, form=TestCaseForm, extra=numberOfCases)
     if request.method == 'POST':
         formset = testCaseFormset(request.POST)
         for form in formset:
             if form.is_valid():
-                form.save()
+                testCaseHistory = TestCaseHistory()
+                testCaseHistory.save()
+                testCaseInstance = form.save(commit=False)
+                testCaseInstance.history = testCaseHistory
+                testCaseInstance.save()
         return HttpResponseRedirect("/newcat/testcase/")
     else:
         queryset = TestCase.objects.none()
@@ -143,15 +156,22 @@ def create_testcase_late(request):
         })
         return render(request, 'newcat/testcase_create_late.html', context)
 
+
 #### Edit and Delete Views
 
 def edit_testcase(request, testCaseId):
     testCaseInstance = get_object_or_404(TestCase, id=testCaseId)
-    testCaseForm = TestCaseForm(request.POST or None, instance=testCaseInstance)
     if request.method == 'POST':
+        testCaseForm = TestCaseForm(request.POST or None)
         if testCaseForm.is_valid():
-            testCaseForm.save()
-            return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+            newTestCaseInstance = testCaseForm.save(commit=False)
+            newTestCaseInstance.history = testCaseInstance.history
+            newTestCaseInstance.version += 1
+            newTestCaseInstance.save()
+            testCaseInstance.current = False
+            testCaseInstance.save()
+            return HttpResponseRedirect('/newcat/testcase/' + str(newTestCaseInstance.id))
+    testCaseForm = TestCaseForm(request.POST or None, instance=testCaseInstance)
     context = RequestContext(request, {
         'testCaseInstance': testCaseInstance,
         'testCaseForm': testCaseForm,
@@ -161,12 +181,13 @@ def edit_testcase(request, testCaseId):
 
 def edit_teststeps(request, testCaseId, extraForms=3):
     extraForms = int(extraForms)
-    testStepsFormset = inlineformset_factory(TestCase, TestStep, form=TestStepsForm, formset=TestStepsFormSet, extra=extraForms)
+    testStepsFormset = inlineformset_factory(TestCase, TestStep, form=TestStepsForm, formset=TestStepsFormSet,
+                                             extra=extraForms)
     formset = testStepsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
     if request.method == 'POST':
         if formset.is_valid():
             formset.save()
-            return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+            return HttpResponseRedirect('/newcat/testcase/' + testCaseId)
     context = RequestContext(request, {
         'testCaseId': testCaseId,
         'formset': formset,
@@ -174,14 +195,15 @@ def edit_teststeps(request, testCaseId, extraForms=3):
     })
     return render(request, 'newcat/teststeps_update.html', context)
 
+
 def edit_expected_results(request, testCaseId, extraForms=3):
-    extraForms=int(extraForms)
+    extraForms = int(extraForms)
     expectedResultsFormset = inlineformset_factory(TestCase, ExpectedResult, form=ExpectedResultForm, extra=extraForms)
     if request.method == 'POST':
         formset = expectedResultsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
         if formset.is_valid():
             formset.save()
-            return HttpResponseRedirect('/newcat/testcase/'+testCaseId)
+            return HttpResponseRedirect('/newcat/testcase/' + testCaseId)
         else:
             return HttpResponseRedirect("/newcat/error/")
     else:
@@ -190,8 +212,9 @@ def edit_expected_results(request, testCaseId, extraForms=3):
             'testCaseId': testCaseId,
             'formset': formset,
             'extraForms': extraForms,
-    })
+        })
     return render(request, 'newcat/expectedresults_update.html', context)
+
 
 #### Exporting to xls
 
@@ -199,16 +222,16 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
     response = HttpResponse(content_type='application/ms-excel')
 
     if group != None:
-        testcases_list = TestCase.objects.filter(testGroup = group)
+        testcases_list = TestCase.objects.filter(testGroup=group)
         response['Content-Disposition'] = 'attachment; filename="TestGroup"' + group + '".xls"'
     if component != None:
-        testcases_list = TestCase.objects.filter(component = component)
+        testcases_list = TestCase.objects.filter(component=component)
         response['Content-Disposition'] = 'attachment; filename="Component"' + component + '".xls"'
     if systemRequirement != None:
-        testcases_list = TestCase.objects.filter(systemRequirement = systemRequirement)
+        testcases_list = TestCase.objects.filter(systemRequirement=systemRequirement)
         response['Content-Disposition'] = 'attachment; filename="System Requirement"' + systemRequirement + '".xls"'
     if status != None:
-        testcases_list = TestCase.objects.filter(status = status)
+        testcases_list = TestCase.objects.filter(status=status)
         response['Content-Disposition'] = 'attachment; filename="Status"' + status + '".xls"'
 
     wb = xlwt.Workbook(encoding='utf-8')
@@ -238,9 +261,9 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
     bodyStyle.alignment = bodyAlignment
 
     generalColumns = ['Id', 'System Requirement', 'Test Group', 'Component', 'Tested Functionality', 'Test Engineer',
-                  'ImplementedBy', 'Test Name', 'Test Situation', 'Status']
+                      'ImplementedBy', 'Test Name', 'Test Situation', 'Status']
     specificColumns = ['Step Order', 'Instruction',
-               'Assert Type', 'Expected Result']
+                       'Assert Type', 'Expected Result']
 
     testcases = testcases_list.values_list('id', 'systemRequirement', 'testGroup', 'component', 'testedFunctionality',
                                            'testEngineer', 'implementedBy', 'testName', 'testSituation', 'status')
@@ -254,32 +277,32 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
             ws.col(col_num).width = 400 * (len(generalColumns[col_num]))
             ws.write(0, col_num, generalColumns[col_num], headerStyle)
         for col_num in range(len(specificColumns)):
-            #Two lines
-            #ws.col(col_num).width = 530 * (len(specificColumns[col_num]))
-            #ws.write(2, col_num, specificColumns[col_num], headerStyle)
-            #One line all
-            ws.col(col_num+10).width = 530 * (len(specificColumns[col_num]))
-            ws.write(0, col_num+10, specificColumns[col_num], headerStyle)
+            # Two lines
+            # ws.col(col_num).width = 530 * (len(specificColumns[col_num]))
+            # ws.write(2, col_num, specificColumns[col_num], headerStyle)
+            # One line all
+            ws.col(col_num + 10).width = 530 * (len(specificColumns[col_num]))
+            ws.write(0, col_num + 10, specificColumns[col_num], headerStyle)
         testcase_num = 1
         for col_num in range(len(testcase)):
             ws.write(testcase_num, col_num, testcase[col_num], bodyStyle)
-        testSteps = TestStep.objects.filter(testCase = testcase).values_list('stepOrder', 'instruction')
-        testAssertions = ExpectedResult.objects.filter(testCase = testcase).values_list('assertType', 'expectedResult')
-        teststep_num = testassertion_num =testcase_num
+        testSteps = TestStep.objects.filter(testCase=testcase).values_list('stepOrder', 'instruction')
+        testAssertions = ExpectedResult.objects.filter(testCase=testcase).values_list('assertType', 'expectedResult')
+        teststep_num = testassertion_num = testcase_num
         for teststep in testSteps:
             for col_num in range(len(teststep)):
-                #ws.row(teststep_num+2).height_mismatch = True
-                #ws.row(teststep_num+2).height = 800
-                #ws.write(teststep_num+2, col_num, teststep[col_num], bodyStyle)
+                # ws.row(teststep_num+2).height_mismatch = True
+                # ws.row(teststep_num+2).height = 800
+                # ws.write(teststep_num+2, col_num, teststep[col_num], bodyStyle)
                 ws.row(teststep_num).height_mismatch = True
                 ws.row(teststep_num).height = 800
-                ws.write(teststep_num, col_num+10, teststep[col_num], bodyStyle)
+                ws.write(teststep_num, col_num + 10, teststep[col_num], bodyStyle)
             teststep_num += 1
         for testAssertion in testAssertions:
             for col_num in range(len(testAssertion)):
-                #ws.row(testassertion_num+2).height_mismatch = True
-                #ws.row(testassertion_num+2).height = 800
-                #ws.write(testassertion_num+2, col_num+2, testAssertion[col_num], bodyStyle)
+                # ws.row(testassertion_num+2).height_mismatch = True
+                # ws.row(testassertion_num+2).height = 800
+                # ws.write(testassertion_num+2, col_num+2, testAssertion[col_num], bodyStyle)
                 ws.row(testassertion_num).height_mismatch = True
                 ws.row(testassertion_num).height = 800
                 ws.write(testassertion_num, col_num + 12, testAssertion[col_num], bodyStyle)
@@ -288,17 +311,27 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
     wb.save(response)
     return response
 
+
 #### Universal Views
 
 def error(request):
     return render(request, 'newcat/error.html')
 
+
 ####History Views
 
 def list_changes(request):
     versions = Version.objects.all()
-    context = RequestContext(request, {'versions': versions,})
+    context = RequestContext(request, {'versions': versions, })
     return TemplateResponse(request, 'newcat/list_changes.html', context)
+
+
+def list_changes_testcase(request, testCaseId):
+    actualTestCase = TestCase.objects.get(id = testCaseId)
+    testCasesList = TestCase.objects.filter(history = actualTestCase.history)
+    context = RequestContext(request, {'testCasesList': testCasesList,})
+    return TemplateResponse(request, 'newcat/list_changes.html', context)
+
 
 class TestCaseHistoryCompareView(HistoryCompareDetailView):
     model = TestCase

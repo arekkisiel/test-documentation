@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
-from newcat.models import TestCase, Component
+from newcat.models import TestCase, Component, TestCaseHistory
 from newcat.models import TestGroup
 from newcat.models import SystemRequirement
 
@@ -112,6 +112,7 @@ class TestEditOperations(WebTest):
         SystemRequirement.objects.create(sysReq_MKS=321, title='test SR2', ).save()
         Component.objects.create(componentName='testComponent1', ).save()
         Component.objects.create(componentName='testComponent2', ).save()
+        TestCaseHistory.objects.create(id=1).save()
         TestCase.objects.create(
             testName='testName',
             testedFunctionality ='testFunctionality',
@@ -122,6 +123,7 @@ class TestEditOperations(WebTest):
             testGroup=TestGroup.objects.get(testGroupName='testGroup1'),
             systemRequirement=SystemRequirement.objects.get(sysReq_MKS=123),
             component=Component.objects.get(componentName = 'testComponent1'),
+            history=TestCaseHistory.objects.get(id=1),
         ).save()
 
     def test_shouldEditWholeTestCase(self):
@@ -143,7 +145,7 @@ class TestEditOperations(WebTest):
         edit_testCase_form['testSituation'] = 'testSituationEdited'
         edit_testCase_form['status'] = 'Implemented'
         edit_testCase_form.submit()
-        testCaseEdited = TestCase.objects.get(testName='testNameEdited')
+        testCaseEdited = TestCase.objects.get(testName='testNameEdited', current=True)
 
         assert testCaseEdited is not None
         self.assertEqual(testCaseEdited.testName, 'testNameEdited')
@@ -172,7 +174,7 @@ class TestEditOperations(WebTest):
         edit_testCase_form['implementedBy'] = 'testImplementedByEdited'
         edit_testCase_form['testSituation'] = 'testSituationEdited'
         edit_testCase_form.submit()
-        testCaseEdited = TestCase.objects.get(testName='testNameEdited')
+        testCaseEdited = TestCase.objects.get(testName='testNameEdited', current=True)
 
         assert testCaseEdited is not None
         self.assertEqual(testCaseEdited.testName, 'testNameEdited')

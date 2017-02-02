@@ -3,9 +3,10 @@
 {% load static %}
 	<table id="actualTable" class="table table-hover">
 		<tbody>
-		{% for version in versions %}
-                <tr><td><div style="text-align:center">{{ version.revision_id }}</div></td>
-                <td><div style="text-align:center">{{ version.serialized_data }}</div></td></tr>
+        {% for testCase in testCasesList %}
+        <tr><td><div style="text-align:center">{{ testCase.version }}</div></td>
+        <td><div style="text-align:center">{{ testCase.testName }}</div></td>
+        <td><div style="text-align:center">{{ testCase.current }}</div></td></tr>
         {% endfor %}
 		</tbody>
 	</table>

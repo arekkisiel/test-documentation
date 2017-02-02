@@ -9,8 +9,7 @@ urlpatterns = [
     url(r'^requirement/(?P<systemRequirement>[\w\s\-]+)/$', views.list_systemRequirement, name='list_sysReq'),
     url(r'^status/(?P<status>[\w\s]+)/$', views.list_status, name='list_status'),
     url(r'^component/(?P<component>[\w\s\-]+)/$', views.list_component, name='list_component'),
-    url(r'^history/$', views.list_changes, name='list_changes'),
-    url(r'^testcase/(?P<pk>[0-9]+)/history/$', views.TestCaseHistoryCompareView.as_view(), name='testcase-history' ),
+
 
     url(r'^testcase/(?P<testCaseId>[0-9]+)/$', views.test_case, name='test_case'),
 
@@ -30,4 +29,7 @@ urlpatterns = [
     url(r'^status/(?P<status>[\w\s\-]+)/export/$', views.export_list, name='export_status'),
 
     url(r'^error/$', views.error, name='error'),
+
+    url(r'^history/$', views.list_changes, name='list_changes'),
+    url(r'^testcase/(?P<testCaseId>[0-9]+)/history/$', views.list_changes_testcase, name='testcase-history' ),
 ]
