@@ -2,18 +2,47 @@
 {% block content %}
 {% load static %}
 	<table id="actualTable" class="table table-hover">
-		<tbody>
+		<thead>
+            <tr>
+			  	<th><div>Version</div></th>
+				<th><div>Test Name</div></th>
+				<th><div>Component</div></th>
+                <th><div>Test Group</div></th>
+				<th><div>System Requirement</div></th>
+                <th><div>Tested Functionality</div></th>
+                <th><div>Test Engineer</div></th>
+                <th><div>Implemented By</div></th>
+                <th><div>Test Situation</div></th>
+                <th><div>Status</div></th>
+                <th><div>Current</div></th>
+            </tr>
+        </thead>
+        <tbody>
         {% for testCase in testCasesList %}
-        <tr><td><div style="text-align:center">{{ testCase.version }}</div></td>
-        <td><div style="text-align:center">{{ testCase.testName }}</div></td>
-        <td><div style="text-align:center">{{ testCase.current }}</div></td></tr>
+                <tr>
+                    <td><div>{{ testCase.version }}</div></td>
+                    <td><div>{{ testCase.testName|wordwrap:12 }}</div></td>
+                    <td><div>{{ testCase.component|wordwrap:12}}</div></td>
+                    <td><div>{{ testCase.testGroup|wordwrap:12 }}</div></td>
+                    <td><div>{{ testCase.systemRequirement|wordwrap:12 }}</div></td>
+                    <td><div>{{ testCase.testedFunctionality|wordwrap:12 }}</div></td>
+                    <td><div>{{ testCase.testEngineer|wordwrap:12 }}</div></td>
+                    <td><div>{{ testCase.implementedBy|wordwrap:12 }}</div></td>
+                    <td><div>{{ testCase.testSituation|wordwrap:12 }}</div></td>
+                    <td><div>{{ testCase.status|wordwrap:12 }}</div></td>
+                    <td><div>{{ testCase.current }}</div></td>
+                </tr>
         {% endfor %}
 		</tbody>
 	</table>
+    <a class="btn btn-default btn-sm" href="/newcat/testcase/{{ testCaseId }}">Return</a>
 <script type="text/javascript">
 $(document).ready(function(){
-    $('#testCaseTable').DataTable();
-    $('#testCaseTable').fadeIn(1000);
+    $('#actualTable td').each(function(){
+        if ($(this).text() == 'True') {
+            $(this).closest('tr').css('background-color','gold');
+        }
+    });
 });
 </script>
 {% endblock%}

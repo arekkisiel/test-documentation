@@ -30,6 +30,5 @@ urlpatterns = [
 
     url(r'^error/$', views.error, name='error'),
 
-    url(r'^history/$', views.list_changes, name='list_changes'),
     url(r'^testcase/(?P<testCaseId>[0-9]+)/history/$', views.list_changes_testcase, name='testcase-history' ),
 ]

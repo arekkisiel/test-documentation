@@ -6,11 +6,10 @@
 			<tr>
 			</tr>
             <tr>
-                <th><div style="text-align:center">Test Id</div></th>
+                <th><div style="text-align:center">Test Name</div></th>
                 <th><div style="text-align:center">Component</div></th>
 				<th><div style="text-align:center">Test Group</div></th>
                 <th><div style="text-align:center">System Requirement</div></th>
-                <th><div style="text-align:center">Test Name</div></th>
                 <th><div style="text-align:center">Test Engineer</div></th>
                 <th><div style="text-align:center">Implemented By</div></th>
                 <th><div style="text-align:center">Status</div></th>
@@ -19,11 +18,10 @@
 		<tbody>
 		{% for testCase in testCasesList %}
 			<tr>
-				<td><div style="text-align:center"><a href="/newcat/testcase/{{ testCase.id }}">{{ testCase.id }}</a></div></td>
+				<td><div style="text-align:center"><a href="/newcat/testcase/{{ testCase.id }}">{{ testCase.testName }}</a></div></td>
                 <td><div style="text-align:center"><a href="/newcat/component/{{ testCase.component }}">{{ testCase.component }}</a></div></td>
 				<td><div style="text-align:center"><a href="/newcat/group/{{ testCase.testGroup }}">{{ testCase.testGroup }}</a></div></td>
 				<td><div style="text-align:center"><a href="/newcat/requirement/{{ testCase.systemRequirement.sysReq_MKS }}">{{ testCase.systemRequirement }}</a></div></td>
-				<td><div style="text-align:center">{{ testCase.testName }}</div></td>
 				<td><div style="text-align:center">{{ testCase.testEngineer }}</div></td>
 				<td><div style="text-align:center">{{ testCase.implementedBy }}</div></td>
 				<td><div style="text-align:center"><a href="/newcat/status/{{ testCase.status }}">{{ testCase.status }}</a></div></td>

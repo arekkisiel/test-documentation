@@ -7,8 +7,6 @@ from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
 from django.forms.models import modelformset_factory
 import xlwt
-from reversion.models import Version
-from reversion_compare.views import HistoryCompareDetailView
 
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm, ExpectedResultForm, \
     TestGroupForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm, \
@@ -18,25 +16,25 @@ from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm
 #### List Views
 
 def list_systemRequirement(request, systemRequirement):
-    testCasesList = TestCase.objects.filter(systemRequirement=systemRequirement)
+    testCasesList = TestCase.objects.filter(systemRequirement=systemRequirement, current=True)
     context = RequestContext(request, {'testCasesList': testCasesList, 'systemRequirement': systemRequirement})
     return TemplateResponse(request, 'newcat/list_cases_systemRequirement.html', context)
 
 
 def list_status(request, status):
-    testCasesList = TestCase.objects.filter(status=status)
+    testCasesList = TestCase.objects.filter(status=status, current=True)
     context = RequestContext(request, {'testCasesList': testCasesList, 'status': status})
     return TemplateResponse(request, 'newcat/list_cases_status.html', context)
 
 
 def list_component(request, component):
-    testCasesList = TestCase.objects.filter(component=component)
+    testCasesList = TestCase.objects.filter(component=component, current=True)
     context = RequestContext(request, {'testCasesList': testCasesList, 'component': component})
     return TemplateResponse(request, 'newcat/list_cases_component.html', context)
 
 
 def list_group(request, group):
-    testCasesList = TestCase.objects.filter(testGroup=group)
+    testCasesList = TestCase.objects.filter(testGroup=group, current=True)
     context = RequestContext(request, {'testCasesList': testCasesList, 'group': group})
     return TemplateResponse(request, 'newcat/list_cases_group.html', context)
 
@@ -166,7 +164,7 @@ def edit_testcase(request, testCaseId):
         if testCaseForm.is_valid():
             newTestCaseInstance = testCaseForm.save(commit=False)
             newTestCaseInstance.history = testCaseInstance.history
-            newTestCaseInstance.version += 1
+            newTestCaseInstance.version = testCaseInstance.version + 1
             newTestCaseInstance.save()
             testCaseInstance.current = False
             testCaseInstance.save()
@@ -320,22 +318,8 @@ def error(request):
 
 ####History Views
 
-def list_changes(request):
-    versions = Version.objects.all()
-    context = RequestContext(request, {'versions': versions, })
-    return TemplateResponse(request, 'newcat/list_changes.html', context)
-
-
 def list_changes_testcase(request, testCaseId):
     actualTestCase = TestCase.objects.get(id = testCaseId)
     testCasesList = TestCase.objects.filter(history = actualTestCase.history)
-    context = RequestContext(request, {'testCasesList': testCasesList,})
+    context = RequestContext(request, {'testCasesList': testCasesList, 'testCaseId': testCaseId})
     return TemplateResponse(request, 'newcat/list_changes.html', context)
-
-
-class TestCaseHistoryCompareView(HistoryCompareDetailView):
-    model = TestCase
-
-    def get_context_data(self, **kwargs):
-        context = super(TestCaseHistoryCompareView, self).get_context_data(**kwargs)
-        return context

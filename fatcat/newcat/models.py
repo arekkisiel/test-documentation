@@ -1,7 +1,5 @@
 from django.db import models
-import reversion
 from django.forms import BaseInlineFormSet
-from reversion_compare.views import HistoryCompareDetailView
 
 # Create your models here.
 from django import forms
@@ -57,8 +55,7 @@ class TestCase(models.Model):
     history = models.ForeignKey(TestCaseHistory)
 
     class Meta:
-        unique_together = ("id", "version")
-        ordering = ['version']
+        ordering = ['-version']
 
     def __str__(self):
         return self.testName
