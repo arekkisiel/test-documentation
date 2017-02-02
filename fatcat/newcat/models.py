@@ -113,13 +113,11 @@ class TestCaseBaseForm(forms.ModelForm):
         exclude = ('testName', 'testSituation', 'status', 'version', 'history')
 
 class TestCaseForm(forms.ModelForm):
-    comment = forms.CharField(max_length=300)
     class Meta:
         model = TestCase
         fields = ('systemRequirement', 'testGroup', 'component', 'testedFunctionality', 'testEngineer',
                   'implementedBy', 'testName', 'testSituation', 'status')
     def save(self, commit=True):
-        reversion.set_comment(self.cleaned_data['comment'])
         return super(TestCaseForm, self).save(commit=commit)
 
 class TestGroupForm(forms.ModelForm):
@@ -160,14 +158,4 @@ class TestStepsFormSet(BaseInlineFormSet):
                 if value in values:
                     raise forms.ValidationError('Duplicate values for Step Order are not allowed.')
                 values.add(value)
-
-
-
-# Versioning
-    reversion.register(TestStep)
-    reversion.register(ExpectedResult)
-    reversion.register(TestGroup)
-    reversion.register(SystemRequirement)
-    reversion.register(Component)
-    reversion.register(TestCase, follow=["teststep_set", "expectedresult_set"])
 

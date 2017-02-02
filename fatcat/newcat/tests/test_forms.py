@@ -134,7 +134,6 @@ class TestEditOperations(WebTest):
         response = self.app.get(reverse('edit_test_case', kwargs={'testCaseId': testCase.id}))
 
         edit_testCase_form = response.form
-        edit_testCase_form['comment'] = 'test edit'
         edit_testCase_form['testName'] = 'testNameEdited'
         edit_testCase_form['testGroup'] = editGroup
         edit_testCase_form['systemRequirement'] = 321
@@ -166,7 +165,6 @@ class TestEditOperations(WebTest):
         response = self.app.get(reverse('edit_test_case', kwargs={'testCaseId': testCase.id}))
 
         edit_testCase_form = response.form
-        edit_testCase_form['comment'] = 'test edit'
         edit_testCase_form['testName'] = 'testNameEdited'
         edit_testCase_form['testGroup'] = editGroup
         edit_testCase_form['component'] = editComponent
