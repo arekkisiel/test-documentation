@@ -4,6 +4,8 @@
 	<table id="actualTable" class="table table-hover">
 		<thead>
             <tr>
+                <th><div>Reference</div></th>
+                <th><div>Compared</div></th>
 			  	<th><div>Version</div></th>
 				<th><div>Test Name</div></th>
 				<th><div>Component</div></th>
@@ -19,23 +21,29 @@
         </thead>
         <tbody>
         {% for testCase in testCasesList %}
-                <tr>
-                    <td><div>{{ testCase.version }}</div></td>
-                    <td><div>{{ testCase.testName|wordwrap:12 }}</div></td>
-                    <td><div>{{ testCase.component|wordwrap:12}}</div></td>
-                    <td><div>{{ testCase.testGroup|wordwrap:12 }}</div></td>
-                    <td><div>{{ testCase.systemRequirement|wordwrap:12 }}</div></td>
-                    <td><div>{{ testCase.testedFunctionality|wordwrap:12 }}</div></td>
-                    <td><div>{{ testCase.testEngineer|wordwrap:12 }}</div></td>
-                    <td><div>{{ testCase.implementedBy|wordwrap:12 }}</div></td>
-                    <td><div>{{ testCase.testSituation|wordwrap:12 }}</div></td>
-                    <td><div>{{ testCase.status|wordwrap:12 }}</div></td>
-                    <td><div>{{ testCase.current }}</div></td>
-                </tr>
+            <tr id="{{ testCase.id }}">
+                <td><div><input type="radio" name="reference"></div></td>
+                <td><div><input type="radio" name="compare"></div></td>
+                <td><div>{{ testCase.version }}</div></td>
+                <td><div>{{ testCase.testName|wordwrap:12 }}</div></td>
+                <td><div>{{ testCase.component|wordwrap:12}}</div></td>
+                <td><div>{{ testCase.testGroup|wordwrap:12 }}</div></td>
+                <td><div>{{ testCase.systemRequirement|wordwrap:12 }}</div></td>
+                <td><div>{{ testCase.testedFunctionality|wordwrap:12 }}</div></td>
+                <td><div>{{ testCase.testEngineer|wordwrap:12 }}</div></td>
+                <td><div>{{ testCase.implementedBy|wordwrap:12 }}</div></td>
+                <td><div>{{ testCase.testSituation|wordwrap:12 }}</div></td>
+                <td><div>{{ testCase.status|wordwrap:12 }}</div></td>
+                <td><div>{{ testCase.current }}</div></td>
+            </tr>
         {% endfor %}
 		</tbody>
 	</table>
     <a class="btn btn-default btn-sm" href="/newcat/testcase/{{ testCaseId }}">Return</a>
+    <a class="btn btn-default btn-sm" onclick="compareTestCaseVersions()">Compare Selected</a>
+<style>
+    #actualTable .ui-selected { background: #F39814; color: white; }
+</style>
 <script type="text/javascript">
 $(document).ready(function(){
     $('#actualTable td').each(function(){
@@ -44,5 +52,24 @@ $(document).ready(function(){
         }
     });
 });
+function compareTestCaseVersions(){
+    var go = true;
+    var referenceTestCaseId = $('input[name="reference"]:checked').closest('tr').attr('id');
+    if (referenceTestCaseId == undefined){
+        alert("You should choose reference version!");
+        go = false;
+        }
+    var comparedTestCaseId = $('input[name="compare"]:checked').closest('tr').attr('id');
+    if (comparedTestCaseId == undefined && go){
+        alert("You should choose version to compare!");
+        go = false;
+        }
+    if(referenceTestCaseId == comparedTestCaseId && go){
+        alert("You shouldn't compare the same versions!");
+        go = false;
+        }
+    if(go)
+        window.location.href = "/newcat/testcase/"+ referenceTestCaseId + "/history/compare/" + comparedTestCaseId;
+}
 </script>
 {% endblock%}

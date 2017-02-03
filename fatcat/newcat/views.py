@@ -323,3 +323,9 @@ def list_changes_testcase(request, testCaseId):
     testCasesList = TestCase.objects.filter(history = actualTestCase.history)
     context = RequestContext(request, {'testCasesList': testCasesList, 'testCaseId': testCaseId})
     return TemplateResponse(request, 'newcat/list_changes.html', context)
+
+def list_changes_testcase_compare(request, referenceTestCaseId, comparedTestCaseId):
+    referenceTestCase = TestCase.objects.get(id = referenceTestCaseId)
+    comparedTestCase = TestCase.objects.get(id = comparedTestCaseId)
+    context = RequestContext(request, {'referenceTestCase': referenceTestCase, 'comparedTestCase': comparedTestCase})
+    return TemplateResponse(request, 'newcat/list_changes_compare.html', context)

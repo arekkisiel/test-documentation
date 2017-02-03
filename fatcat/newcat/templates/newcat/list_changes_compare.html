@@ -1,0 +1,60 @@
+{% extends "newbase.html" %}
+{% block content %}
+{% load static %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<table id="testCaseComparison" class="table table-condensed">
+		<thead>
+        <tr><h3><label>Tested Component:</label><div class="reference"> {{ referenceTestCase.component}} </div><div class="compared"> {{ comparedTestCase.component}}</div></h3></tr>
+			<tr>
+                <th><div>Test Id</div></th>
+				<th><div>Test Name</div></th>
+				<th><div>Test Group</div></th>
+				<th><div>System Requirement</div></th>
+                </tr>
+		</thead>
+		<tbody>
+		<tr>
+            <td><div>{{ referenceTestCase.id }} </div><div> {{ comparedTestCase.id }}</div></td>
+			<td><div class="reference">{{ referenceTestCase.testName }} </div><div class="compared"> {{ comparedTestCase.testName }}</div></td>
+			<td><div class="reference">{{ referenceTestCase.testGroup }} </div><div class="compared"> {{ comparedTestCase.testGroup }}</div></td>
+			<td><div class="reference">{{ referenceTestCase.systemRequirement }} </div><div class="compared"> {{ comparedTestCase.systemRequirement }}</div></td>
+        </tr>
+        </tbody>
+        <thead><tr>
+			  	<th>Tested Functionality</th>
+			  	<th>Test Engineer</th>
+			    <th>Implemented By</th>
+				<th>Status</th>
+            </tr></thead><tbody><tr>
+			<td><div class="reference">{{ referenceTestCase.testedFunctionality }} </div><div class="compared"> {{ comparedTestCase.testedFunctionality }}</div></td>
+			<td><div class="reference">{{ referenceTestCase.testEngineer }} </div><div class="compared"> {{ comparedTestCase.testEngineer }}</div></td>
+			<td><div class="reference">{{ referenceTestCase.implementedBy }} </div><div class="compared"> {{ comparedTestCase.implementedBy }}</div></td>
+			<td><div class="reference">{{ referenceTestCase.status }} </div><div class="compared"> {{ comparedTestCase.status }}</div></td>
+		</tr>
+		</tbody>
+	</table>
+	<table id="testSteps" class="table table-condensed">
+		<thead>
+				<tr>
+					<th>Test Situation:</th>
+					<th>Test Steps:</th>
+				</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td rowspan="{{ testStepsList|length }}"><div class="tableCell reference">{{ referenceTestCase.testSituation }} </div><div class="compared"> {{ comparedTestCase.testSituation }}</div></td>
+			</tr>
+		</tbody>
+	</table>
+    <a class="btn btn-default btn-sm" href="/newcat/testcase/{{ referenceTestCase.id }}/history/">Return</a>
+<script>
+    $(document).ready(function(){
+        $('.reference').each(function(){
+            if ($(this).text().trim() != $(this).next().text().trim()){
+                $(this).css('font-weight','bold').css('background-color','#defec8');
+                $(this).next().css('font-weight','bold').css('background-color','#ffb390');
+            }
+        });
+    });
+</script>
+{% endblock%}
