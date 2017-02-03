@@ -1,16 +1,16 @@
 from django.forms import inlineformset_factory
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.template import RequestContext
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
 from django.forms.models import modelformset_factory
 import xlwt
 
-from .models import TestCase, TestStep, TestGroup, ExpectedResult, TestStepsForm, ExpectedResultForm, \
-    TestGroupForm, SystemRequirement, ComponentForm, Component, TestCaseBaseForm, \
-    TestCaseForm, SystemRequirementForm, TestStepsFormSet, TestCaseHistory
+from .models import TestCase, TestStep, TestGroup, ExpectedResult, SystemRequirement,  Component, TestCaseHistory
+from .forms import TestStepsForm, ExpectedResultForm, TestGroupForm, ComponentForm, TestCaseBaseForm, TestCaseForm, \
+    SystemRequirementForm, TestStepsFormSet
 
 
 #### List Views
