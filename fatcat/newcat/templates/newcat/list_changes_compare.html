@@ -37,12 +37,19 @@
 		<thead>
 				<tr>
 					<th>Test Situation:</th>
-					<th>Test Steps:</th>
+					<th>Test Steps - Ref:</th>
+                    <th>Test Steps - Comp:</th>
 				</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td rowspan="{{ testStepsList|length }}"><div class="tableCell reference">{{ referenceTestCase.testSituation }} </div><div class="compared"> {{ comparedTestCase.testSituation }}</div></td>
+				<td><div class="reference">{{ referenceTestCase.testSituation }} </div><div class="compared"> {{ comparedTestCase.testSituation }}</div></td>
+                <td class="referenceSteps">{% for testStep in referenceTestSteps %}
+                <div>{{ testStep.stepOrder }}. {{ testStep.instruction }}</div>
+			    {% endfor %}</td>
+                <td class="comparedSteps">{% for testStep in comparedTestSteps %}
+				<div>{{ testStep.stepOrder }}. {{ testStep.instruction }}</div>
+			    {% endfor %}</td>
 			</tr>
 		</tbody>
 	</table>
@@ -51,6 +58,12 @@
     $(document).ready(function(){
         $('.reference').each(function(){
             if ($(this).text().trim() != $(this).next().text().trim()){
+                $(this).css('font-weight','bold').css('background-color','#defec8');
+                $(this).next().css('font-weight','bold').css('background-color','#ffb390');
+            }
+        });
+        $('.referenceSteps').each(function(){
+            if ($(this).text().trim() != $(this).closest('.comparedSteps').text().trim()){
                 $(this).css('font-weight','bold').css('background-color','#defec8');
                 $(this).next().css('font-weight','bold').css('background-color','#ffb390');
             }

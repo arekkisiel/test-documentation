@@ -189,11 +189,26 @@ def edit_teststeps(request, testCaseId, extraForms=3):
     extraForms = int(extraForms)
     testStepsFormset = inlineformset_factory(TestCase, TestStep, form=TestStepsForm, formset=TestStepsFormSet,
                                              extra=extraForms)
-    formset = testStepsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
     if request.method == 'POST':
+        testCase = TestCase.objects.get(id=testCaseId)
+        testCaseVersion = testCase.version
+        testCaseVersion.current = False
+        testCaseVersion.save()
+        newTestCaseVersion = TestCaseVersion(comment="TestStepsEdited.", version=testCaseVersion.version + 1,
+                                             user="default_username3", testCaseUUID=testCaseVersion.testCaseUUID)
+        newTestCaseVersion.save()
+        newTestCase = TestCase(testName=testCase.testName, testedFunctionality=testCase.testedFunctionality,
+                               testEngineer=testCase.testEngineer, implementedBy=testCase.implementedBy,
+                               testSituation=testCase.testSituation, testGroup=testCase.testGroup,
+                               systemRequirement=testCase.systemRequirement, component=testCase.component,
+                               status=testCase.status, version=newTestCaseVersion)
+        newTestCase.version = newTestCaseVersion
+        newTestCase.save()
+        formset = testStepsFormset(request.POST or None, instance=newTestCase)
         if formset.is_valid():
             formset.save()
-            return HttpResponseRedirect('/newcat/testcase/' + testCaseId)
+            return HttpResponseRedirect('/newcat/testcase/' + str(newTestCase.id))
+    formset = testStepsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
     context = RequestContext(request, {
         'testCaseId': testCaseId,
         'formset': formset,
@@ -338,5 +353,7 @@ def list_changes_testcase_compare(request, testCaseId, referenceVersion, compare
     comparedVersion = TestCaseVersion.objects.filter(testCaseUUID=version.testCaseUUID, version = comparedVersion)
     referenceTestCase = TestCase.objects.get(version = referenceVersion)
     comparedTestCase = TestCase.objects.get(version = comparedVersion)
-    context = RequestContext(request, {'referenceTestCase': referenceTestCase, 'comparedTestCase': comparedTestCase})
+    referenceTestSteps = TestStep.objects.filter(testCase = referenceTestCase.id)
+    comparetTestSteps = TestStep.objects.filter(testCase = comparedTestCase.id)
+    context = RequestContext(request, {'referenceTestCase': referenceTestCase, 'comparedTestCase': comparedTestCase, 'referenceTestSteps': referenceTestSteps, 'comparedTestSteps': comparetTestSteps})
     return TemplateResponse(request, 'newcat/list_changes_compare.html', context)
