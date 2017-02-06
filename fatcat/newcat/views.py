@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.forms.models import modelformset_factory
 import xlwt
 
-from .models import TestCase, TestStep, TestGroup, ExpectedResult, SystemRequirement,  Component, TestCaseHistory
+from .models import TestCase, TestStep, TestGroup, ExpectedResult, SystemRequirement,  Component, TestCaseId
 from .forms import TestStepsForm, ExpectedResultForm, TestGroupForm, ComponentForm, TestCaseBaseForm, TestCaseForm, \
     SystemRequirementForm, TestStepsFormSet
 
@@ -139,10 +139,10 @@ def create_testcase_late(request):
         formset = testCaseFormset(request.POST)
         for form in formset:
             if form.is_valid():
-                testCaseHistory = TestCaseHistory()
-                testCaseHistory.save()
+                testCaseId = TestCaseId()
+                testCaseId.save()
                 testCaseInstance = form.save(commit=False)
-                testCaseInstance.history = testCaseHistory
+                testCaseInstance.testCaseId = testCaseId
                 testCaseInstance.save()
         return HttpResponseRedirect("/newcat/testcase/")
     else:
@@ -163,7 +163,7 @@ def edit_testcase(request, testCaseId):
         testCaseForm = TestCaseForm(request.POST or None)
         if testCaseForm.is_valid():
             newTestCaseInstance = testCaseForm.save(commit=False)
-            newTestCaseInstance.history = testCaseInstance.history
+            newTestCaseInstance.testCaseId = testCaseInstance.testCaseId
             newTestCaseInstance.version = testCaseInstance.version + 1
             newTestCaseInstance.save()
             testCaseInstance.current = False
@@ -320,7 +320,7 @@ def error(request):
 
 def list_changes_testcase(request, testCaseId):
     actualTestCase = TestCase.objects.get(id = testCaseId)
-    testCasesList = TestCase.objects.filter(history = actualTestCase.history)
+    testCasesList = TestCase.objects.filter(testCaseId = actualTestCase.testCaseId)
     context = RequestContext(request, {'testCasesList': testCasesList, 'testCaseId': testCaseId})
     return TemplateResponse(request, 'newcat/list_changes.html', context)
 

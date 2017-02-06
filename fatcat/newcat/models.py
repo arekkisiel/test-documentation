@@ -19,8 +19,8 @@ class SystemRequirement(models.Model):
     def __str__(self):
         return repr(self.sysReq_MKS)+ "  " + self.title
 
-class TestCaseHistory(models.Model):
-    def TestCaseHistory(self):
+class TestCaseId(models.Model):
+    def TestCaseId(self):
         return self
 
 class TestCase(models.Model):
@@ -47,7 +47,7 @@ class TestCase(models.Model):
     status = models.CharField(max_length=11, choices=STATUS)
     version = models.IntegerField(default=1)
     current = models.BooleanField(default=True)
-    history = models.ForeignKey(TestCaseHistory)
+    testCaseId = models.ForeignKey(TestCaseId)
 
     class Meta:
         ordering = ['-version']

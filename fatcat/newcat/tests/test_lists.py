@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
-from newcat.models import TestCase, Component, TestCaseHistory
+from newcat.models import TestCase, Component, TestCaseId
 from newcat.models import TestGroup
 from newcat.models import SystemRequirement
 
@@ -12,8 +12,8 @@ class TestDataPresentation(WebTest):
         SystemRequirement.objects.create(sysReq_MKS=123, title='test SR1', ).save()
         SystemRequirement.objects.create(sysReq_MKS=321, title='test SR2', ).save()
         Component.objects.create(componentName='testComponent1', ).save()
-        TestCaseHistory.objects.create(id=1).save()
-        TestCaseHistory.objects.create(id=2).save()
+        TestCaseId.objects.create(id=1).save()
+        TestCaseId.objects.create(id=2).save()
         TestCase.objects.create(
             testName='testName1',
             testedFunctionality='testFunctionality1',
@@ -24,7 +24,7 @@ class TestDataPresentation(WebTest):
             testGroup=TestGroup.objects.get(testGroupName='testGroup1'),
             systemRequirement=SystemRequirement.objects.get(sysReq_MKS=123),
             component=Component.objects.get(componentName='testComponent1'),
-            history=TestCaseHistory.objects.get(id=1),
+            testCaseId=TestCaseId.objects.get(id=1),
         ).save()
         TestCase.objects.create(
             testName='testName2',
@@ -36,7 +36,7 @@ class TestDataPresentation(WebTest):
             testGroup=TestGroup.objects.get(testGroupName='testGroup2'),
             systemRequirement=SystemRequirement.objects.get(sysReq_MKS=321),
             component=Component.objects.get(componentName='testComponent1'),
-            history=TestCaseHistory.objects.get(id=2),
+            testCaseId=TestCaseId.objects.get(id=2),
         ).save()
 
     def test_listCasesShouldShowAllTestCases(self):

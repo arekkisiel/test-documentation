@@ -6,7 +6,7 @@ class TestCaseBaseForm(forms.ModelForm):
     numberOfCases = forms.IntegerField()
     class Meta:
         model = TestCase
-        exclude = ('testName', 'testSituation', 'status', 'version', 'history')
+        exclude = ('testName', 'testSituation', 'status', 'version', 'history', 'testCaseId')
 
 class TestCaseForm(forms.ModelForm):
     class Meta:

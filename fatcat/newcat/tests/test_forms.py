@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
-from newcat.models import TestCase, Component, TestCaseHistory
+from newcat.models import TestCase, Component, TestCaseId, TestStep
 from newcat.models import TestGroup
 from newcat.models import SystemRequirement
 
@@ -112,7 +112,7 @@ class TestEditOperations(WebTest):
         SystemRequirement.objects.create(sysReq_MKS=321, title='test SR2', ).save()
         Component.objects.create(componentName='testComponent1', ).save()
         Component.objects.create(componentName='testComponent2', ).save()
-        TestCaseHistory.objects.create(id=1).save()
+        TestCaseId.objects.create(id=1).save()
         TestCase.objects.create(
             testName='testName',
             testedFunctionality ='testFunctionality',
@@ -123,7 +123,7 @@ class TestEditOperations(WebTest):
             testGroup=TestGroup.objects.get(testGroupName='testGroup1'),
             systemRequirement=SystemRequirement.objects.get(sysReq_MKS=123),
             component=Component.objects.get(componentName = 'testComponent1'),
-            history=TestCaseHistory.objects.get(id=1),
+            testCaseId=TestCaseId.objects.get(id=1),
         ).save()
 
     def test_shouldEditWholeTestCase(self):
@@ -184,5 +184,44 @@ class TestEditOperations(WebTest):
         self.assertEqual(testCaseEdited.implementedBy, 'testImplementedByEdited')
         self.assertEqual(testCaseEdited.testSituation, 'testSituationEdited')
         self.assertEqual(testCaseEdited.status, 'Defined')
+
+    def test_shouldDefineTestSteps(self):
+        testCase = TestCase.objects.get(testName='testName')
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        edit_testSteps_form = response.form
+        edit_testSteps_form['teststep_set-0-stepOrder'] = 1
+        edit_testSteps_form['teststep_set-0-instruction'] = "FirstStep"
+        edit_testSteps_form['teststep_set-1-stepOrder'] = 2
+        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStep"
+        edit_testSteps_form['teststep_set-2-stepOrder'] = 3
+        edit_testSteps_form['teststep_set-2-instruction'] = "ThirdStep"
+        edit_testSteps_form.submit()
+        testStepsQueryset = TestStep.objects.filter(testCase = testCase.id)
+        self.assertQuerysetEqual(testStepsQueryset, ['<TestStep: FirstStep>', '<TestStep: SecondStep>', '<TestStep: ThirdStep>'])
+
+    def test_shouldUpdateTestSteps(self):
+        testCase = TestCase.objects.get(testName='testName')
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        edit_testSteps_form = response.form
+        edit_testSteps_form['teststep_set-0-stepOrder'] = 1
+        edit_testSteps_form['teststep_set-0-instruction'] = "FirstStep"
+        edit_testSteps_form['teststep_set-1-stepOrder'] = 2
+        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStep"
+        edit_testSteps_form['teststep_set-2-stepOrder'] = 3
+        edit_testSteps_form['teststep_set-2-instruction'] = "ThirdStep"
+        edit_testSteps_form.submit()
+
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        edit_testSteps_form = response.form
+        edit_testSteps_form['teststep_set-0-DELETE'] = True
+        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStepEdited"
+        edit_testSteps_form.submit()
+
+        testStepsQueryset = TestStep.objects.filter(testCase=testCase.id)
+        self.assertQuerysetEqual(testStepsQueryset, ['<TestStep: SecondStepEdited>', '<TestStep: ThirdStep>'])
+
+    #def test_shouldDefineTestAsserts(self):
+    #def test_shouldUpdateTestAsserts(self):
+    #def test_shouldDeleteTestAsserts(self):
 
 
