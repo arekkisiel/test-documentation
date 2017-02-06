@@ -32,7 +32,7 @@ class TestCaseVersion(models.Model):
         unique_together = ("testCaseUUID", "version")
         ordering = ['-version']
     def TestCaseVersion(self):
-        return self.testCaseCreated
+        return self.testCaseUUID
 
 class TestCase(models.Model):
     testName = models.CharField(max_length=100)

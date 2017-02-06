@@ -172,7 +172,7 @@ def edit_testcase(request, testCaseId):
             testCaseVersion = testCaseInstance.version
             testCaseVersion.current = False
             testCaseVersion.save()
-            newTestCaseVersion = TestCaseVersion(comment = "Test Case Edited.", version = testCaseVersion.version + 1, user = "default_username2", testCaseUUID = testCaseVersion.testCaseUUID)
+            newTestCaseVersion = TestCaseVersion(comment = "TestCaseEdited.", version = testCaseVersion.version + 1, user = "default_username2", testCaseUUID = testCaseVersion.testCaseUUID)
             newTestCaseVersion.save()
             newTestCaseInstance.version = newTestCaseVersion
             newTestCaseInstance.save()

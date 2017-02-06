@@ -30,6 +30,6 @@ urlpatterns = [
 
     url(r'^error/$', views.error, name='error'),
 
-    url(r'^testcase/(?P<testCaseId>[0-9]+)/history/$', views.list_changes_testcase, name='testcase-history' ),
-    url(r'^testcase/(?P<testCaseId>[0-9]+)/history/compare/(?P<referenceVersion>[0-9]+)/(?P<comparedVersion>[0-9]+)/$', views.list_changes_testcase_compare, name='testcase-history' ),
+    url(r'^testcase/(?P<testCaseId>[0-9]+)/history/$', views.list_changes_testcase, name='testcase_history' ),
+    url(r'^testcase/(?P<testCaseId>[0-9]+)/history/compare/(?P<referenceVersion>[0-9]+)/(?P<comparedVersion>[0-9]+)/$', views.list_changes_testcase_compare, name='testcase_history_compare' ),
 ]
