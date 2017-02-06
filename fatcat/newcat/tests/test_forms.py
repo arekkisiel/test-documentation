@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
-from newcat.models import TestCase, Component, TestCaseId, TestStep
+from newcat.models import TestCase, Component, TestCaseId, TestStep, ExpectedResult
 from newcat.models import TestGroup
 from newcat.models import SystemRequirement
 
@@ -220,8 +220,44 @@ class TestEditOperations(WebTest):
         testStepsQueryset = TestStep.objects.filter(testCase=testCase.id)
         self.assertQuerysetEqual(testStepsQueryset, ['<TestStep: SecondStepEdited>', '<TestStep: ThirdStep>'])
 
-    #def test_shouldDefineTestAsserts(self):
-    #def test_shouldUpdateTestAsserts(self):
-    #def test_shouldDeleteTestAsserts(self):
+    def test_shouldDefineTestAsserts(self):
+        testCase = TestCase.objects.get(testName='testName')
+        response = self.app.get(reverse('edit_expected_results', kwargs={'testCaseId': testCase.id}))
+        edit_testAssertions_form = response.form
+        edit_testAssertions_form['expectedresult_set-0-assertType'] = "TRUE"
+        edit_testAssertions_form['expectedresult_set-0-expectedResult'] = "FirstAssert"
+        edit_testAssertions_form['expectedresult_set-1-assertType'] = "NOT EQUALS"
+        edit_testAssertions_form['expectedresult_set-1-expectedResult'] = "SecondAssert"
+        edit_testAssertions_form['expectedresult_set-2-assertType'] = "THAT"
+        edit_testAssertions_form['expectedresult_set-2-expectedResult'] = "ThirdAssert"
+        edit_testAssertions_form.submit()
+
+        testAssertionsQueryset = ExpectedResult.objects.filter(testCase=testCase.id)
+        self.assertQuerysetEqual(testAssertionsQueryset.order_by('assertType'),
+                                 ['<ExpectedResult: SecondAssert>', '<ExpectedResult: ThirdAssert>', '<ExpectedResult: FirstAssert>'])
+
+    def test_shouldUpdateTestAsserts(self):
+        testCase = TestCase.objects.get(testName='testName')
+        response = self.app.get(reverse('edit_expected_results', kwargs={'testCaseId': testCase.id}))
+        edit_testAssertions_form = response.form
+        edit_testAssertions_form['expectedresult_set-0-assertType'] = "TRUE"
+        edit_testAssertions_form['expectedresult_set-0-expectedResult'] = "FirstAssert"
+        edit_testAssertions_form['expectedresult_set-1-assertType'] = "NOT EQUALS"
+        edit_testAssertions_form['expectedresult_set-1-expectedResult'] = "SecondAssert"
+        edit_testAssertions_form['expectedresult_set-2-assertType'] = "THAT"
+        edit_testAssertions_form['expectedresult_set-2-expectedResult'] = "ThirdAssert"
+        edit_testAssertions_form.submit()
+
+        testCase = TestCase.objects.get(testName='testName')
+        response = self.app.get(reverse('edit_expected_results', kwargs={'testCaseId': testCase.id}))
+        edit_testAssertions_form = response.form
+        edit_testAssertions_form['expectedresult_set-0-assertType'] = "CONTAINS"
+        edit_testAssertions_form['expectedresult_set-0-expectedResult'] = "FirstAssertEdited"
+        edit_testAssertions_form['expectedresult_set-2-DELETE'] = True
+        edit_testAssertions_form.submit()
+
+        testAssertionsQueryset = ExpectedResult.objects.filter(testCase=testCase.id)
+        self.assertQuerysetEqual(testAssertionsQueryset.order_by('assertType'),
+                                 ['<ExpectedResult: FirstAssertEdited>', '<ExpectedResult: SecondAssert>'])
 
 
