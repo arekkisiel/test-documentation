@@ -18,6 +18,10 @@ def fillInFirstTestCaseForm(self, numberOfCases):
 
     return create_testCase_form.submit('testCaseSubmit').follow()
 
+def getActualTestCaseByTestName(self, testName):
+    version = TestCaseVersion.objects.get(current=True)
+    return TestCase.objects.get(testName='testName', version=version)
+
 class TestCreateOperations(WebTest):
 
     def test_shouldCreateNewTestGroup(self):
@@ -194,6 +198,9 @@ class TestEditOperations(WebTest):
         edit_testSteps_form['teststep_set-2-stepOrder'] = 3
         edit_testSteps_form['teststep_set-2-instruction'] = "ThirdStep"
         edit_testSteps_form.submit()
+
+        testCase = getActualTestCaseByTestName(self, 'testName')
+
         testStepsQueryset = TestStep.objects.filter(testCase = testCase.id)
         self.assertQuerysetEqual(testStepsQueryset, ['<TestStep: FirstStep>', '<TestStep: SecondStep>', '<TestStep: ThirdStep>'])
 
@@ -209,11 +216,15 @@ class TestEditOperations(WebTest):
         edit_testSteps_form['teststep_set-2-instruction'] = "ThirdStep"
         edit_testSteps_form.submit()
 
+        testCase = getActualTestCaseByTestName(self, 'testName')
+
         response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
         edit_testSteps_form = response.form
         edit_testSteps_form['teststep_set-0-DELETE'] = True
         edit_testSteps_form['teststep_set-1-instruction'] = "SecondStepEdited"
         edit_testSteps_form.submit()
+
+        testCase = getActualTestCaseByTestName(self, 'testName')
 
         testStepsQueryset = TestStep.objects.filter(testCase=testCase.id)
         self.assertQuerysetEqual(testStepsQueryset, ['<TestStep: SecondStepEdited>', '<TestStep: ThirdStep>'])
