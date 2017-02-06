@@ -1,11 +1,11 @@
 function saveSettings(){
-sessionStorage.setItem("formdata",formToString($("#createTestCaseForm")));
+    sessionStorage.setItem("formdata",formToString($("#createTestCaseForm")));
 }
 
 function loadSettings(){
     var storedform = sessionStorage.getItem("formdata");
     stringToForm(storedform,$("#createTestCaseForm"));
-    }
+}
 
 function formToString(filledForm) {
   formObject = new Object();
