@@ -7,34 +7,20 @@
                 <th><div>Reference</div></th>
                 <th><div>Compared</div></th>
 			  	<th><div>Version</div></th>
-				<th><div>Test Name</div></th>
-				<th><div>Component</div></th>
-                <th><div>Test Group</div></th>
-				<th><div>System Requirement</div></th>
-                <th><div>Tested Functionality</div></th>
-                <th><div>Test Engineer</div></th>
-                <th><div>Implemented By</div></th>
-                <th><div>Test Situation</div></th>
-                <th><div>Status</div></th>
-                <th><div>Current</div></th>
+				<th><div>Current</div></th>
+				<th><div>Change comment</div></th>
+                <th><div>Changed by</div></th>
             </tr>
         </thead>
         <tbody>
-        {% for testCase in testCasesList %}
-            <tr id="{{ testCase.id }}">
+        {% for version in versions %}
+            <tr id="{{ version.version }}">
                 <td><div><input type="radio" name="reference"></div></td>
                 <td><div><input type="radio" name="compare"></div></td>
-                <td><div>{{ testCase.version }}</div></td>
-                <td><div>{{ testCase.testName|wordwrap:12 }}</div></td>
-                <td><div>{{ testCase.component|wordwrap:12}}</div></td>
-                <td><div>{{ testCase.testGroup|wordwrap:12 }}</div></td>
-                <td><div>{{ testCase.systemRequirement|wordwrap:12 }}</div></td>
-                <td><div>{{ testCase.testedFunctionality|wordwrap:12 }}</div></td>
-                <td><div>{{ testCase.testEngineer|wordwrap:12 }}</div></td>
-                <td><div>{{ testCase.implementedBy|wordwrap:12 }}</div></td>
-                <td><div>{{ testCase.testSituation|wordwrap:12 }}</div></td>
-                <td><div>{{ testCase.status|wordwrap:12 }}</div></td>
-                <td><div>{{ testCase.current }}</div></td>
+                <td><div>{{ version.version|wordwrap:12 }}</div></td>
+                <td><div>{{ version.current|wordwrap:12}}</div></td>
+                <td><div>{{ version.comment|wordwrap:12 }}</div></td>
+                <td><div>{{ version.user|wordwrap:12 }}</div></td>
             </tr>
         {% endfor %}
 		</tbody>
@@ -54,22 +40,22 @@ $(document).ready(function(){
 });
 function compareTestCaseVersions(){
     var go = true;
-    var referenceTestCaseId = $('input[name="reference"]:checked').closest('tr').attr('id');
-    if (referenceTestCaseId == undefined){
+    var referenceTestCaseVersion = $('input[name="reference"]:checked').closest('tr').attr('id');
+    if (referenceTestCaseVersion === undefined){
         alert("You should choose reference version!");
         go = false;
         }
-    var comparedTestCaseId = $('input[name="compare"]:checked').closest('tr').attr('id');
-    if (comparedTestCaseId == undefined && go){
+    var comparedTestCaseVersion = $('input[name="compare"]:checked').closest('tr').attr('id');
+    if (comparedTestCaseVersion === undefined && go){
         alert("You should choose version to compare!");
         go = false;
         }
-    if(referenceTestCaseId == comparedTestCaseId && go){
+    if(referenceTestCaseVersion === comparedTestCaseVersion && go){
         alert("You shouldn't compare the same versions!");
         go = false;
         }
     if(go)
-        window.location.href = "/newcat/testcase/"+ referenceTestCaseId + "/history/compare/" + comparedTestCaseId;
+        window.location.href = "/newcat/testcase/"+ {{ testCaseId }} + "/history/compare/" + referenceTestCaseVersion + "/" + comparedTestCaseVersion;
 }
 </script>
 {% endblock%}

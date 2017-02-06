@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 class TestGroup(models.Model):
@@ -19,9 +21,18 @@ class SystemRequirement(models.Model):
     def __str__(self):
         return repr(self.sysReq_MKS)+ "  " + self.title
 
-class TestCaseId(models.Model):
-    def TestCaseId(self):
-        return self
+class TestCaseVersion(models.Model):
+    testCaseUUID = models.UUIDField(default=uuid.uuid4, editable=False)
+    version = models.IntegerField()
+    comment = models.CharField(max_length=200)
+    current = models.BooleanField(default=True)
+    user = models.CharField(max_length=200)
+
+    class Meta:
+        unique_together = ("testCaseUUID", "version")
+        ordering = ['-version']
+    def TestCaseVersion(self):
+        return self.testCaseCreated
 
 class TestCase(models.Model):
     testName = models.CharField(max_length=100)
@@ -45,9 +56,7 @@ class TestCase(models.Model):
 		(DELETED, 'Deleted'),
 		)
     status = models.CharField(max_length=11, choices=STATUS)
-    version = models.IntegerField(default=1)
-    current = models.BooleanField(default=True)
-    testCaseId = models.ForeignKey(TestCaseId)
+    version = models.ForeignKey(TestCaseVersion)
 
     class Meta:
         ordering = ['-version']

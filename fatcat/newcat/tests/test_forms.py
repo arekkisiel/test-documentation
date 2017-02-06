@@ -1,9 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
-from newcat.models import TestCase, Component, TestCaseId, TestStep, ExpectedResult
-from newcat.models import TestGroup
-from newcat.models import SystemRequirement
+from newcat.models import TestCase, Component, TestStep, ExpectedResult, TestCaseVersion, TestGroup, SystemRequirement
 
 
 def fillInFirstTestCaseForm(self, numberOfCases):
@@ -112,7 +110,7 @@ class TestEditOperations(WebTest):
         SystemRequirement.objects.create(sysReq_MKS=321, title='test SR2', ).save()
         Component.objects.create(componentName='testComponent1', ).save()
         Component.objects.create(componentName='testComponent2', ).save()
-        TestCaseId.objects.create(id=1).save()
+        TestCaseVersion.objects.create(id=1, version=1, comment="testComment", current=True, user="testUser").save()
         TestCase.objects.create(
             testName='testName',
             testedFunctionality ='testFunctionality',
@@ -123,7 +121,7 @@ class TestEditOperations(WebTest):
             testGroup=TestGroup.objects.get(testGroupName='testGroup1'),
             systemRequirement=SystemRequirement.objects.get(sysReq_MKS=123),
             component=Component.objects.get(componentName = 'testComponent1'),
-            testCaseId=TestCaseId.objects.get(id=1),
+            version=TestCaseVersion.objects.get(id=1),
         ).save()
 
     def test_shouldEditWholeTestCase(self):
@@ -144,7 +142,7 @@ class TestEditOperations(WebTest):
         edit_testCase_form['testSituation'] = 'testSituationEdited'
         edit_testCase_form['status'] = 'Implemented'
         edit_testCase_form.submit()
-        testCaseEdited = TestCase.objects.get(testName='testNameEdited', current=True)
+        testCaseEdited = TestCase.objects.get(testName='testNameEdited')
 
         assert testCaseEdited is not None
         self.assertEqual(testCaseEdited.testName, 'testNameEdited')
@@ -172,7 +170,7 @@ class TestEditOperations(WebTest):
         edit_testCase_form['implementedBy'] = 'testImplementedByEdited'
         edit_testCase_form['testSituation'] = 'testSituationEdited'
         edit_testCase_form.submit()
-        testCaseEdited = TestCase.objects.get(testName='testNameEdited', current=True)
+        testCaseEdited = TestCase.objects.get(testName='testNameEdited')
 
         assert testCaseEdited is not None
         self.assertEqual(testCaseEdited.testName, 'testNameEdited')

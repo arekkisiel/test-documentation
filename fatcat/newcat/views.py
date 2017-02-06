@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 from django.forms.models import modelformset_factory
 import xlwt
 
-from .models import TestCase, TestStep, TestGroup, ExpectedResult, SystemRequirement,  Component, TestCaseId
+from .models import TestCase, TestStep, TestGroup, ExpectedResult, SystemRequirement,  Component, \
+    TestCaseVersion
 from .forms import TestStepsForm, ExpectedResultForm, TestGroupForm, ComponentForm, TestCaseBaseForm, TestCaseForm, \
     SystemRequirementForm, TestStepsFormSet
 
@@ -16,31 +17,36 @@ from .forms import TestStepsForm, ExpectedResultForm, TestGroupForm, ComponentFo
 #### List Views
 
 def list_systemRequirement(request, systemRequirement):
-    testCasesList = TestCase.objects.filter(systemRequirement=systemRequirement, current=True)
+    versions = TestCaseVersion.objects.filter(current=True)
+    testCasesList = TestCase.objects.filter(systemRequirement=systemRequirement, version = versions)
     context = RequestContext(request, {'testCasesList': testCasesList, 'systemRequirement': systemRequirement})
     return TemplateResponse(request, 'newcat/list_cases_systemRequirement.html', context)
 
 
 def list_status(request, status):
-    testCasesList = TestCase.objects.filter(status=status, current=True)
+    versions = TestCaseVersion.objects.filter(current=True)
+    testCasesList = TestCase.objects.filter(status=status, version = versions)
     context = RequestContext(request, {'testCasesList': testCasesList, 'status': status})
     return TemplateResponse(request, 'newcat/list_cases_status.html', context)
 
 
 def list_component(request, component):
-    testCasesList = TestCase.objects.filter(component=component, current=True)
+    versions = TestCaseVersion.objects.filter(current=True)
+    testCasesList = TestCase.objects.filter(component=component, version = versions)
     context = RequestContext(request, {'testCasesList': testCasesList, 'component': component})
     return TemplateResponse(request, 'newcat/list_cases_component.html', context)
 
 
 def list_group(request, group):
-    testCasesList = TestCase.objects.filter(testGroup=group, current=True)
+    versions = TestCaseVersion.objects.filter(current=True)
+    testCasesList = TestCase.objects.filter(testGroup=group, version = versions)
     context = RequestContext(request, {'testCasesList': testCasesList, 'group': group})
     return TemplateResponse(request, 'newcat/list_cases_group.html', context)
 
 
 def list_cases(request):
-    testCasesList = TestCase.objects.filter(current=True)
+    versions = TestCaseVersion.objects.filter(current=True)
+    testCasesList = TestCase.objects.filter(version = versions)
     context = RequestContext(request, {'testCasesList': testCasesList})
     return TemplateResponse(request, 'newcat/list_cases.html', context)
 
@@ -139,10 +145,10 @@ def create_testcase_late(request):
         formset = testCaseFormset(request.POST)
         for form in formset:
             if form.is_valid():
-                testCaseId = TestCaseId()
-                testCaseId.save()
+                testCaseVersion = TestCaseVersion(comment = "Test Case Created.", version = 1, user = "default_username")
+                testCaseVersion.save()
                 testCaseInstance = form.save(commit=False)
-                testCaseInstance.testCaseId = testCaseId
+                testCaseInstance.version = testCaseVersion
                 testCaseInstance.save()
         return HttpResponseRedirect("/newcat/testcase/")
     else:
@@ -163,11 +169,13 @@ def edit_testcase(request, testCaseId):
         testCaseForm = TestCaseForm(request.POST or None)
         if testCaseForm.is_valid():
             newTestCaseInstance = testCaseForm.save(commit=False)
-            newTestCaseInstance.testCaseId = testCaseInstance.testCaseId
-            newTestCaseInstance.version = testCaseInstance.version + 1
+            testCaseVersion = testCaseInstance.version
+            testCaseVersion.current = False
+            testCaseVersion.save()
+            newTestCaseVersion = TestCaseVersion(comment = "Test Case Edited.", version = testCaseVersion.version + 1, user = "default_username2", testCaseUUID = testCaseVersion.testCaseUUID)
+            newTestCaseVersion.save()
+            newTestCaseInstance.version = newTestCaseVersion
             newTestCaseInstance.save()
-            testCaseInstance.current = False
-            testCaseInstance.save()
             return HttpResponseRedirect('/newcat/testcase/' + str(newTestCaseInstance.id))
     testCaseForm = TestCaseForm(request.POST or None, instance=testCaseInstance)
     context = RequestContext(request, {
@@ -319,13 +327,16 @@ def error(request):
 ####History Views
 
 def list_changes_testcase(request, testCaseId):
-    actualTestCase = TestCase.objects.get(id = testCaseId)
-    testCasesList = TestCase.objects.filter(testCaseId = actualTestCase.testCaseId)
-    context = RequestContext(request, {'testCasesList': testCasesList, 'testCaseId': testCaseId})
+    version = TestCase.objects.get(id = testCaseId).version
+    versions = TestCaseVersion.objects.filter(testCaseUUID = version.testCaseUUID)
+    context = RequestContext(request, {'versions': versions, 'testCaseId': testCaseId})
     return TemplateResponse(request, 'newcat/list_changes.html', context)
 
-def list_changes_testcase_compare(request, referenceTestCaseId, comparedTestCaseId):
-    referenceTestCase = TestCase.objects.get(id = referenceTestCaseId)
-    comparedTestCase = TestCase.objects.get(id = comparedTestCaseId)
+def list_changes_testcase_compare(request, testCaseId, referenceVersion, comparedVersion):
+    version = TestCase.objects.get(id=testCaseId).version
+    referenceVersion = TestCaseVersion.objects.filter(testCaseUUID=version.testCaseUUID, version = referenceVersion)
+    comparedVersion = TestCaseVersion.objects.filter(testCaseUUID=version.testCaseUUID, version = comparedVersion)
+    referenceTestCase = TestCase.objects.get(version = referenceVersion)
+    comparedTestCase = TestCase.objects.get(version = comparedVersion)
     context = RequestContext(request, {'referenceTestCase': referenceTestCase, 'comparedTestCase': comparedTestCase})
     return TemplateResponse(request, 'newcat/list_changes_compare.html', context)

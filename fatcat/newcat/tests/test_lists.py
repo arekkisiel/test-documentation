@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
-from newcat.models import TestCase, Component, TestCaseId
+from newcat.models import TestCase, Component, TestCaseVersion
 from newcat.models import TestGroup
 from newcat.models import SystemRequirement
 
@@ -12,8 +12,7 @@ class TestDataPresentation(WebTest):
         SystemRequirement.objects.create(sysReq_MKS=123, title='test SR1', ).save()
         SystemRequirement.objects.create(sysReq_MKS=321, title='test SR2', ).save()
         Component.objects.create(componentName='testComponent1', ).save()
-        TestCaseId.objects.create(id=1).save()
-        TestCaseId.objects.create(id=2).save()
+        TestCaseVersion.objects.create(id=1, version=1, comment="testComment", current=True, user="testUser").save()
         TestCase.objects.create(
             testName='testName1',
             testedFunctionality='testFunctionality1',
@@ -24,8 +23,10 @@ class TestDataPresentation(WebTest):
             testGroup=TestGroup.objects.get(testGroupName='testGroup1'),
             systemRequirement=SystemRequirement.objects.get(sysReq_MKS=123),
             component=Component.objects.get(componentName='testComponent1'),
-            testCaseId=TestCaseId.objects.get(id=1),
+            version=TestCaseVersion.objects.get(id=1)
         ).save()
+        TestCaseVersion.objects.create(id=2, version=1, comment="testComment2",
+                                       current=True, user="testUser2").save()
         TestCase.objects.create(
             testName='testName2',
             testedFunctionality='testFunctionality2',
@@ -36,7 +37,7 @@ class TestDataPresentation(WebTest):
             testGroup=TestGroup.objects.get(testGroupName='testGroup2'),
             systemRequirement=SystemRequirement.objects.get(sysReq_MKS=321),
             component=Component.objects.get(componentName='testComponent1'),
-            testCaseId=TestCaseId.objects.get(id=2),
+            version=TestCaseVersion.objects.get(id=2)
         ).save()
 
     def test_listCasesShouldShowAllTestCases(self):
