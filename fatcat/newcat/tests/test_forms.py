@@ -20,7 +20,7 @@ def fillInFirstTestCaseForm(self, numberOfCases):
 
 def getActualTestCaseByTestName(self, testName):
     version = TestCaseVersion.objects.get(current=True)
-    return TestCase.objects.get(testName='testName', version=version)
+    return TestCase.objects.get(testName=testName, version=version)
 
 class TestCreateOperations(WebTest):
 
@@ -220,13 +220,13 @@ class TestEditOperations(WebTest):
 
         response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
         edit_testSteps_form = response.form
-        edit_testSteps_form['teststep_set-0-DELETE'] = True
+        edit_testSteps_form['teststep_set-0-delete'] = True
         edit_testSteps_form['teststep_set-1-instruction'] = "SecondStepEdited"
         edit_testSteps_form.submit()
 
         testCase = getActualTestCaseByTestName(self, 'testName')
 
-        testStepsQueryset = TestStep.objects.filter(testCase=testCase.id)
+        testStepsQueryset = TestStep.objects.filter(testCase=testCase.id, version = testCase.version)
         self.assertQuerysetEqual(testStepsQueryset, ['<TestStep: SecondStepEdited>', '<TestStep: ThirdStep>'])
 
     def test_shouldDefineTestAsserts(self):

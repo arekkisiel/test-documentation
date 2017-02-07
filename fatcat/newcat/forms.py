@@ -37,9 +37,10 @@ class ExpectedResultForm(forms.ModelForm):
         exclude = ('testCase',)
 
 class TestStepsForm(forms.ModelForm):
+    delete = forms.BooleanField(required=False)
     class Meta:
         model = TestStep
-        exclude = ('testCase',)
+        exclude = ('testCase', 'version')
 
 class TestStepsFormSet(BaseInlineFormSet):
     def clean(self):

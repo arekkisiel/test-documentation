@@ -1,6 +1,7 @@
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 from newcat.models import TestGroup, SystemRequirement, Component, TestCaseVersion, TestCase
+from newcat.tests.test_forms import getActualTestCaseByTestName
 
 
 class TestCaseHistoryPresentation(WebTest):
@@ -49,3 +50,45 @@ class TestCaseHistoryPresentation(WebTest):
         response = self.app.get(reverse('testcase_history_compare', kwargs={'testCaseId': testCase.id, 'referenceVersion': 1, 'comparedVersion': 2,}))
         self.assertContains(response, 'testName1')
         self.assertContains(response, 'testNameEdited')
+
+    def test_shouldTestStepsChangeBeVisibleInHistoryView(self):
+        testCase = TestCase.objects.get(testName='testName1')
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        edit_testSteps_form = response.form
+        edit_testSteps_form['teststep_set-0-stepOrder'] = 1
+        edit_testSteps_form['teststep_set-0-instruction'] = "FirstStep"
+        edit_testSteps_form['teststep_set-1-stepOrder'] = 2
+        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStep"
+        edit_testSteps_form.submit()
+
+        testCase = getActualTestCaseByTestName(self, 'testName1')
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        edit_testSteps_form = response.form
+        edit_testSteps_form['teststep_set-0-delete'] = True
+        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStepEdited"
+        edit_testSteps_form.submit()
+
+        testCase = getActualTestCaseByTestName(self, 'testName1')
+        response = self.app.get(reverse('testcase_history_compare',
+                                        kwargs={'testCaseId': testCase.id, 'referenceVersion': 2,
+                                                'comparedVersion': 3, }))
+        self.assertContains(response, 'FirstStep')
+        self.assertContains(response, 'SecondStep')
+        self.assertContains(response, 'SecondStepEdited')
+
+    def test_shouldTestStepsCreationBeVisibleInHistoryView(self):
+        testCase = TestCase.objects.get(testName='testName1')
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        edit_testSteps_form = response.form
+        edit_testSteps_form['teststep_set-0-stepOrder'] = 1
+        edit_testSteps_form['teststep_set-0-instruction'] = "FirstStep"
+        edit_testSteps_form['teststep_set-1-stepOrder'] = 2
+        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStep"
+        edit_testSteps_form.submit()
+
+        testCase = getActualTestCaseByTestName(self, 'testName1')
+        response = self.app.get(reverse('testcase_history_compare',
+                                        kwargs={'testCaseId': testCase.id, 'referenceVersion': 1,
+                                                'comparedVersion': 2, }))
+        self.assertContains(response, 'FirstStep')
+        self.assertContains(response, 'SecondStep')

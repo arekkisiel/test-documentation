@@ -68,10 +68,11 @@ class TestCase(models.Model):
 
 class TestStep(models.Model):
     testCase = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
+    version = models.ForeignKey(TestCaseVersion)
     instruction = models.CharField(max_length=500)
     stepOrder = models.IntegerField()
     class Meta:
-        unique_together = ("testCase", "stepOrder")
+        unique_together = ("testCase", "stepOrder", "version")
         ordering = ['stepOrder']
     def __str__(self):
         return self.instruction
