@@ -177,6 +177,10 @@ def edit_testcase(request, testCaseId):
             newTestCaseVersion.save()
             newTestCaseInstance.version = newTestCaseVersion
             newTestCaseInstance.save()
+            testSteps = TestStep.objects.filter(testCase=testCaseId)
+            for testStep in testSteps:
+                newTestStep = TestStep(testCase=newTestCaseInstance, version=newTestCaseVersion, stepOrder=testStep.stepOrder, instruction=testStep.instruction)
+                newTestStep.save()
             return HttpResponseRedirect('/newcat/testcase/' + str(newTestCaseInstance.id))
     testCaseForm = TestCaseForm(request.POST or None, instance=testCaseInstance)
     context = RequestContext(request, {
@@ -215,7 +219,7 @@ def edit_teststeps(request, testCaseId, extraForms=3):
                             newinstance = TestStep.objects.create(testCase=newTestCase, version=newTestCaseVersion,
                                                                   stepOrder=we.stepOrder, instruction=we.instruction)
                             newinstance.save()
-            return HttpResponseRedirect('/newcat/testcase/' + str(testCase.id))
+            return HttpResponseRedirect('/newcat/testcase/' + str(newTestCase.id))
     context = RequestContext(request, {
         'testCaseId': testCaseId,
         'formset': formset,

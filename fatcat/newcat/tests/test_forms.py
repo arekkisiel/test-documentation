@@ -269,4 +269,25 @@ class TestEditOperations(WebTest):
         self.assertQuerysetEqual(testAssertionsQueryset.order_by('assertType'),
                                  ['<ExpectedResult: FirstAssertEdited>', '<ExpectedResult: SecondAssert>'])
 
+    def test_shouldTestCaseUpdateNotDeleteTestSteps(self):
+        testCase = TestCase.objects.get(testName='testName')
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        edit_testSteps_form = response.form
+        edit_testSteps_form['teststep_set-0-stepOrder'] = 1
+        edit_testSteps_form['teststep_set-0-instruction'] = "FirstStep"
+        edit_testSteps_form['teststep_set-1-stepOrder'] = 2
+        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStep"
+        edit_testSteps_form.submit()
 
+        testCase = getActualTestCaseByTestName(self, 'testName')
+        response = self.app.get(reverse('edit_test_case', kwargs={'testCaseId': testCase.id}))
+        edit_testCase_form = response.form
+        edit_testCase_form['testName'] = 'testNameEdited'
+        edit_testCase_form.submit()
+        testCase = getActualTestCaseByTestName(self, 'testNameEdited')
+        response = self.app.get(reverse('test_case', kwargs={'testCaseId': testCase.id}))
+
+        self.assertContains(response, 'testNameEdited')
+        self.assertContains(response, 'testEngineer')
+        self.assertContains(response, 'FirstStep')
+        self.assertContains(response, 'SecondStep')
