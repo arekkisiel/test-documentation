@@ -21,20 +21,10 @@ class SystemRequirement(models.Model):
     def __str__(self):
         return repr(self.sysReq_MKS)+ "  " + self.title
 
-class TestCaseVersion(models.Model):
-    testCaseUUID = models.UUIDField(default=uuid.uuid4, editable=False)
-    version = models.IntegerField()
-    comment = models.CharField(max_length=200)
-    current = models.BooleanField(default=True)
-    user = models.CharField(max_length=200)
-
-    class Meta:
-        unique_together = ("testCaseUUID", "version")
-        ordering = ['-version']
-    def TestCaseVersion(self):
-        return self.testCaseUUID
-
 class TestCase(models.Model):
+    testCaseUUID = models.UUIDField(default=uuid.uuid4, editable=False)
+    version = models.IntegerField(default=1)
+    current = models.BooleanField(default=True)
     testName = models.CharField(max_length=100)
     testedFunctionality = models.CharField(max_length=100)
     testEngineer = models.CharField(max_length=100)
@@ -56,7 +46,6 @@ class TestCase(models.Model):
 		(DELETED, 'Deleted'),
 		)
     status = models.CharField(max_length=11, choices=STATUS)
-    version = models.ForeignKey(TestCaseVersion)
 
     class Meta:
         ordering = ['-version']
@@ -67,12 +56,13 @@ class TestCase(models.Model):
         return self
 
 class TestStep(models.Model):
-    testCase = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
-    version = models.ForeignKey(TestCaseVersion)
+    testCaseUUID = models.UUIDField()
+    version = models.IntegerField()
+    current = models.BooleanField(default=True)
     instruction = models.CharField(max_length=500)
     stepOrder = models.IntegerField()
     class Meta:
-        unique_together = ("testCase", "stepOrder", "version")
+        unique_together = ("testCaseUUID", "stepOrder", "version")
         ordering = ['stepOrder']
     def __str__(self):
         return self.instruction

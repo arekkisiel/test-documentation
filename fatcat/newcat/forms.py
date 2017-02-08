@@ -1,4 +1,4 @@
-from django.forms import BaseInlineFormSet
+from django.forms import BaseInlineFormSet, BaseFormSet, BaseModelFormSet
 from django import forms
 from .models import TestCase, TestGroup, Component, SystemRequirement, ExpectedResult, TestStep
 
@@ -40,9 +40,9 @@ class TestStepsForm(forms.ModelForm):
     delete = forms.BooleanField(required=False)
     class Meta:
         model = TestStep
-        exclude = ('testCase', 'version')
+        exclude = ('version', 'testCaseUUID', 'current')
 
-class TestStepsFormSet(BaseInlineFormSet):
+class TestStepsFormSet(BaseModelFormSet):
     def clean(self):
         if any(self.errors):
             # Don't bother validating the formset unless each form is valid on its own

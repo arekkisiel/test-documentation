@@ -1,7 +1,6 @@
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
-from newcat.models import TestGroup, SystemRequirement, Component, TestCaseVersion, TestCase
-from newcat.tests.test_forms import getActualTestCaseByTestName
+from newcat.models import TestGroup, SystemRequirement, Component, TestCase
 
 
 class TestCaseHistoryPresentation(WebTest):
@@ -9,7 +8,7 @@ class TestCaseHistoryPresentation(WebTest):
         TestGroup.objects.create(testGroupName='testGroup1', ).save()
         SystemRequirement.objects.create(sysReq_MKS=123, title='test SR1', ).save()
         Component.objects.create(componentName='testComponent1', ).save()
-        TestCaseVersion.objects.create(id=1, version=1, comment="testComment", current=True, user="testUser").save()
+
         TestCase.objects.create(
             testName='testName1',
             testedFunctionality='testFunctionality1',
@@ -20,7 +19,6 @@ class TestCaseHistoryPresentation(WebTest):
             testGroup=TestGroup.objects.get(testGroupName='testGroup1'),
             systemRequirement=SystemRequirement.objects.get(sysReq_MKS=123),
             component=Component.objects.get(componentName='testComponent1'),
-            version=TestCaseVersion.objects.get(id=1)
         ).save()
 
 
@@ -33,10 +31,8 @@ class TestCaseHistoryPresentation(WebTest):
         testCase = TestCase.objects.get(testName='testNameEdited')
 
         response = self.app.get(reverse('testcase_history', kwargs={'testCaseId': testCase.id}))
-        self.assertContains(response, 'testComment')
-        self.assertContains(response, 'TestCaseEdited.')
-        self.assertContains(response, 'testUser')
-        self.assertContains(response, 'default_username2')
+        self.assertContains(response, '1')
+        self.assertContains(response, '2')
         self.assertContains(response, 'False')
         self.assertContains(response, 'True')
 
@@ -55,23 +51,22 @@ class TestCaseHistoryPresentation(WebTest):
         testCase = TestCase.objects.get(testName='testName1')
         response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
         edit_testSteps_form = response.form
-        edit_testSteps_form['teststep_set-0-stepOrder'] = 1
-        edit_testSteps_form['teststep_set-0-instruction'] = "FirstStep"
-        edit_testSteps_form['teststep_set-1-stepOrder'] = 2
-        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStep"
+        edit_testSteps_form['form-0-stepOrder'] = 1
+        edit_testSteps_form['form-0-instruction'] = "FirstStep"
+        edit_testSteps_form['form-1-stepOrder'] = 2
+        edit_testSteps_form['form-1-instruction'] = "SecondStep"
         edit_testSteps_form.submit()
 
-        testCase = getActualTestCaseByTestName(self, 'testName1')
         response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
         edit_testSteps_form = response.form
-        edit_testSteps_form['teststep_set-0-delete'] = True
-        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStepEdited"
+        edit_testSteps_form['form-0-delete'] = True
+        edit_testSteps_form['form-1-instruction'] = "SecondStepEdited"
         edit_testSteps_form.submit()
 
-        testCase = getActualTestCaseByTestName(self, 'testName1')
-        response = self.app.get(reverse('testcase_history_compare',
-                                        kwargs={'testCaseId': testCase.id, 'referenceVersion': 2,
-                                                'comparedVersion': 3, }))
+        testCase = TestCase.objects.get(testName='testName1', current=True)
+        response = self.app.get(reverse('teststeps_history_compare',
+                                        kwargs={'testCaseId': testCase.id, 'referenceVersion': 1,
+                                                'comparedVersion': 2, }))
         self.assertContains(response, 'FirstStep')
         self.assertContains(response, 'SecondStep')
         self.assertContains(response, 'SecondStepEdited')
@@ -80,14 +75,16 @@ class TestCaseHistoryPresentation(WebTest):
         testCase = TestCase.objects.get(testName='testName1')
         response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
         edit_testSteps_form = response.form
-        edit_testSteps_form['teststep_set-0-stepOrder'] = 1
-        edit_testSteps_form['teststep_set-0-instruction'] = "FirstStep"
-        edit_testSteps_form['teststep_set-1-stepOrder'] = 2
-        edit_testSteps_form['teststep_set-1-instruction'] = "SecondStep"
+        edit_testSteps_form['form-0-stepOrder'] = 1
+        edit_testSteps_form['form-0-instruction'] = "FirstStep"
+        edit_testSteps_form.submit()
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        edit_testSteps_form = response.form
+        edit_testSteps_form['form-1-stepOrder'] = 2
+        edit_testSteps_form['form-1-instruction'] = "SecondStep"
         edit_testSteps_form.submit()
 
-        testCase = getActualTestCaseByTestName(self, 'testName1')
-        response = self.app.get(reverse('testcase_history_compare',
+        response = self.app.get(reverse('teststeps_history_compare',
                                         kwargs={'testCaseId': testCase.id, 'referenceVersion': 1,
                                                 'comparedVersion': 2, }))
         self.assertContains(response, 'FirstStep')
