@@ -1,0 +1,43 @@
+{% extends "newbase.html" %}
+{% block content %}
+{% load static %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<table id="expectedAsserts" class="table table-condensed">
+		<thead>
+				<tr>
+					<th>ExpectedResults - Reference:</th>
+                    <th>ExpectedResults - Compared:</th>
+				</tr>
+		</thead>
+		<tbody>
+			<tr>
+                <td class="referenceAsserts">
+                    {% if referenceExpectedResults %}
+                        {% for expectedResult in referenceExpectedResults %}
+                            <div>{{ expectedResult.assertType }}. {{ expectedResult.expectedResult }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                <td class="comparedAsserts">
+                    {% if comparedExpectedResults %}
+                        {% for expectedResult in comparedExpectedResults %}
+                            <div>{{ expectedResult.assertType }}. {{ expectedResult.expectedResult }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+			</tr>
+		</tbody>
+	</table>
+    <a class="btn btn-default btn-sm" href="/newcat/testcase/{{ testCaseId }}/history/">Return</a>
+<script>
+    $(document).ready(function(){
+        $('.reference').each(function(){
+            if ($(this).text().trim() != $(this).next().text().trim()){
+                $(this).css('font-weight','bold').css('background-color','#defec8');
+                $(this).next().css('font-weight','bold').css('background-color','#ffb390');
+            }
+        });
+        $()
+    });
+</script>
+{% endblock%}

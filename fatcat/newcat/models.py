@@ -69,7 +69,9 @@ class TestStep(models.Model):
 
 
 class ExpectedResult(models.Model):
-    testCase = models.ForeignKey(TestCase, to_field='id', on_delete=models.CASCADE)
+    testCaseUUID = models.UUIDField()
+    version = models.IntegerField()
+    current = models.BooleanField(default=True)
     expectedResult = models.CharField(max_length=500)
     TRUE = 'TRUE'
     FALSE = 'FALSE'

@@ -49,7 +49,7 @@ def test_case(request, testCaseId):
     testCase = TestCase.objects.get(id=testCaseId)
     testStepsList = TestStep.objects.filter(testCaseUUID=testCase.testCaseUUID, current=True)
     testStepsList = testStepsList.order_by('stepOrder')
-    expectedResultsList = ExpectedResult.objects.filter(testCase=testCase)
+    expectedResultsList = ExpectedResult.objects.filter(testCaseUUID=testCase.testCaseUUID, current=True)
     context = {'testCase': testCase,
                'testStepsList': testStepsList,
                'expectedResultsList': expectedResultsList}
@@ -193,13 +193,13 @@ def edit_teststeps(request, testCaseId, extraForms=3):
         for form in formset:
             if form.is_valid():
                 if not (form.cleaned_data.get('delete', False)):
-                    we = form.save(commit=False)
-                    if (we.stepOrder):
-                        if (we.instruction):
+                    temp = form.save(commit=False)
+                    if (temp.stepOrder):
+                        if (temp.instruction):
                             newinstance = TestStep.objects.create(testCaseUUID=UUID,
                                                                   version=version + 1,
-                                                                  stepOrder=we.stepOrder,
-                                                                  instruction=we.instruction)
+                                                                  stepOrder=temp.stepOrder,
+                                                                  instruction=temp.instruction)
                             newinstance.save()
         return HttpResponseRedirect('/newcat/testcase/' + str(testCaseId))
     context = RequestContext(request, {
@@ -212,16 +212,34 @@ def edit_teststeps(request, testCaseId, extraForms=3):
 
 def edit_expected_results(request, testCaseId, extraForms=3):
     extraForms = int(extraForms)
-    expectedResultsFormset = inlineformset_factory(TestCase, ExpectedResult, form=ExpectedResultForm, extra=extraForms)
+    testCase = get_object_or_404(TestCase, id=testCaseId)
+    UUID = testCase.testCaseUUID
+    expectedResults = ExpectedResult.objects.filter(testCaseUUID=UUID).order_by('-version')
+
+    expectedResultsFormset = modelformset_factory(ExpectedResult, form=ExpectedResultForm, extra=extraForms)
+    formset = expectedResultsFormset(request.POST or None,
+                                     queryset=ExpectedResult.objects.filter(testCaseUUID=UUID, current=True))
     if request.method == 'POST':
-        formset = expectedResultsFormset(request.POST or None, instance=TestCase.objects.get(id=testCaseId))
-        if formset.is_valid():
-            formset.save()
-            return HttpResponseRedirect('/newcat/testcase/' + testCaseId)
-        else:
-            return HttpResponseRedirect("/newcat/error/")
+        version = 0
+        if expectedResults:
+            version = expectedResults[0].version
+            for expectedResult in expectedResults:
+                if expectedResult.current:
+                    expectedResult.current = False
+                    expectedResult.save()
+        for form in formset:
+            if form.is_valid():
+                if not (form.cleaned_data.get('delete', False)):
+                    temp = form.save(commit=False)
+                    if (temp.assertType):
+                        if (temp.expectedResult):
+                            newinstance = ExpectedResult.objects.create(testCaseUUID=UUID,
+                                                                  version=version + 1,
+                                                                  assertType=temp.assertType,
+                                                                  expectedResult=temp.expectedResult)
+                            newinstance.save()
+        return HttpResponseRedirect('/newcat/testcase/' + testCaseId)
     else:
-        formset = expectedResultsFormset(instance=TestCase.objects.get(id=testCaseId))
         context = RequestContext(request, {
             'testCaseId': testCaseId,
             'formset': formset,
@@ -338,7 +356,8 @@ def list_changes_testcase(request, testCaseId):
     UUID = TestCase.objects.get(id=testCaseId).testCaseUUID
     testCaseVersions = TestCase.objects.filter(testCaseUUID=UUID)
     testStepsVersions = TestStep.objects.filter(testCaseUUID=UUID).order_by('-version').distinct('version')
-    context = RequestContext(request, {'testCaseVersions': testCaseVersions, 'testStepsVersions': testStepsVersions, 'testCaseId': testCaseId})
+    expectedResultsVersions = ExpectedResult.objects.filter(testCaseUUID=UUID).order_by('-version').distinct('version')
+    context = RequestContext(request, {'testCaseVersions': testCaseVersions, 'testStepsVersions': testStepsVersions, 'expectedResultsVersions': expectedResultsVersions, 'testCaseId': testCaseId})
     return TemplateResponse(request, 'newcat/list_changes.html', context)
 
 
@@ -361,3 +380,13 @@ def list_changes_teststeps_compare(request, testCaseId, referenceVersion, compar
                               'referenceTestSteps': referenceTestSteps,
                               'comparedTestSteps': comparedTestSteps})
     return TemplateResponse(request, 'newcat/teststeps_changes_compare.html', context)
+
+def list_changes_assertions_compare(request, testCaseId, referenceVersion, comparedVersion):
+    UUID = TestCase.objects.get(id=testCaseId).testCaseUUID
+    referenceExpectedResults = ExpectedResult.objects.filter(version=referenceVersion, testCaseUUID=UUID)
+    comparedExpectedResults = ExpectedResult.objects.filter(version=comparedVersion, testCaseUUID=UUID)
+    context = RequestContext(request,
+                             {'testCaseId': testCaseId,
+                              'referenceExpectedResults': referenceExpectedResults,
+                              'comparedExpectedResults': comparedExpectedResults})
+    return TemplateResponse(request, 'newcat/assertions_changes_compare.html', context)

@@ -14,12 +14,12 @@
             </tr>
         </thead>
         <tbody>
-        {% for testCase in testCaseVersions %}
+        {% for testCaseVersion in testCaseVersions %}
             <tr id="{{ testCase.version }}">
                 <td><div><input type="radio" name="reference"></div></td>
                 <td><div><input type="radio" name="compare"></div></td>
-                <td><div>{{ testCase.version|wordwrap:12 }}</div></td>
-                <td><div>{{ testCase.current|wordwrap:12}}</div></td>
+                <td><div>{{ testCaseVersion.version }}</div></td>
+                <td><div>{{ testCaseVersion.current}}</div></td>
             </tr>
         {% endfor %}
 		</tbody>
@@ -39,18 +39,43 @@
             </tr>
         </thead>
         <tbody>
-        {% for testStep in testStepsVersions %}
-            <tr id="{{ testStep.version }}">
+        {% for testStepsVersion in testStepsVersions %}
+            <tr id="{{ testStepsVersion.version }}">
                 <td><div><input type="radio" name="testSteps-reference"></div></td>
                 <td><div><input type="radio" name="testSteps-compare"></div></td>
-                <td><div>{{ testStep.version }}</div></td>
-                <td><div>{{ testStep.current }}</div></td>
+                <td><div>{{ testStepsVersion.version }}</div></td>
+                <td><div>{{ testStepsVersion.current }}</div></td>
             </tr>
         {% endfor %}
 		</tbody>
 	</table>
     <a class="btn btn-default btn-sm" href="/newcat/testcase/{{ testCaseId }}">Return</a>
     <a class="btn btn-default btn-sm" onclick="compareTestStepsVersions()">Compare Selected</a>
+    <table id="expectedResultsHistory" class="table table-hover">
+        <h3>Expected Results changes:</h3>
+		<thead>
+            <tr>
+                <th><div>Reference</div></th>
+                <th><div>Compared</div></th>
+			  	<th><div>Version</div></th>
+				<th><div>Current</div></th>
+				<th><div>Change comment</div></th>
+                <th><div>Changed by</div></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for expectedResultsVersion in expectedResultsVersions %}
+            <tr id="{{ expectedResultsVersion.version }}">
+                <td><div><input type="radio" name="ExpectedResults-reference"></div></td>
+                <td><div><input type="radio" name="ExpectedResults-compare"></div></td>
+                <td><div>{{ expectedResultsVersion.version }}</div></td>
+                <td><div>{{ expectedResultsVersion.current }}</div></td>
+            </tr>
+        {% endfor %}
+		</tbody>
+	</table>
+    <a class="btn btn-default btn-sm" href="/newcat/testcase/{{ testCaseId }}">Return</a>
+    <a class="btn btn-default btn-sm" onclick="compareExpectedResultsVersions()">Compare Selected</a>
 <style>
     #testCaseHistory .ui-selected { background: #F39814; color: white; }
 </style>
@@ -64,6 +89,11 @@ $(document).ready(function(){
     $('#testStepsHistory td').each(function(){
         if ($(this).text() == 'True') {
             $(this).closest('tr').css('background-color','silver');
+        }
+    })
+    $('#expectedResultsHistory td').each(function(){
+        if ($(this).text() == 'True') {
+            $(this).closest('tr').css('background-color','#009900');
         }
     })
 });
@@ -105,6 +135,26 @@ function compareTestStepsVersions(){
         }
     if(go)
         window.location.href = "/newcat/testcase/"+ {{ testCaseId }} + "/history/compare/teststeps/" + referenceTestStepsVersion + "/" + comparedTestStepsVersion;
+};
+
+function compareExpectedResultsVersions(){
+    var go = true;
+    var referenceExpectedResultsVersion = $('input[name="ExpectedResults-reference"]:checked').closest('tr').attr('id');
+    if (referenceExpectedResultsVersion === undefined){
+        alert("You should choose reference version!");
+        go = false;
+        }
+    var comparedExpectedResultsVersion = $('input[name="ExpectedResults-compare"]:checked').closest('tr').attr('id');
+    if (comparedExpectedResultsVersion === undefined && go){
+        alert("You should choose version to compare!");
+        go = false;
+        }
+    if(referenceExpectedResultsVersion === comparedExpectedResultsVersion && go){
+        alert("You shouldn't compare the same versions!");
+        go = false;
+        }
+    if(go)
+        window.location.href = "/newcat/testcase/"+ {{ testCaseId }} + "/history/compare/assertions/" + referenceExpectedResultsVersion + "/" + comparedExpectedResultsVersion;
 };
 </script>
 {% endblock%}

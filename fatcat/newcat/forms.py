@@ -32,9 +32,10 @@ class SystemRequirementForm(forms.ModelForm):
         exclude = ()
 
 class ExpectedResultForm(forms.ModelForm):
+    delete = forms.BooleanField(required=False)
     class Meta:
         model = ExpectedResult
-        exclude = ('testCase',)
+        exclude = ('version', 'testCaseUUID', 'current')
 
 class TestStepsForm(forms.ModelForm):
     delete = forms.BooleanField(required=False)
