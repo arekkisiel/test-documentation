@@ -40,8 +40,8 @@
 				<b class="shadow"></b>
 			</div>
             <div class="block">
-                <div style="margin-left: 20px"><h1>Test documenation WebApp</h1></div>
-                    <script>
+                {% block content %}{% endblock %}
+				<script>
                         $(function() {
                             BAMANA.drawTable();
                         });

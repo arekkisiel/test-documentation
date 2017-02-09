@@ -6,6 +6,7 @@ from newcat.models import TestGroup
 from newcat.models import SystemRequirement
 
 class TestDataPresentation(WebTest):
+    csrf_checks = False
     def setUp(self):
         TestGroup.objects.create(testGroupName='testGroup1', ).save()
         TestGroup.objects.create(testGroupName='testGroup2', ).save()

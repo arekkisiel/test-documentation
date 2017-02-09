@@ -15,12 +15,18 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from . import views
+from django.views.generic import RedirectView
 
+from . import views
 
 urlpatterns = [
     url(r'^fatcat/$', views.index, name='index'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^oldcat/', include('oldcat.urls')),
     url(r'^newcat/', include('newcat.urls')),
+
+    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
+    url(r'^logout/$', views.logout_view, name='logout'),
+    url(r'^accounts/profile/$', RedirectView.as_view(url="/newcat/testcase/", permanent=True), name='login_index')
+
 ]

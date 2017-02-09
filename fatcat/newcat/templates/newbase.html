@@ -33,9 +33,18 @@
 					<li class="last">
 						<a><span>&nbsp;</span></a>
 					</li>
-					<li class="login">
+					<li class="easter">
 						<a onclick="EASTEREGG.showEasterEgg(eggPath);"><span>&nbsp;&nbsp;&nbsp;</span></a>
 					</li>
+                    {% if user.is_authenticated %}
+                         <li class="login">
+                            <a href="/logout/"><span>Logout</span></a>
+                        </li>
+                    {% else %}
+                        <li class="login">
+                            <a href="/login/"><span>Login</span></a>
+                        </li>
+                    {% endif %}
 				</ul>
 				<b class="shadow"></b>
 			</div>

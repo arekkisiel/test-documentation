@@ -1,4 +1,4 @@
-from django.forms import BaseInlineFormSet, BaseFormSet, BaseModelFormSet
+from django.forms import BaseModelFormSet
 from django import forms
 from .models import TestCase, TestGroup, Component, SystemRequirement, ExpectedResult, TestStep
 

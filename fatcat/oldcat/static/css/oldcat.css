@@ -136,17 +136,22 @@ h3 {
 	cursor:default;
 }
 
+#header .header-menu li.easter {
+	position:relative;
+	float:right;
+}
+
 #header .header-menu li.login {
 	position:relative;
 	float:right;
 }
 
-#header .header-menu li.login a {
-	background:url("../img/menubar-login.gif") left top no-repeat;
+#header .header-menu li.easter a {
+	background:url("../img/menubar-easter.gif") left top no-repeat;
 }
 
-#header .header-menu li.login a span {
-	background:url("../img/menubar-login.gif") right top no-repeat;
+#header .header-menu li.easter a span {
+	background:url("../img/menubar-easter.gif") right top no-repeat;
 }
 
 #header .header-menu li.down a {

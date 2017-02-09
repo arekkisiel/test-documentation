@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+from django.test import Client
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
@@ -5,7 +7,7 @@ from newcat.models import TestCase, Component, TestStep, ExpectedResult, TestGro
 
 
 def fillInFirstTestCaseForm(self, numberOfCases):
-    create_testCase_url = self.app.get(reverse('create_testcase'))
+    create_testCase_url = self.app.get(reverse('create_testcase'), user='john')
 
     create_testCase_form = create_testCase_url.forms['createTestCaseForm']
     create_testCase_form['testCase-testGroup'] = 'testGroup'
@@ -19,9 +21,11 @@ def fillInFirstTestCaseForm(self, numberOfCases):
     return create_testCase_form.submit('testCaseSubmit').follow()
 
 class TestCreateOperations(WebTest):
+    def setUp(self):
+        self.user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
 
     def test_shouldCreateNewTestGroup(self):
-        createTestCase_url = self.app.get(reverse('create_testcase'))
+        createTestCase_url = self.app.get(reverse('create_testcase'), user='john')
         createTestGroup_form = createTestCase_url.forms['createNewGroup']
 
         createTestGroup_form['testGroup-testGroupName'] = 'testGroup'
@@ -30,7 +34,7 @@ class TestCreateOperations(WebTest):
         assert TestGroup.objects.get(testGroupName = 'testGroup') is not None
 
     def test_shouldCreateNewSystemRequirement(self):
-        createTestCase_url = self.app.get(reverse('create_testcase'))
+        createTestCase_url = self.app.get(reverse('create_testcase'), user='john')
         createSystemRequirement_form = createTestCase_url.forms['createNewSystemRequirement']
 
         createSystemRequirement_form['systemRequirement-sysReq_MKS'] = 'MOS-123456'
@@ -40,7 +44,7 @@ class TestCreateOperations(WebTest):
         assert SystemRequirement.objects.get(sysReq_MKS = 'MOS-123456') is not None
 
     def test_shouldCreateNewComponent(self):
-        createTestCase_url = self.app.get(reverse('create_testcase'))
+        createTestCase_url = self.app.get(reverse('create_testcase'), user='john')
         createComponent_form = createTestCase_url.forms['createNewComponent']
 
         createComponent_form['component-componentName'] = 'testComponent'
@@ -104,6 +108,7 @@ class TestCreateOperations(WebTest):
 class TestEditOperations(WebTest):
 
     def setUp(self):
+        self.user = User.objects.create_user('john', 'lennon@thebeatles.com', 'johnpassword')
         TestGroup.objects.create(testGroupName='testGroup1',).save()
         TestGroup.objects.create(testGroupName='testGroup2', ).save()
         SystemRequirement.objects.create(sysReq_MKS=123, title='test SR1',).save()
@@ -128,7 +133,7 @@ class TestEditOperations(WebTest):
         editGroup = TestGroup.objects.get(testGroupName='testGroup2')
         editSystemRequirement = SystemRequirement.objects.get(sysReq_MKS = 321)
         editComponent = Component.objects.get(componentName = 'testComponent2')
-        response = self.app.get(reverse('edit_test_case', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_test_case', kwargs={'testCaseId': testCase.id}), user='john')
 
         edit_testCase_form = response.form
         edit_testCase_form['testName'] = 'testNameEdited'
@@ -159,7 +164,7 @@ class TestEditOperations(WebTest):
         editGroup = TestGroup.objects.get(testGroupName='testGroup2')
         editComponent = Component.objects.get(componentName = 'testComponent2')
 
-        response = self.app.get(reverse('edit_test_case', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_test_case', kwargs={'testCaseId': testCase.id}), user='john')
 
         edit_testCase_form = response.form
         edit_testCase_form['testName'] = 'testNameEdited'
@@ -184,7 +189,7 @@ class TestEditOperations(WebTest):
 
     def test_shouldDefineTestSteps(self):
         testCase = TestCase.objects.get(testName='testName', current=True)
-        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}), user='john')
         edit_testSteps_form = response.form
         edit_testSteps_form['form-0-stepOrder'] = 1
         edit_testSteps_form['form-0-instruction'] = "FirstStep"
@@ -201,7 +206,7 @@ class TestEditOperations(WebTest):
 
     def test_shouldUpdateTestSteps(self):
         testCase = TestCase.objects.get(testName='testName')
-        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}), user='john')
         edit_testSteps_form = response.form
         edit_testSteps_form['form-0-stepOrder'] = 1
         edit_testSteps_form['form-0-instruction'] = "FirstStep"
@@ -213,7 +218,7 @@ class TestEditOperations(WebTest):
 
         testCase = TestCase.objects.get(testName='testName', current=True)
 
-        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}), user='john')
         edit_testSteps_form = response.form
         edit_testSteps_form['form-0-delete'] = True
         edit_testSteps_form['form-1-instruction'] = "SecondStepEdited"
@@ -226,7 +231,7 @@ class TestEditOperations(WebTest):
 
     def test_shouldDefineTestAsserts(self):
         testCase = TestCase.objects.get(testName='testName')
-        response = self.app.get(reverse('edit_expected_results', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_expected_results', kwargs={'testCaseId': testCase.id}), user='john')
         edit_testAssertions_form = response.form
         edit_testAssertions_form['form-0-assertType'] = "TRUE"
         edit_testAssertions_form['form-0-expectedResult'] = "FirstAssert"
@@ -242,7 +247,7 @@ class TestEditOperations(WebTest):
 
     def test_shouldUpdateTestAsserts(self):
         testCase = TestCase.objects.get(testName='testName')
-        response = self.app.get(reverse('edit_expected_results', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_expected_results', kwargs={'testCaseId': testCase.id}), user='john')
         edit_testAssertions_form = response.form
         edit_testAssertions_form['form-0-assertType'] = "TRUE"
         edit_testAssertions_form['form-0-expectedResult'] = "FirstAssert"
@@ -253,7 +258,7 @@ class TestEditOperations(WebTest):
         edit_testAssertions_form.submit()
 
         testCase = TestCase.objects.get(testName='testName')
-        response = self.app.get(reverse('edit_expected_results', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_expected_results', kwargs={'testCaseId': testCase.id}), user='john')
         edit_testAssertions_form = response.form
         edit_testAssertions_form['form-0-assertType'] = "CONTAINS"
         edit_testAssertions_form['form-0-expectedResult'] = "FirstAssertEdited"
@@ -266,7 +271,7 @@ class TestEditOperations(WebTest):
 
     def test_shouldTestCaseUpdateNotDeleteTestSteps(self):
         testCase = TestCase.objects.get(testName='testName')
-        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_test_steps', kwargs={'testCaseId': testCase.id}), user='john')
         edit_testSteps_form = response.form
         edit_testSteps_form['form-0-stepOrder'] = 1
         edit_testSteps_form['form-0-instruction'] = "FirstStep"
@@ -275,7 +280,7 @@ class TestEditOperations(WebTest):
         edit_testSteps_form.submit()
 
         testCase = TestCase.objects.get(testName='testName', current=True)
-        response = self.app.get(reverse('edit_test_case', kwargs={'testCaseId': testCase.id}))
+        response = self.app.get(reverse('edit_test_case', kwargs={'testCaseId': testCase.id}), user='john')
         edit_testCase_form = response.form
         edit_testCase_form['testName'] = 'testNameEdited'
         edit_testCase_form.submit()

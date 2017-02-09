@@ -1,4 +1,3 @@
-from django.forms import inlineformset_factory, formset_factory
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -6,12 +5,13 @@ from django.template import RequestContext
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
 from django.forms.models import modelformset_factory
+from django.contrib.auth.decorators import login_required
 import xlwt
+
 
 from .models import TestCase, TestStep, TestGroup, ExpectedResult, SystemRequirement, Component
 from .forms import ExpectedResultForm, TestGroupForm, ComponentForm, TestCaseBaseForm, TestCaseForm, \
     SystemRequirementForm, TestStepsFormSet, TestStepsForm
-
 
 #### List Views
 
@@ -57,6 +57,7 @@ def test_case(request, testCaseId):
 
 
 #### Create Views
+@login_required(login_url='/login/')
 def create_testcase(request):
     testCaseForm = TestCaseBaseForm(request.POST or None, prefix='testCase')
     testGroupForm = TestGroupForm(request.POST or None, prefix='testGroup')
@@ -128,7 +129,7 @@ def create_testcase(request):
     })
     return render(request, 'newcat/testcase_create.html', context)
 
-
+@login_required(login_url='/login/')
 def create_testcase_late(request):
     numberOfCases = int(request.session['numberOfCases'])
     dataDict = {}
@@ -152,7 +153,7 @@ def create_testcase_late(request):
 
 
 #### Edit and Delete Views
-
+@login_required(login_url='/login/')
 def edit_testcase(request, testCaseId):
     testCaseInstance = get_object_or_404(TestCase, id=testCaseId)
     if request.method == 'POST':
@@ -173,7 +174,7 @@ def edit_testcase(request, testCaseId):
     })
     return render(request, 'newcat/testcase_update.html', context)
 
-
+@login_required(login_url='/login/')
 def edit_teststeps(request, testCaseId, extraForms=3):
     testCase = get_object_or_404(TestCase, id=testCaseId)
     UUID = testCase.testCaseUUID
@@ -209,7 +210,7 @@ def edit_teststeps(request, testCaseId, extraForms=3):
     })
     return render(request, 'newcat/teststeps_update.html', context)
 
-
+@login_required(login_url='/login/')
 def edit_expected_results(request, testCaseId, extraForms=3):
     extraForms = int(extraForms)
     testCase = get_object_or_404(TestCase, id=testCaseId)
@@ -249,7 +250,7 @@ def edit_expected_results(request, testCaseId, extraForms=3):
 
 
 #### Exporting to xls
-
+@login_required(login_url='/login/')
 def export_list(request, group=None, component=None, systemRequirement=None, status=None):
     response = HttpResponse(content_type='application/ms-excel')
 
@@ -352,7 +353,7 @@ def error(request):
 
 
 ####History Views
-
+@login_required(login_url='/login/')
 def list_changes_testcase(request, testCaseId):
     UUID = TestCase.objects.get(id=testCaseId).testCaseUUID
     testCaseVersions = TestCase.objects.filter(testCaseUUID=UUID)
@@ -361,7 +362,7 @@ def list_changes_testcase(request, testCaseId):
     context = RequestContext(request, {'testCaseVersions': testCaseVersions, 'testStepsVersions': testStepsVersions, 'expectedResultsVersions': expectedResultsVersions, 'testCaseId': testCaseId})
     return TemplateResponse(request, 'newcat/list_changes.html', context)
 
-
+@login_required(login_url='/login/')
 def list_changes_testcase_compare(request, testCaseId, referenceVersion, comparedVersion):
     UUID = TestCase.objects.get(id=testCaseId).testCaseUUID
     referenceTestCase = TestCase.objects.get(version=referenceVersion, testCaseUUID=UUID)
@@ -371,7 +372,7 @@ def list_changes_testcase_compare(request, testCaseId, referenceVersion, compare
                               'referenceTestCase': referenceTestCase,
                               'comparedTestCase': comparedTestCase})
     return TemplateResponse(request, 'newcat/testcase_changes_compare.html', context)
-
+@login_required(login_url='/login/')
 def list_changes_teststeps_compare(request, testCaseId, referenceVersion, comparedVersion):
     UUID = TestCase.objects.get(id=testCaseId).testCaseUUID
     referenceTestSteps = TestStep.objects.filter(version=referenceVersion, testCaseUUID=UUID)
@@ -381,7 +382,7 @@ def list_changes_teststeps_compare(request, testCaseId, referenceVersion, compar
                               'referenceTestSteps': referenceTestSteps,
                               'comparedTestSteps': comparedTestSteps})
     return TemplateResponse(request, 'newcat/teststeps_changes_compare.html', context)
-
+@login_required(login_url='/login/')
 def list_changes_assertions_compare(request, testCaseId, referenceVersion, comparedVersion):
     UUID = TestCase.objects.get(id=testCaseId).testCaseUUID
     referenceExpectedResults = ExpectedResult.objects.filter(version=referenceVersion, testCaseUUID=UUID)
