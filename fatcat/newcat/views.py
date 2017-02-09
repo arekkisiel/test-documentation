@@ -254,16 +254,16 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
     response = HttpResponse(content_type='application/ms-excel')
 
     if group != None:
-        testcases_list = TestCase.objects.filter(testGroup=group)
+        testcases_list = TestCase.objects.filter(testGroup=group, current=True)
         response['Content-Disposition'] = 'attachment; filename="TestGroup"' + group + '".xls"'
     if component != None:
-        testcases_list = TestCase.objects.filter(component=component)
+        testcases_list = TestCase.objects.filter(component=component, current=True)
         response['Content-Disposition'] = 'attachment; filename="Component"' + component + '".xls"'
     if systemRequirement != None:
-        testcases_list = TestCase.objects.filter(systemRequirement=systemRequirement)
+        testcases_list = TestCase.objects.filter(systemRequirement=systemRequirement, current=True)
         response['Content-Disposition'] = 'attachment; filename="System Requirement"' + systemRequirement + '".xls"'
     if status != None:
-        testcases_list = TestCase.objects.filter(status=status)
+        testcases_list = TestCase.objects.filter(status=status, current=True)
         response['Content-Disposition'] = 'attachment; filename="Status"' + status + '".xls"'
 
     wb = xlwt.Workbook(encoding='utf-8')
@@ -298,8 +298,9 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
                        'Assert Type', 'Expected Result']
 
     testcases = testcases_list.values_list('id', 'systemRequirement', 'testGroup', 'component', 'testedFunctionality',
-                                           'testEngineer', 'implementedBy', 'testName', 'testSituation', 'status')
+                                           'testEngineer', 'implementedBy', 'testName', 'testSituation', 'status', 'testCaseUUID')
     for testcase in reversed(testcases):
+        testCaseUUID = testcase[len(testcase)-1]
         ws = wb.add_sheet(str(testcase[0]) + '.')
         ws.row(0).height_mismatch = True
         ws.row(0).height = 800
@@ -316,10 +317,10 @@ def export_list(request, group=None, component=None, systemRequirement=None, sta
             ws.col(col_num + 10).width = 530 * (len(specificColumns[col_num]))
             ws.write(0, col_num + 10, specificColumns[col_num], headerStyle)
         testcase_num = 1
-        for col_num in range(len(testcase)):
+        for col_num in range(len(testcase)-1):
             ws.write(testcase_num, col_num, testcase[col_num], bodyStyle)
-        testSteps = TestStep.objects.filter(testCase=testcase).values_list('stepOrder', 'instruction')
-        testAssertions = ExpectedResult.objects.filter(testCase=testcase).values_list('assertType', 'expectedResult')
+        testSteps = TestStep.objects.filter(testCaseUUID=testCaseUUID, current=True).values_list('stepOrder', 'instruction')
+        testAssertions = ExpectedResult.objects.filter(testCaseUUID=testCaseUUID, current=True).values_list('assertType', 'expectedResult')
         teststep_num = testassertion_num = testcase_num
         for teststep in testSteps:
             for col_num in range(len(teststep)):
