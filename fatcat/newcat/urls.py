@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-
+    url(r'^$', views.list_cases, name='list_cases'),
     url(r'^testcase/$', views.list_cases, name='list_cases'),
     url(r'^group/(?P<group>[\w\s\-]+)/$', views.list_group, name='list_group'),
     url(r'^requirement/(?P<systemRequirement>[\w\s\-]+)/$', views.list_systemRequirement, name='list_sysReq'),
