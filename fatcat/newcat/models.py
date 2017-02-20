@@ -28,7 +28,7 @@ class TestCase(models.Model):
     testName = models.CharField(max_length=100)
     testedFunctionality = models.CharField(max_length=100)
     testEngineer = models.CharField(max_length=100)
-    implementedBy = models.CharField(max_length=100)
+    implementedBy = models.CharField(max_length=100, blank=True)
     testSituation = models.CharField(max_length=1000)
     testGroup = models.ForeignKey(TestGroup, to_field='testGroupName')
     systemRequirement = models.ForeignKey(SystemRequirement, to_field='sysReq_MKS')
