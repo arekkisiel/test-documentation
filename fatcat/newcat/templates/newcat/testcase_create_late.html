@@ -4,7 +4,7 @@
 {% load widget_tweaks %}
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<div class="container">
-			<h1>Warning: If all fields for a given test case aren't filled, it won't be saved!</h1>
+			<h1>Warning: For a given test case all fields have to be filled, otherwise it won't be saved!</h1>
 			<form action="/newcat/create/save/" method="post" id="createTestCaseLateForm">{% csrf_token %}
                 <table class="table table-condensed">
                     {{ formset.management_form }}

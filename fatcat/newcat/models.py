@@ -22,7 +22,7 @@ class SystemRequirement(models.Model):
         return repr(self.sysReq_MKS)+ "  " + self.title
 
 class TestCase(models.Model):
-    testCaseUUID = models.UUIDField(default=uuid.uuid4, editable=False)
+    testCaseUUID = models.UUIDField(default=uuid.uuid4(), editable=False)
     version = models.IntegerField(default=1)
     current = models.BooleanField(default=True)
     testName = models.CharField(max_length=100)
