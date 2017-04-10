@@ -31,4 +31,6 @@ urlpatterns = [
     url(r'^requirement/(?P<sysReq>[\w\-]+) / (?P<us_noletters>[\w\-]+)/$', views.list_sysReq, name='sysReq'),
     url(r'^requirement/N/A/$', views.list_sysReq, name='sysReq'),
 
+
+    url(r'^testcase/(?P<testCaseId>[0-9]+)/edit/$', views.edit_testcase, name='edit_testcase'),
 ]

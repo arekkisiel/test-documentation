@@ -9,9 +9,9 @@
             </tr>
             <tr>
                 <td>{{ testCase.id }}</td>
-                <td>{{ testCase.test_id }}</td>
-                <td>{{ testCase.test_unit }}</td>
-                <td><a href="/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.system_requirements }}</a></td>
+                <td>{{ testCase.testName }}</td>
+                <td>{{ testCase.testUnit }}</td>
+                <td><a href="/oldcat/requirement/{{ testCase.system_requirements }}">{{ testCase.systemRequirement }}</a></td>
             </tr>
             <tr>
                 <th><label>Additional Info</label></th>
@@ -20,9 +20,9 @@
                 <th><label>Filename</label></th>
             </tr>
 				<tr>
-					<td>{{ testCase.additional_info }}</td>
-					<td>{{ testCase.precondition }}</td>
-					<td>{{ testCase.implemented }}</td>
+					<td>{{ testCase.additionalInfo }}</td>
+					<td>{{ testCase.preconditions }}</td>
+					<td>{{ testCase.implementedBy }}</td>
 					<td><a href="/oldcat/filename/{{ testCase.filename }}">{{ testCase.filename }}</a></td>
 				</tr>
 		</table>
@@ -33,17 +33,17 @@
                 <th><label>Functional Steps</label></th>
             </tr>
 			<tr>
-				<td>{{ testCase.test_case }}</td>
-				<td>{{ testCase.test_situation }}</td>
-				<td>{{ testCase.functional_steps|linenumbers|linebreaksbr }}</td>
-
+				<td>{{ testCase.testCase }}</td>
+				<td>{{ testCase.testSituation }}</td>
+				<td>{{ testCase.functionalSteps|linebreaksbr }}</td>
             </tr></table>
         <table id="expectedResults" class="table table-condensed">
 			<tr>
                 <th><label>Expected Result</label></th>
             </tr>
             <tr>
-				<td>{{ testCase.expected_result|linebreaksbr }}</td>
+				<td>{{ testCase.expectedResult|linebreaksbr }}</td>
 			</tr>
 		</table>
+<a class="btn btn-info" href="/oldcat/testcase/{{ testCase.id }}/edit">Edit</a>
 {% endblock %}

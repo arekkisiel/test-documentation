@@ -1,0 +1,65 @@
+{% extends "newbase.html" %}
+{% block content %}
+{% load static %}
+<div class="container">
+	<h1>Here you can update test case</h1>
+	<form action="/oldcat/testcase/{{ testCaseInstance.id }}/edit/" method="post">{% csrf_token %}
+		<table class="table table-condensed">
+			<tr>
+				<td><div>
+					{% load widget_tweaks %}
+					{% if displayErrors %}{{ testCaseForm.non_field_errors }}{% endif %}
+					<label>Test Id(Name):</label>
+					{% if displayErrors %}{{ testCaseForm.testName.errors }}{% endif %}
+					{% render_field testCaseForm.testName class+="form-control" %}</div></td>
+				<td><div>
+					<label>Test Unit:</label>
+					{% if displayErrors %}{{ testCaseForm.testUnit.errors }}{% endif %}
+					{% render_field testCaseForm.testUnit class+="form-control" %}
+				<td><div>
+					<label>System Requirement:</label>
+					{% if displayErrors %}{{ testCaseForm.systemRequirement.errors }}{% endif %}
+					{% render_field testCaseForm.systemRequirement class+="form-control" %}
+				<td><div>
+					<label>Additional Info:</label>
+					{% if displayErrors %}{{ testCaseForm.additionalInfo.errors }}{% endif %}
+					{% render_field testCaseForm.additionalInfo class+="form-control" %}
+				<td><div>
+					<label>Preconditions:</label>
+					{% if displayErrors %}{{ testCaseForm.preconditions.errors }}{% endif %}
+					{% render_field testCaseForm.preconditions class+="form-control" %}</div></td>
+
+			</tr>
+			<tr>
+				<td><div>
+					<label>Implemented By:</label>
+					{% if displayErrors %}{{ testCaseForm.implementedBy.errors }}{% endif %}
+					{% render_field testCaseForm.implementedBy class+="form-control" %}</div></td>
+				<td><div>
+					<label>Filename:</label>
+					{% if displayErrors %}{{ testCaseForm.filename.errors }}{% endif %}
+					{% render_field testCaseForm.filename class+="form-control" %}</div></td>
+                <td><div>
+					<label>Test Situation:</label>
+					{% if displayErrors %}{{ testCaseForm.testSituation.errors }}{% endif %}
+					{% render_field testCaseForm.testSituation class+="form-control" %}</div></td>
+				<td><div>
+					<label>Test Case:</label>
+					{% if displayErrors %}{{ testCaseForm.testCase.errors }}{% endif %}
+					{% render_field testCaseForm.testCase class+="form-control" %}</div></td>
+                <td><div>
+                        <label>Functional Steps:</label>
+                        {% if displayErrors %}{{ testCaseForm.functionalSteps.errors }}{% endif %}
+                        {% render_field testCaseForm.functionalSteps class+="form-control" %}</div></td>
+                <td><div>
+                        <label>Expected Results:</label>
+                        {% if displayErrors %}{{ testCaseForm.expectedResults.errors }}{% endif %}
+                        {% render_field testCaseForm.expectedResults class+="form-control" %}</div></td>
+		</table>
+		<button type="submit" class="btn btn-info">Submit</button>
+        <button type="reset" class="btn btn-info">Reset</button>
+        <a class="btn btn-info" href="/oldcat/testcase/{{ testCaseInstance.id }}/">Cancel</a>
+	</form>
+</div>
+{% endblock %}
+

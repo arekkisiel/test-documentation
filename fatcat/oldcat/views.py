@@ -1,9 +1,12 @@
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.template.response import TemplateResponse
 
+from oldcat.forms import OldCaseForm
 from .models import OldCase
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+
 
 def list_sysReq(request, sysReq=None, us=None, us_nospace=None, us_slashed=None,
                 us_dashed=None, us_nospace_inverse=None, bugfix=None, bug=None, us_short=None, us_EMPTY=None,
@@ -44,25 +47,47 @@ def list_sysReq(request, sysReq=None, us=None, us_nospace=None, us_slashed=None,
             sysReq = 'SR: <EMPTY>\nUS: ' + us_EMPTY
         else:
            sysReq = 'N/A'
-    testCasesList = OldCase.objects.filter(system_requirements = sysReq)
+    testCasesList = OldCase.objects.filter(systemRequirement = sysReq, current=True)
     if check:
         if not testCasesList:
             sysReq = sysReq + ' '
-            testCasesList = OldCase.objects.filter(system_requirements=sysReq)
+            testCasesList = OldCase.objects.filter(systemRequirement=sysReq, current=True)
     context = RequestContext(request, {'testCasesList': testCasesList})
     return TemplateResponse(request, 'oldcat/list_cases.html', context)
 
 def list_filename(request, filename):
-    testCasesList = OldCase.objects.filter(filename = filename + '.csv')
+    testCasesList = OldCase.objects.filter(filename = filename + '.csv', current=True)
     context = RequestContext(request, {'testCasesList': testCasesList})
     return TemplateResponse(request, 'oldcat/list_cases.html', context)
 
 def list_cases(request):
-    testCasesList = OldCase.objects.all()
+    testCasesList = OldCase.objects.filter(current=True)
     context = RequestContext(request, {'testCasesList': testCasesList})
     return TemplateResponse(request, 'oldcat/list_cases.html', context)
 
 def test_case(request, testCaseId):
     testCase = OldCase.objects.get(id=testCaseId)
     context = {'testCase': testCase}
-    return render(request, 'oldcat/test_case.html', context)
+    return render(request, 'oldcat/testcase.html', context)
+
+#### Edit and Delete Views
+@login_required(login_url='/login/')
+def edit_testcase(request, testCaseId):
+    testCaseInstance = get_object_or_404(OldCase, id=testCaseId)
+    if request.method == 'POST':
+        testCaseForm = OldCaseForm(request.POST or None)
+        if testCaseForm.is_valid():
+            testCaseInstance.current = False
+            newTestCaseInstance = testCaseForm.save(commit=False)
+            newTestCaseInstance.testCaseUUID = testCaseInstance.testCaseUUID
+            newTestCaseInstance.version += 1
+            testCaseInstance.save()
+            newTestCaseInstance.save()
+            return HttpResponseRedirect('/oldcat/testcase/' + str(newTestCaseInstance.id))
+    testCaseForm = OldCaseForm(request.POST or None, instance=testCaseInstance)
+    context = RequestContext(request, {
+        'testCaseInstance': testCaseInstance,
+        'testCaseForm': testCaseForm,
+        'displayErrors': True,
+    })
+    return render(request, 'oldcat/testcase_update.html', context)

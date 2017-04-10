@@ -6,17 +6,20 @@ from django.db import models
 
 class OldCase(models.Model):
     id = int
-    system_requirements = models.TextField()
-    test_unit = models.TextField()
-    test_id = models.TextField()
-    implemented = models.TextField()
-    test_situation = models.TextField()
-    test_case = models.TextField()
-    precondition = models.TextField()
-    functional_steps = models.TextField()
-    additional_info = models.TextField()
-    expected_result = models.TextField()
+    testCaseUUID = models.UUIDField(default=uuid.uuid4, editable=False)
+    systemRequirement = models.TextField()
+    testUnit = models.TextField()
+    testName = models.TextField()
+    implementedBy = models.TextField()
+    testSituation = models.TextField()
+    testCase = models.TextField()
+    preconditions = models.TextField()
+    functionalSteps = models.TextField()
+    additionalInfo = models.TextField()
+    expectedResults = models.TextField()
     filename = models.TextField()
+    version = models.IntegerField(default=1)
+    current = models.BooleanField(default=True)
 
     def __str__(self):
         return self
