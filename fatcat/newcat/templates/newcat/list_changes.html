@@ -15,9 +15,9 @@
         </thead>
         <tbody>
         {% for testCaseVersion in testCaseVersions %}
-            <tr id="{{ testCase.version }}">
-                <td><div><input type="radio" name="reference"></div></td>
-                <td><div><input type="radio" name="compare"></div></td>
+            <tr id="{{ testCaseVersion.version }}">
+                <td><div><input type="radio" name="testCase-reference"></div></td>
+                <td><div><input type="radio" name="testCase-compare"></div></td>
                 <td><div>{{ testCaseVersion.version }}</div></td>
                 <td><div>{{ testCaseVersion.current}}</div></td>
             </tr>
@@ -99,12 +99,13 @@ $(document).ready(function(){
 });
 function compareTestCaseVersions(){
     var go = true;
-    var referenceTestCaseVersion = $('input[name="reference"]:checked').closest('tr').attr('id');
+    var referenceTestCaseVersion = $('input[name="testCase-reference"]:checked').closest('tr').attr('id');
+    var comparedTestCaseVersion = $('input[name="testCase-compare"]:checked').closest('tr').attr('id');
+
     if (referenceTestCaseVersion === undefined){
         alert("You should choose reference version!");
         go = false;
         }
-    var comparedTestCaseVersion = $('input[name="compare"]:checked').closest('tr').attr('id');
     if (comparedTestCaseVersion === undefined && go){
         alert("You should choose version to compare!");
         go = false;
@@ -120,11 +121,12 @@ function compareTestCaseVersions(){
 function compareTestStepsVersions(){
     var go = true;
     var referenceTestStepsVersion = $('input[name="testSteps-reference"]:checked').closest('tr').attr('id');
+    var comparedTestStepsVersion = $('input[name="testSteps-compare"]:checked').closest('tr').attr('id');
+
     if (referenceTestStepsVersion === undefined){
         alert("You should choose reference version!");
         go = false;
         }
-    var comparedTestStepsVersion = $('input[name="testSteps-compare"]:checked').closest('tr').attr('id');
     if (comparedTestStepsVersion === undefined && go){
         alert("You should choose version to compare!");
         go = false;

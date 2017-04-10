@@ -133,6 +133,7 @@ def create_testcase(request):
 def create_testcase_late(request):
     numberOfCases = int(request.session['numberOfCases'])
     dataDict = {}
+    isAnyFormValid = False
     for x in range(0, numberOfCases):
         dataDict.update({x: request.session['data']})
     testCaseFormset = modelformset_factory(TestCase, form=TestCaseForm, extra=numberOfCases)
@@ -140,16 +141,17 @@ def create_testcase_late(request):
         formset = testCaseFormset(request.POST)
         for form in formset:
             if form.is_valid():
+                isAnyFormValid = True
                 form.save()
-        return HttpResponseRedirect("/newcat/testcase/")
-    else:
-        queryset = TestCase.objects.none()
-        formset = testCaseFormset(queryset=queryset, initial=dataDict)
-        context = RequestContext(request, {
-            'formset': formset,
-            'dataDict': dataDict,
-        })
-        return render(request, 'newcat/testcase_create_late.html', context)
+        if isAnyFormValid:
+            return HttpResponseRedirect("/newcat/testcase/")
+    queryset = TestCase.objects.none()
+    formset = testCaseFormset(queryset=queryset, initial=dataDict)
+    context = RequestContext(request, {
+        'formset': formset,
+        'dataDict': dataDict,
+    })
+    return render(request, 'newcat/testcase_create_late.html', context)
 
 
 #### Edit and Delete Views
@@ -355,11 +357,11 @@ def error(request):
 ####History Views
 @login_required(login_url='/login/')
 def list_changes_testcase(request, testCaseId):
-    UUID = TestCase.objects.get(id=testCaseId).testCaseUUID
-    testCaseVersions = TestCase.objects.filter(testCaseUUID=UUID)
-    testStepsVersions = TestStep.objects.filter(testCaseUUID=UUID).order_by('-version').distinct('version')
-    expectedResultsVersions = ExpectedResult.objects.filter(testCaseUUID=UUID).order_by('-version').distinct('version')
-    context = RequestContext(request, {'testCaseVersions': testCaseVersions, 'testStepsVersions': testStepsVersions, 'expectedResultsVersions': expectedResultsVersions, 'testCaseId': testCaseId})
+    testCase = TestCase.objects.get(id=testCaseId)
+    testCaseVersions = TestCase.objects.filter(testCaseUUID=testCase.testCaseUUID)
+    testStepsVersions = TestStep.objects.filter(testCaseUUID=testCase.testCaseUUID).order_by('-version').distinct('version')
+    expectedResultsVersions = ExpectedResult.objects.filter(testCaseUUID=testCase.testCaseUUID).order_by('-version').distinct('version')
+    context = RequestContext(request, {'testCaseVersions': testCaseVersions, 'testStepsVersions': testStepsVersions, 'expectedResultsVersions': expectedResultsVersions, 'testCaseId': testCaseId })
     return TemplateResponse(request, 'newcat/list_changes.html', context)
 
 @login_required(login_url='/login/')

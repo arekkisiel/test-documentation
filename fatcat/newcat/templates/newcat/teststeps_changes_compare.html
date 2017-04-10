@@ -1,0 +1,42 @@
+{% extends "newbase.html" %}
+{% block content %}
+{% load static %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<table id="testSteps" class="table table-condensed">
+		<thead>
+				<tr>
+					<th>Test Steps - Reference:</th>
+                    <th>Test Steps - Compared:</th>
+				</tr>
+		</thead>
+		<tbody>
+			<tr>
+                <td class="referenceSteps">
+                    {% if referenceTestSteps %}
+                        {% for testStep in referenceTestSteps %}
+                            <div>{{ testStep.stepOrder }}. {{ testStep.instruction }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                <td class="comparedSteps">
+                    {% if comparedTestSteps %}
+                        {% for testStep in comparedTestSteps %}
+                            <div>{{ testStep.stepOrder }}. {{ testStep.instruction }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+			</tr>
+		</tbody>
+	</table>
+    <a class="btn btn-default btn-sm" href="/newcat/testcase/{{ testCaseId }}/history/">Return</a>
+<script>
+    $(document).ready(function(){
+        $('.reference').each(function(){
+            if ($(this).text().trim() != $(this).next().text().trim()){
+                $(this).css('font-weight','bold').css('background-color','#defec8');
+                $(this).next().css('font-weight','bold').css('background-color','#ffb390');
+            }
+        });
+    });
+</script>
+{% endblock%}
